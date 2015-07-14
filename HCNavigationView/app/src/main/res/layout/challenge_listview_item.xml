@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:background="@color/background_material_dark"
+    android:gravity="center_vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/challenge_item_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="Challenge 1"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"/>
+
+    <View
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/accent"
+        android:layout_margin="2dp"/>
+    <View
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/primary_dark"
+        android:layout_margin="2dp"/>
+    <View
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/primary_text"
+        android:layout_margin="2dp"/>
+
+</LinearLayout>

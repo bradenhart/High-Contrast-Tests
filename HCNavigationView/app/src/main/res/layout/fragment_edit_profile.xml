@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_material_dark"
+    android:padding="10dp">
+
+
+
+    <!--Button
+        android:id="@+id/finished_editing_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:background="@color/accent"
+        android:layout_alignParentBottom="true"/-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/finished_editing_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_done_white_18dp"
+        app:fabSize="normal"
+        app:borderWidth="2dp"
+        app:rippleColor="@color/fab_ripple_color"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"/>
+
+
+</RelativeLayout>

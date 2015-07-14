@@ -1,0 +1,51 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:right="@dimen/toggle_oval_offset">
+        <shape android:shape="oval">
+            <solid android:color="@color/black"/>
+            <size
+                android:width="@dimen/toggle_diameter"
+                android:height="@dimen/toggle_diameter"/>
+            <stroke
+                android:width="@dimen/toggle_outline_width"
+                android:color="@color/toggle_outline_color" />
+        </shape>
+    </item>
+
+    <item android:left="@dimen/toggle_oval_offset">
+        <shape android:shape="oval">
+            <solid android:color="@color/black"/>
+            <size
+                android:width="@dimen/toggle_diameter"
+                android:height="@dimen/toggle_diameter"/>
+            <stroke
+                android:width="@dimen/toggle_outline_width"
+                android:color="@color/toggle_outline_color" />
+        </shape>
+    </item>
+
+    <item
+        android:left="11dp"
+        android:right="11dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/black"/>
+            <size
+                android:width="@dimen/toggle_oval_offset"
+                android:height="@dimen/toggle_diameter"/>
+            <stroke
+                android:width="@dimen/toggle_outline_width"
+                android:color="@color/toggle_outline_color" />
+        </shape>
+    </item>
+    <item
+        android:left="10dp"
+        android:right="10dp"
+        android:top="@dimen/toggle_outline_width"
+        android:bottom="@dimen/toggle_outline_width">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/toggle_off_background"/>
+            <size
+                android:height="15dp"
+                android:width="13dp" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/social_log_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In"
+        android:textSize="28sp"
+        android:textColor="@color/white"
+        android:padding="5dp"
+        android:background="#334c82"
+        android:layout_centerInParent="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:padding="5dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/social_skip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Skip"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:background="@color/accent"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp" />
+        <Button
+            android:id="@+id/social_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:background="@color/accent"/>
+    </LinearLayout>
+
+</RelativeLayout>

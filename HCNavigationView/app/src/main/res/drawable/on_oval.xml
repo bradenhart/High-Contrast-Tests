@@ -1,0 +1,30 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="@dimen/toggle_side_offset"
+        android:right="@dimen/toggle_side_offset">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/accent"/>
+            <size
+                android:width="@dimen/toggle_oval_offset"
+                android:height="@dimen/toggle_diameter"/>
+        </shape>
+    </item>
+
+    <item android:right="@dimen/toggle_oval_offset">
+        <shape android:shape="oval">
+            <solid android:color="@color/accent"/>
+            <size
+                android:width="@dimen/toggle_diameter"
+                android:height="@dimen/toggle_diameter"/>
+        </shape>
+    </item>
+
+    <item android:left="@dimen/toggle_oval_offset">
+        <shape android:shape="oval">
+            <solid android:color="@color/accent"/>
+            <size
+                android:width="@dimen/toggle_diameter"
+                android:height="@dimen/toggle_diameter"/>
+        </shape>
+    </item>
+</layer-list>

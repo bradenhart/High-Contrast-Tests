@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bradenhart.hcnavigationview.Achievements"
+    android:background="#e9cf6f">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/unlocked_count"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:background="@color/primary" />
+
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/gridview_achievements"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/gridview_side_margin"
+        android:layout_marginStart="@dimen/gridview_side_margin"
+        android:layout_marginRight="@dimen/gridview_side_margin"
+        android:layout_marginEnd="@dimen/gridview_side_margin"
+        android:layout_marginTop="@dimen/gridview_top_margin"
+        android:columnWidth="@dimen/gridview_column_width"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth" />
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="statusBarHeight">0dp</dimen>
+
+    <dimen name="gridview_side_margin">15dp</dimen>
+    <dimen name="gridview_top_margin">30dp</dimen>
+    <dimen name="gridview_bottom_margin">10dp</dimen>
+    <dimen name="gridview_image_dimens">80dp</dimen>
+    <dimen name="gridview_column_width">120dp</dimen>
+
+    <dimen name="settings_category_text_size">18sp</dimen>
+    <dimen name="settings_option_text_size">16sp</dimen>
+    <dimen name="settings_description_text_size">12sp</dimen>
+    <dimen name="settings_note_text_size">10sp</dimen>
+
+    <dimen name="toggle_width">40dp</dimen>
+    <dimen name="shift_distance">38dp</dimen>
+    <dimen name="toggle_height">22dp</dimen>
+    <dimen name="toggle_side_offset">11dp</dimen>
+    <dimen name="toggle_oval_offset">18dp</dimen>
+    <dimen name="toggle_diameter">22dp</dimen>
+    <dimen name="toggle_outline_width">2dp</dimen>
+
+    <dimen name="change_picture_options_gap">30dp</dimen>
+
+</resources>
