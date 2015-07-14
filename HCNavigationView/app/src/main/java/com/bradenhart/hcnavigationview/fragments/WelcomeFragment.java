@@ -44,7 +44,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor spEdit;
     private String userName;
-    private final int GALLERY = 1;
+    private final int CAMERA = 1101, GALLERY = 1011;
     private CircleImageView picImageView;
     private Bitmap image = null, rotateImage = null;
     private Uri mImageUri;
@@ -110,7 +110,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
         switch (id) {
             case R.id.welcome_select_camera:
-
+                openCamera();
                 break;
             case R.id.welcome_select_gallery:
                 openGallery();
@@ -140,6 +140,15 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, CAMERA);
+        } else {
+            Toast.makeText(context, "Sorry, no suitable apps were found to perform this action.", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void openGallery() {
         recycleBitmaps();
         Intent intent = new Intent();
@@ -156,6 +165,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        // User has returned from Gallery
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
@@ -170,14 +180,24 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
                     rotateImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
                     picImageView.setImageBitmap(rotateImage);
+                    rotateImage = resizeBitmap(rotateImage);
                     image = null;
                 } else {
                     picImageView.setImageBitmap(image);
+                    image = resizeBitmap(image);
                     rotateImage = null;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        // User has returned from Camera
+        if (requestCode == CAMERA && resultCode != 0) {
+            Bundle extras = data.getExtras();
+            if (image != null && !image.isRecycled()) image.recycle();
+            image = (Bitmap) extras.get("data");
+            picImageView.setImageBitmap(image);
         }
     }
 
@@ -229,7 +249,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
                 // resize image (add later)
                 /* ----- */
                 // convert image to byte array
-                byte[] array = convertBitmapToByteArray(resizeBitmap(bmp));
+                byte[] array = convertBitmapToByteArray(bmp);
                 // save byte array in db
                 saveByteArrayToDb(array);
                 Log.e(LOGTAG, "finished profile picture thread");

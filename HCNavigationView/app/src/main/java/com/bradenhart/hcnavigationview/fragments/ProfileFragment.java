@@ -1,5 +1,6 @@
 package com.bradenhart.hcnavigationview.fragments;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bradenhart.hcnavigationview.R;
 import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
@@ -55,7 +57,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout editModeLayout;
     private EditText newNameEditText;
     private ImageView fromGalleryBtn, fromCameraBtn;
-    private final int GALLERY = 1;
+    private final int CAMERA = 1101, GALLERY = 1011;
     private static Bitmap image = null;
     private static Bitmap rotateImage = null;
     private Uri mImageUri;
@@ -127,7 +129,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 openGallery();
                 break;
             case R.id.picture_from_camera:
-
+                openCamera();
                 break;
             default:
                 break;
@@ -156,6 +158,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
     }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, CAMERA);
+        } else {
+            Toast.makeText(context, "Sorry, no suitable apps were found to perform this action.", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void recycleBitmaps() {
         if (image != null) image.recycle();
         if (rotateImage != null) rotateImage.recycle();
@@ -164,6 +175,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        // User has returned from Gallery
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
@@ -175,14 +187,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         rotateImage.recycle();
                     rotateImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
                     showImagePreview(rotateImage);
+                    rotateImage = resizeBitmap(rotateImage);
                     image = null;
                 } else {
                     showImagePreview(image);
+                    image = resizeBitmap(image);
                     rotateImage = null;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        // User has returned from Camera
+        if (requestCode == CAMERA && resultCode != 0) {
+            Bundle extras = data.getExtras();
+            if (image != null && !image.isRecycled()) image.recycle();
+            image = (Bitmap) extras.get("data");
+            showImagePreview(image);
         }
     }
 
@@ -241,7 +263,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 // resize image (below)
                 //* ----- *//
                 // convert image to byte array
-                byte[] array = convertBitmapToByteArray(resizeBitmap(bmp));
+                byte[] array = convertBitmapToByteArray(bmp);
                 // save byte array in db
                 saveByteArrayToDb(array);
                 Log.e(LOGTAG, "finished profile picture thread");
