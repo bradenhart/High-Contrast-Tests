@@ -12,11 +12,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/header_profile_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/profile_picture_circle_diameter"
+        android:layout_height="@dimen/profile_picture_circle_diameter"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/statusBarHeight"
-        android:src="@drawable/ic_person_white_48dp"
         app:border_color="#FFFFFF"
         app:border_width="2dp" />
 

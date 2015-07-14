@@ -1,5 +1,7 @@
 package com.bradenhart.hcnavigationview;
 
+import android.content.Context;
+
 /**
  * Created by bradenhart on 30/06/15.
  */
@@ -28,9 +30,9 @@ public final class Constants {
     public static final String screenSettings = "settings";
     public static final String screenHelpFeedback = "helpFeedback";
 
-
-    public static int convertDptoPx(int dp) {
-        return 1;
+    public static int convertDptoPx(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
     }
 
 }

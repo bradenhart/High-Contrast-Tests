@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -55,7 +56,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private EditText newNameEditText;
     private ImageView fromGalleryBtn, fromCameraBtn;
     private final int GALLERY = 1;
-    private static Bitmap Image = null;
+    private static Bitmap image = null;
     private static Bitmap rotateImage = null;
     private Uri mImageUri;
     private DatabaseHandler dbHandler;
@@ -63,11 +64,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!sharedPreferences.contains(KEY_PROFILE_PIC)) {
-            profilePic.setImageResource(defaultPic);
-        } else {
-            showSavedProfilePicture();
-        }
+        showSavedProfilePicture();
     }
 
     @Override
@@ -94,6 +91,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         editModeLayout = (RelativeLayout) view.findViewById(R.id.edit_mode_layout);
         newNameEditText = (EditText) view.findViewById(R.id.edit_input_name);
+        newNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        newNameEditText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME);
 
         fromGalleryBtn = (ImageView) view.findViewById(R.id.picture_from_gallery);
         fromCameraBtn = (ImageView) view.findViewById(R.id.picture_from_camera);
@@ -145,17 +144,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void showSavedProfilePicture() {
-        byte[] array = dbHandler.retrieveByteArrayFromDb();
-        Bitmap bitmap = convertByteArrayToBitmap(array);
-        if (bitmap == null) {
-            profilePic.setImageResource(defaultPic);
-        } else {
-            profilePic.setImageBitmap(bitmap);
-            bitmap.recycle();
-        }
-    }
-
     private Bitmap convertByteArrayToBitmap(byte[] array) {
         return BitmapFactory.decodeByteArray(array, 0, array.length);
     }
@@ -169,7 +157,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void recycleBitmaps() {
-        if (Image != null) Image.recycle();
+        if (image != null) image.recycle();
         if (rotateImage != null) rotateImage.recycle();
     }
 
@@ -179,17 +167,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (requestCode == GALLERY && resultCode != 0) {
             mImageUri = data.getData();
             try {
-                Image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 if (getOrientation(getActivity(), mImageUri) != 0) {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(getOrientation(getActivity(), mImageUri));
                     if (rotateImage != null)
                         rotateImage.recycle();
-                    rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix, true);
+                    rotateImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
                     showImagePreview(rotateImage);
-                    Image = null;
+                    image = null;
                 } else {
-                    showImagePreview(Image);
+                    showImagePreview(image);
                     rotateImage = null;
                 }
             } catch (IOException e) {
@@ -218,8 +206,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private Bitmap resizeBitmap(Bitmap image) {
+        int maxSizeInPix = convertDptoPx(context, 100); // get the pixel value for 100dp
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        int factor = imageHeight/maxSizeInPix;
+
         Log.e(LOGTAG, "resized bitmap");
-        return null;
+        return Bitmap.createScaledBitmap(image, imageWidth/factor, imageHeight/factor, true);
     }
 
     private byte[] convertBitmapToByteArray(Bitmap image) {
@@ -236,8 +229,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private Bitmap getValidBitmap() {
-        if (Image == null && rotateImage != null) return rotateImage;
-        if (Image != null && rotateImage == null) return Image;
+        if (image == null && rotateImage != null) return rotateImage;
+        if (image != null && rotateImage == null) return image;
         return null;
     }
 
@@ -245,10 +238,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                // resize image (add later)
-                /* ----- */
+                // resize image (below)
+                //* ----- *//
                 // convert image to byte array
-                byte[] array = convertBitmapToByteArray(bmp);
+                byte[] array = convertBitmapToByteArray(resizeBitmap(bmp));
                 // save byte array in db
                 saveByteArrayToDb(array);
                 Log.e(LOGTAG, "finished profile picture thread");
@@ -258,12 +251,55 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleNewProfilePic() {
-        if (getValidBitmap() != null) {
+        if (getValidBitmap() != null) { // a dp has been chosen
             profilePic.setImageBitmap(getValidBitmap());
             startProfilePictureThread(getValidBitmap());
+        } else {
+            if (dbHandler.retrieveByteArrayFromDb() == null) { // no pic chosen, no pic saved, set default
+                profilePic.setImageResource(defaultPic);
+            }
         }
     }
 
+    private void showSavedProfilePicture() {
+        byte[] array = dbHandler.retrieveByteArrayFromDb();
+        if (array == null) {
+            profilePic.setImageResource(defaultPic);
+        } else {
+            Bitmap bitmap = convertByteArrayToBitmap(array);
+            if (bitmap == null) {
+                Log.e(LOGTAG, "set image as default");
+                profilePic.setImageResource(defaultPic);
+            } else {
+                Log.e(LOGTAG, "set image from database");
+                profilePic.setImageBitmap(bitmap);
+                //bitmap.recycle();
+                //profilePic.setImageResource(defaultPic); TEST that picture can be set
+            }
+        }
+    }
+
+/*    private void showSavedProfilePicture() {
+        byte[] array = dbHandler.retrieveByteArrayFromDb();
+        Bitmap bitmap = convertByteArrayToBitmap(array);
+        if (bitmap == null) {
+            profilePic.setImageResource(defaultPic);
+        } else {
+            profilePic.setImageBitmap(bitmap);
+            bitmap.recycle();
+        }
+    }*/
+
+
+    private void startGetPhotoThread() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showSavedProfilePicture();
+                Log.e(LOGTAG, "finished run on ui thread photo thread");
+            }
+        });
+    }
 
 
 }

@@ -20,11 +20,10 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_profile_pic"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/profile_picture_circle_diameter"
+            android:layout_height="@dimen/profile_picture_circle_diameter"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/statusBarHeight"
-            android:src="@drawable/ic_person_white_48dp"
             app:border_color="#FFFFFF"
             app:border_width="2dp" />
 
@@ -180,7 +179,6 @@
 
         </LinearLayout>
 
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/edit_input_name_layout"
             android:layout_width="match_parent"
@@ -199,7 +197,9 @@
                 android:layout_margin="16dp"
                 android:hint="Enter new name"
                 android:textColorHint="@color/yellow"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:imeOptions="actionDone"
+                android:inputType="textPersonName"/>
         </android.support.design.widget.TextInputLayout>
 
 
