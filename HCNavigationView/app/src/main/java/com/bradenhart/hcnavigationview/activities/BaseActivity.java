@@ -277,6 +277,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new ProfileFragment();
                 currentScreen = screenProfile;
                 break;
+            case R.id.facebook_login:
+                fragment = new FacebookFragment();
+                currentScreen = screenFacebookLogin;
+                break;
             case R.id.new_challenge:
                 Log.e(LOGTAG, "new challenge");
                 if (currentScreen.equals(screenNewChallenge)) {

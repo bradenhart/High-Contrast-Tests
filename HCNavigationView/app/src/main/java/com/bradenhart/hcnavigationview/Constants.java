@@ -23,6 +23,7 @@ public final class Constants {
     public static final int defaultPic = R.drawable.ic_person_white_48dp;
 
     public static final String screenProfile = "profile";
+    public static final String screenFacebookLogin = "facebookLogin";
     public static final String screenNewChallenge = "newChallenge";
     public static final String screenChallenges = "challenges";
     public static final String screenCompleted = "completed";

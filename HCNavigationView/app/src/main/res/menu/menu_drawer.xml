@@ -9,6 +9,10 @@
             android:id="@+id/profile"
             android:icon="@drawable/ic_account_box_black_18dp"
             android:title="@string/profile" />
+        <item
+            android:id="@+id/facebook_login"
+            android:icon="@drawable/com_facebook_profile_picture_blank_portrait"
+            android:title="@string/facebook_login" />
     </group>
 
     <group
