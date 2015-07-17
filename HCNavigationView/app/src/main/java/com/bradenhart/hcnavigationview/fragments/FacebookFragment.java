@@ -24,6 +24,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
+import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -78,6 +79,7 @@ public class FacebookFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loginBtn = (LoginButton) view.findViewById(R.id.fb_login_button);
+        loginBtn.setText("Hello");
         loginBtn.setReadPermissions("user_photos");
         loginBtn.setFragment(this);
         loginBtn.registerCallback(callbackManager, callback);
@@ -104,8 +106,7 @@ public class FacebookFragment extends Fragment {
                 }
             } else {
                 Log.e(LOGTAG, "profile is null");
-                Toast.makeText(getActivity(), "Something went wrong, retrying login...", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getActivity(), "Something went wrong, try logging in again.", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -143,8 +144,6 @@ public class FacebookFragment extends Fragment {
                         JSONObject jsonDataObject = response.getJSONObject();
                         if (jsonDataObject != null) {
                             Log.e(LOGTAG, "json object is NOT null");
-                            //if (jsonDataObject.optJSONObject("data") != null) Log.e(LOGTAG, "data is mapped to a jsonobject"); TRUE
-                            //if (jsonDataObject.optJSONObject("url") != null) Log.e(LOGTAG, "url is mapped to a jsonobject");  FALSE
                             JSONObject dataObject = jsonDataObject.optJSONObject("data");
                             Log.e("LOGTAG", "data object: " + jsonDataObject.toString());
                             if (dataObject.optJSONObject("url")!= null) Log.e(LOGTAG, "url is mapped to a jsonobject");

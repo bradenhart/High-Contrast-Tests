@@ -81,31 +81,44 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         mNavDrawer = (NavigationView) findViewById(R.id.main_drawer);
 
+        frameLayout = (FrameLayout) findViewById(R.id.main_content);
+
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+
+        if (savedInstanceState != null) {
+            showCurrentScreen(savedInstanceState);
+        }
+
         if (newChallengeRequested(getIntent().getExtras(), sharedPreferences)) {
             requestNewChallenge();
+
+            setSupportActionBar(mToolbar);
+
+            setUpNavigationDrawer();
+
+            if (!didUserSeeDrawer()) {
+                showDrawer();
+                hideDrawer(2000);
+                markDrawerSeen();
+            } else {
+                hideDrawer(0);
+            }
+
+            //LayoutInflater mInflater =  (LayoutInflater) this.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            setUpHeaderView();
+
         } else {
             Intent setUpIntent = new Intent(BaseActivity.this, WelcomeActivity.class);
             startActivity(setUpIntent);
         }
 
-        frameLayout = (FrameLayout) findViewById(R.id.main_content);
 
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(mToolbar);
+    }
 
-        setUpNavigationDrawer();
+    private void showCurrentScreen(Bundle b) {
+        int id = b.getInt(KEY_SELECTED_ID);
 
-        if (!didUserSeeDrawer()) {
-            showDrawer();
-            hideDrawer(2000);
-            markDrawerSeen();
-        } else {
-            hideDrawer(0);
-        }
-
-        //LayoutInflater mInflater =  (LayoutInflater) this.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        setUpHeaderView();
-
+        navigate(id);
     }
 
     @Override
@@ -231,11 +244,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             String request = bundle.getString(KEY_REQUEST_ACTION);
             if (request != null && request.equals(showNewChallenge)) return true;
         }
-        if (sharedPreferences.contains(KEY_SETUP_STAGE)) {
-            String stage = sharedPreferences.getString(KEY_SETUP_STAGE, setUpDefault);
-            if (stage.equals(stageCompleted)) return true;
-        }
-        return false;
+
+        return sharedPreferences.contains(KEY_USER_NAME);
+//        if (sharedPreferences.contains(KEY_SETUP_STAGE)) {
+//            String stage = sharedPreferences.getString(KEY_SETUP_STAGE, setUpDefault);
+//            if (stage.equals(stageCompleted)) return true;
+//        }
     }
 
     private void uncheckAllMenuItems() {
@@ -322,7 +336,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+            if (mDrawerLayout != null) mDrawerLayout.closeDrawer(GravityCompat.START);
             manager.beginTransaction().replace(R.id.main_content, fragment).commit();
         }
     }

@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +46,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private Context context;
     private final String LOGTAG = "ProfileFragment";
-    private final String TAG_EDIT_FRAGMENT = "tag_edit";
+    private final String KEY_EDIT_MODE = "edit_mode";
+    private final String KEY_PREVIEW = "preview";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor spEdit;
     private View headerView;
@@ -54,7 +57,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private CircleImageView profilePic, previewPic;
     private FragmentManager manager;
     private boolean editMode = false;
-    private RelativeLayout editModeLayout;
+    private ScrollView editModeLayout;
     private EditText newNameEditText;
     private ImageView fromGalleryBtn, fromCameraBtn;
     private final int CAMERA = 1101, GALLERY = 1011;
@@ -91,16 +94,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         fab = (FloatingActionButton) view.findViewById(R.id.fab_profile_button);
         fab.setOnClickListener(this);
 
-        editModeLayout = (RelativeLayout) view.findViewById(R.id.edit_mode_layout);
+        editModeLayout = (ScrollView) view.findViewById(R.id.edit_mode_layout);
         newNameEditText = (EditText) view.findViewById(R.id.edit_input_name);
         newNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        newNameEditText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME);
+        newNameEditText.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
+        newNameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (newNameEditText.getText().toString().length() == 0) {
+//                        newNameEditText.setFocusable(false);
+//                        newNameEditText.setFocusableInTouchMode(false);
+//                        newNameEditText.setFocusable(true);
+//                        newNameEditText.setFocusableInTouchMode(true);
+                    }
+                }
+                return false;
+            }
+        });
 
         fromGalleryBtn = (ImageView) view.findViewById(R.id.picture_from_gallery);
         fromCameraBtn = (ImageView) view.findViewById(R.id.picture_from_camera);
 
         fromGalleryBtn.setOnClickListener(this);
         fromCameraBtn.setOnClickListener(this);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean(KEY_EDIT_MODE)) editModeLayout.setVisibility(View.VISIBLE);
+            if (savedInstanceState.getBoolean(KEY_PREVIEW)) {
+                previewLabel.setVisibility(View.VISIBLE);
+                previewPic.setVisibility(View.VISIBLE);
+            }
+        }
 
         return view;
     }
@@ -323,6 +348,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_EDIT_MODE, isVisibile(editModeLayout));
+        outState.putBoolean(KEY_PREVIEW, isVisibile(previewPic));
+    }
 
+    private boolean isVisibile(View v) {
+        return v.getVisibility() == View.VISIBLE;
+    }
 }
 
