@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,14 +27,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bradenhart.hcnavigationview.Constants;
 import com.bradenhart.hcnavigationview.R;
 import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
-import com.bradenhart.hcnavigationview.fragments.SettingsFragment;
-import com.bradenhart.hcnavigationview.fragments.SocialFragment;
-import com.bradenhart.hcnavigationview.fragments.WelcomeFragment;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -71,12 +66,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     private SharedPreferences.Editor spEdit;
 
     private DrawerLayout rootLayout;
-    private FrameLayout frameLayout;
-    private FragmentManager manager;
-    private FragmentTransaction transaction;
-    private Fragment fragment;
-    private Toolbar titleBar;
     private int accentColor, whiteColor;
+    private TextView loadingPrompt;
 
     /*From fragment code*/
     private EditText nameInput;
@@ -88,7 +79,6 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     private Bitmap image = null, rotateImage = null;
     private Uri mImageUri;
     private DatabaseHandler dbHandler;
-    private RelativeLayout progressScreen;
 
     private CallbackManager callbackManager;
     private LoginButton loginBtn;
@@ -100,22 +90,20 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
-        setContentView(R.layout.fragment_welcome_test);
+        setContentView(R.layout.fragment_welcome);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         spEdit = sharedPreferences.edit();
 
         dbHandler = DatabaseHandler.getInstance(this);
 
+        loadingPrompt = (TextView) findViewById(R.id.loading_prompt);
+
         accentColor = getResources().getColor(R.color.accent);
 
         rootLayout = (DrawerLayout) findViewById(R.id.welcome_screen_root);
         rootLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
 
-        titleBar = (Toolbar) findViewById(R.id.title_bar);
-//        titleBar.setTitle("Profile Setup");
-
-        /* REMOVING THE FRAGMENT, MOVING ALL CODE INTO ACTIVITY */
         nameInput = (EditText) findViewById(R.id.input_name2);
         nameInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
         nameInput.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -144,8 +132,6 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         galleryBtn.setOnClickListener(this);
         doneBtn.setOnClickListener(this);
 
-        progressScreen = (RelativeLayout) findViewById(R.id.progress_screen);
-
         loginBtn = (LoginButton) findViewById(R.id.fb_login_button_2);
         loginBtn.setReadPermissions("user_photos");
         loginBtn.registerCallback(callbackManager, callback);
@@ -169,8 +155,6 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 Log.e(LOGTAG, "profile is null");
                 Toast.makeText(getApplicationContext(), "Something went wrong, try logging in again.", Toast.LENGTH_SHORT).show();
             }
-
-
         }
 
         @Override
@@ -209,7 +193,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                             Log.e("LOGTAG", "data object: " + jsonDataObject.toString());
                             if (dataObject.optJSONObject("url")!= null) Log.e(LOGTAG, "url is mapped to a jsonobject");
                             final String urlString = dataObject.optString("url");
-
+                            loadingPrompt.setVisibility(View.VISIBLE);
                             new DownloadFacebookImageTask().execute(urlString);
 
 
@@ -221,13 +205,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         ).executeAsync();
     }
 
-
     private class DownloadFacebookImageTask extends AsyncTask<String, Void, Bitmap> {
 
         @Override
         protected Bitmap doInBackground(String... strings) {
-            URL imageUrl = null;
-            //Bitmap bitmap = null;
+            URL imageUrl;
             try {
                 imageUrl = new URL(strings[0]);
                 image = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
@@ -241,6 +223,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
                 picImageView.setImageBitmap(bitmap);
+                loadingPrompt.setVisibility(View.GONE);
             }
         }
     }
@@ -265,7 +248,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 spEdit.putString(KEY_USER_NAME, userName).apply();
                 // spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
 
-                progressScreen.setVisibility(View.VISIBLE);
+
                 break;
             default:
                 break;
@@ -388,7 +371,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 saveByteArrayToDb(array);
                 Log.e(LOGTAG, "finished profile picture thread");
 
-                progressScreen.setVisibility(View.GONE);
+
 
                 Intent intent = new Intent(WelcomeActivity.this, BaseActivity.class);
                 intent.putExtra(KEY_REQUEST_ACTION, showNewChallenge);
