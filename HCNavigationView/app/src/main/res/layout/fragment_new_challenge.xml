@@ -1,16 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@color/background_material_dark">
+    android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/challenge_name_textview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set up completed, \n new challenge screen"
-        android:textSize="20sp"
-        android:textColor="@color/white"/>
+        android:text=""
+        android:textSize="25sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_centerVertical="true"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/challenge_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="24sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_below="@id/challenge_name_textview"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_above="@+id/challenge_options_layout">
+        <Button
+            android:id="@+id/challenge_completed_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/accent"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="Completed"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/challenge_options_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/too_hard_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/accent"
+            android:text="Too Hard"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_margin="10dp"/>
+        <Button
+            android:id="@+id/new_challenge_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/accent"
+            android:text="New Challenge"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

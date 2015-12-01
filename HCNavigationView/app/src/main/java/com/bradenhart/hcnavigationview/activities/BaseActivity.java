@@ -46,12 +46,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private int mSelectedId = -1;
     private boolean mUserSawDrawer = false;
     private MenuItem mMenuItem = null;
-    private boolean madeChallenges = false;
-    protected Map<String, String> challengesMap;
 
     protected FrameLayout frameLayout;
 
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
     private View headerView;
     private CircleImageView profilePic;
@@ -72,8 +70,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        spEdit = sharedPreferences.edit();
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        spEdit = sp.edit();
 
         dbHandler = DatabaseHandler.getInstance(this);
 
@@ -89,7 +87,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             showCurrentScreen(savedInstanceState);
         }
 
-        if (newChallengeRequested(getIntent().getExtras(), sharedPreferences)) {
+        if (newChallengeRequested(getIntent().getExtras(), sp)) {
             requestNewChallenge();
 
             setSupportActionBar(mToolbar);
@@ -204,13 +202,13 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         startGetPhotoThread(); //if the thread finishes fast enough, can just run it when user opens drawer and they shouldn't see photo updating (seamless?)
 
         userNameTv = (TextView) headerView.findViewById(R.id.header_username_textview);
-        userName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        userName = sp.getString(KEY_USER_NAME, defaultName);
         userNameTv.setText(userName);
         mNavDrawer.addHeaderView(headerView);
     }
 
     private boolean didUserSeeDrawer() {
-        mUserSawDrawer = sharedPreferences.getBoolean(KEY_FIRST_LOOK, false);
+        mUserSawDrawer = sp.getBoolean(KEY_FIRST_LOOK, false);
         return mUserSawDrawer;
     }
 
@@ -245,9 +243,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             if (request != null && request.equals(showNewChallenge)) return true;
         }
 
-        return sharedPreferences.contains(KEY_USER_NAME);
-//        if (sharedPreferences.contains(KEY_SETUP_STAGE)) {
-//            String stage = sharedPreferences.getString(KEY_SETUP_STAGE, setUpDefault);
+        return sp.contains(KEY_USER_NAME);
+//        if (sp.contains(KEY_SETUP_STAGE)) {
+//            String stage = sp.getString(KEY_SETUP_STAGE, setUpDefault);
 //            if (stage.equals(stageCompleted)) return true;
 //        }
     }
@@ -280,10 +278,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     public void navigate(int mSelectedId) {
         Intent intent;
-
-//        if (mSelectedId == -1) {
-//            return;
-//        }
 
         switch (mSelectedId) {
             case R.id.profile:
@@ -395,7 +389,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateUsername() {
         String currentName = userNameTv.getText().toString();
-        String storedName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        String storedName = sp.getString(KEY_USER_NAME, defaultName);
 
         if (!storedName.equals(currentName)) userNameTv.setText(storedName);
     }
@@ -413,7 +407,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     protected FrameLayout frameLayout;
 
-    private SharedPreferences sharedPreferences;
+    private sp sp;
     private SharedPreferences.Editor spEdit;
     private View headerView;
     private CircleImageView profilePic;
@@ -434,8 +428,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        spEdit = sharedPreferences.edit();
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        spEdit = sp.edit();
 
         dbHandler = DatabaseHandler.getInstance(this);
 
@@ -443,7 +437,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         mNavDrawer = (NavigationView) findViewById(R.id.main_drawer);
 
-        if (newChallengeRequested(getIntent().getExtras(), sharedPreferences)) {
+        if (newChallengeRequested(getIntent().getExtras(), sp)) {
             requestNewChallenge();
         } else {
             Intent setUpIntent = new Intent(BaseActivity.this, WelcomeActivity.class);
@@ -554,13 +548,13 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         showSavedProfilePicture();
 
         userNameTv = (TextView) headerView.findViewById(R.id.header_username_textview);
-        userName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        userName = sp.getString(KEY_USER_NAME, defaultName);
         userNameTv.setText(userName);
         mNavDrawer.addHeaderView(headerView);
     }
 
     private boolean didUserSeeDrawer() {
-        mUserSawDrawer = sharedPreferences.getBoolean(KEY_FIRST_LOOK, false);
+        mUserSawDrawer = sp.getBoolean(KEY_FIRST_LOOK, false);
         return mUserSawDrawer;
     }
 
@@ -594,8 +588,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             String request = bundle.getString(KEY_REQUEST_ACTION);
             if (request != null && request.equals(showNewChallenge)) return true;
         }
-        if (sharedPreferences.contains(KEY_SETUP_STAGE)) {
-            String stage = sharedPreferences.getString(KEY_SETUP_STAGE, setUpDefault);
+        if (sp.contains(KEY_SETUP_STAGE)) {
+            String stage = sp.getString(KEY_SETUP_STAGE, setUpDefault);
             if (stage.equals(stageCompleted)) return true;
         }
         return false;
@@ -724,7 +718,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateUsername() {
         String currentName = userNameTv.getText().toString();
-        String storedName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        String storedName = sp.getString(KEY_USER_NAME, defaultName);
 
         if (!storedName.equals(currentName)) userNameTv.setText(storedName);
     }*/

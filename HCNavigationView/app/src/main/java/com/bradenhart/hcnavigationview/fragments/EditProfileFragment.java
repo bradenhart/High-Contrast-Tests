@@ -26,7 +26,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     private Context context;
     private final String KEY_INPUT = "input";
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
     private ImageView galleryButton, cameraButton;
     private EditText newNameEditText;
@@ -64,7 +64,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public void onFocusChange(View view, boolean b) {
         int id = view.getId();
         String currentInput;
-        String currentName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        String currentName = sp.getString(KEY_USER_NAME, defaultName);
 
         if (id == R.id.edit_input_name) {
             currentInput = newNameEditText.getText().toString();

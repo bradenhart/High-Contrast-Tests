@@ -41,7 +41,7 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
     private static Bitmap rotateImage = null;
     private TextView imagePath;
     private Uri mImageUri;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
 
     public HelpFeedbackFragment() {}
@@ -51,8 +51,8 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
         View view = inflater.inflate(R.layout.fragment_help_feedback, container, false);
 
         context = getActivity();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        spEdit = sharedPreferences.edit();
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
+        spEdit = sp.edit();
 
         return view;
     }

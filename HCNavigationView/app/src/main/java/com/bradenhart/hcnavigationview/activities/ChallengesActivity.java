@@ -12,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.bradenhart.hcnavigationview.Challenge;
+//import com.bradenhart.hcnavigationview.Challenge;
+import com.bradenhart.hclib.domain.Challenge;
 import com.bradenhart.hcnavigationview.R;
+import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
 import com.bradenhart.hcnavigationview.fragments.ChallengePageFragment;
 import static com.bradenhart.hcnavigationview.Constants.*;
 import com.google.gson.Gson;
@@ -30,16 +32,16 @@ public class ChallengesActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private MyPagerAdapter mAdapter;
-    private String[] difficultyTypes = {"Very Easy", "Easy", "Medium", "Hard", "Insane"};
-    private Gson gson = new Gson();
+    private String[] difficultyTypes = {DIFF_EASY, DIFF_MEDIUM, DIFF_HARD, DIFF_IMPOSSIBLE};
     private Toolbar toolbar;
+    private DatabaseHandler dbHandler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenges);
-        //getLayoutInflater().inflate(R.layout.activity_challenges, frameLayout);
+        dbHandler = DatabaseHandler.getInstance(ChallengesActivity.this);
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -65,26 +67,6 @@ public class ChallengesActivity extends AppCompatActivity {
         finish();
     }
 
-    private ArrayList<String> getChallengeList(String type) {
-/*        Map<String, String> jsonMap = challengesMap;
-        ArrayList<String> jsonList = new ArrayList<>();
-        // should really go through values and get key
-        for (String c : jsonMap.values()) {
-            if (jsonMap.) {
-                jsonList.add(jsonMap.get(c));
-            }
-        }
-        return jsonList;*/
-        ArrayList<String> jsonList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Challenge c = new Challenge(false, "Challenge " + (i+1), "Something something something", type, 1, 3);
-            String s = gson.toJson(c);
-            jsonList.add(s);
-        }
-        return jsonList;
-    }
-
-
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
 
         public MyPagerAdapter(FragmentManager fm) {
@@ -93,7 +75,8 @@ public class ChallengesActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            ChallengePageFragment fragment = ChallengePageFragment.newInstance(getChallengeList(difficultyTypes[position]));
+            ArrayList<Challenge> challenges = dbHandler.getChallengesByDifficulty(difficultyTypes[position]);
+            ChallengePageFragment fragment = ChallengePageFragment.newInstance(difficultyTypes[position]);
             return fragment;
         }
 

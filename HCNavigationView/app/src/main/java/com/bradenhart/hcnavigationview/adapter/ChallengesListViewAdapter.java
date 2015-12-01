@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.bradenhart.hcnavigationview.Challenge;
+import com.bradenhart.hclib.domain.Challenge;
 import com.bradenhart.hcnavigationview.R;
-import com.google.gson.Gson;
+import static com.bradenhart.hcnavigationview.Constants.*;
 
 import java.util.ArrayList;
 
@@ -20,29 +20,21 @@ import java.util.ArrayList;
 public class ChallengesListViewAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<String> jsonList;
-    private ArrayList<Challenge> challengesList = new ArrayList<>();
-    private Gson gson = new Gson();
+    private ArrayList<Challenge> challengesList;
 
-    public ChallengesListViewAdapter(Context context, ArrayList<String> jsonList) {
+    public ChallengesListViewAdapter(Context context, ArrayList<Challenge> challengesList) {
         this.context = context;
-        this.jsonList = jsonList;
-        int size = jsonList.size();
-        for (int i = 0; i < size; i++) {
-            Challenge challenge = gson.fromJson(jsonList.get(i), Challenge.class);
-            challengesList.add(challenge);
-        }
-
+        this.challengesList = challengesList;
     }
 
     @Override
     public int getCount() {
-        return jsonList.size();
+        return challengesList.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return gson.fromJson(jsonList.get(i), Challenge.class);
+        return challengesList.get(i);
     }
 
     @Override
@@ -57,7 +49,7 @@ public class ChallengesListViewAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.challenge_listview_item, null);
         }
         TextView title = (TextView) view.findViewById(R.id.challenge_item_title);
-        title.setText(challengesList.get(i).getTitle());
+        title.setText(challengesList.get(i).getName());
 
         return view;
     }

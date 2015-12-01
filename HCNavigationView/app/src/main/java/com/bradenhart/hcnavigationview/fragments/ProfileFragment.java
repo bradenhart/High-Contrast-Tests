@@ -48,7 +48,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private final String LOGTAG = "ProfileFragment";
     private final String KEY_EDIT_MODE = "edit_mode";
     private final String KEY_PREVIEW = "preview";
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
     private View headerView;
     private TextView userNameTv, previewLabel;
@@ -77,8 +77,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         context = getActivity();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        spEdit = sharedPreferences.edit();
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
+        spEdit = sp.edit();
 
         dbHandler = DatabaseHandler.getInstance(context);
 
@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         previewLabel = (TextView) view.findViewById(R.id.profile_preview_label);
 
         userNameTv = (TextView) view.findViewById(R.id.profile_username_textview);
-        userName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        userName = sp.getString(KEY_USER_NAME, defaultName);
         userNameTv.setText(userName);
 
         fab = (FloatingActionButton) view.findViewById(R.id.fab_profile_button);
@@ -163,7 +163,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleNewName() {
-        String oldName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
+        String oldName = sp.getString(KEY_USER_NAME, defaultName);
         String newName = newNameEditText.getText().toString();
         if (newName.length() > 0 && !newName.equals(oldName)) {
             spEdit.putString(KEY_USER_NAME, newName).apply();
@@ -320,23 +320,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             } else {
                 Log.e(LOGTAG, "set image from database");
                 profilePic.setImageBitmap(bitmap);
-                //bitmap.recycle();
-                //profilePic.setImageResource(defaultPic); TEST that picture can be set
             }
         }
     }
-
-/*    private void showSavedProfilePicture() {
-        byte[] array = dbHandler.retrieveByteArrayFromDb();
-        Bitmap bitmap = convertByteArrayToBitmap(array);
-        if (bitmap == null) {
-            profilePic.setImageResource(defaultPic);
-        } else {
-            profilePic.setImageBitmap(bitmap);
-            bitmap.recycle();
-        }
-    }*/
-
 
     private void startGetPhotoThread() {
         getActivity().runOnUiThread(new Runnable() {

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Backend Test</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="difficulties">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Impossible</item>
+    </string-array>
+
+</resources>

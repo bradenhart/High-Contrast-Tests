@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:orientation="horizontal"
-    android:background="@color/background_material_dark"
     android:gravity="center_vertical"
     android:padding="5dp">
 
@@ -15,7 +14,6 @@
         android:layout_weight="1"
         android:text="Challenge 1"
         android:textSize="20sp"
-        android:textColor="@color/white"
         android:paddingLeft="10dp"
         android:gravity="center_vertical"/>
 

@@ -1,5 +1,6 @@
 package com.bradenhart.hcnavigationview.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,23 +14,17 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bradenhart.hclib.domain.Challenge;
 import com.bradenhart.hcnavigationview.R;
 import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
 import com.facebook.AccessToken;
@@ -44,6 +39,10 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONObject;
 
@@ -62,14 +61,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
     private final String LOGTAG = "Welcome Activity";
 
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
-
-    private DrawerLayout rootLayout;
-    private int accentColor, whiteColor;
     private TextView loadingPrompt;
-
-    /*From fragment code*/
+    private ProgressDialog dialog;
     private EditText nameInput;
     private Button doneBtn;
     private ImageView cameraBtn, galleryBtn;
@@ -79,10 +74,12 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     private Bitmap image = null, rotateImage = null;
     private Uri mImageUri;
     private DatabaseHandler dbHandler;
-
     private CallbackManager callbackManager;
     private LoginButton loginBtn;
     private String userId;
+    private Gson gson = new Gson();
+    private OkHttpClient client = new OkHttpClient();
+    private final String baseURI = "http://gae-highcontrast.appspot.com/api/challenges";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,19 +87,18 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
-        setContentView(R.layout.fragment_welcome);
+        setContentView(R.layout.activity_welcome);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        spEdit = sharedPreferences.edit();
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        spEdit = sp.edit();
 
         dbHandler = DatabaseHandler.getInstance(this);
 
         loadingPrompt = (TextView) findViewById(R.id.loading_prompt);
-
-        accentColor = getResources().getColor(R.color.accent);
-
-        rootLayout = (DrawerLayout) findViewById(R.id.welcome_screen_root);
-        rootLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
+        dialog = new ProgressDialog(WelcomeActivity.this);
+        dialog.setTitle("Loading");
+        dialog.setMessage("Setting up the app...");
+        dialog.setCancelable(false);
 
         nameInput = (EditText) findViewById(R.id.input_name2);
         nameInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -244,11 +240,15 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 if (getValidBitmap() != null) {
                     startProfilePictureThread(getValidBitmap());
                 }
+                if (!dialog.isShowing()) dialog.show();
                 userName = nameInput.getText().toString();
+                if (userName.isEmpty()) {
+                    userName = defaultName;
+                }
+                spEdit.putString(KEY_DIFFICULTY, DIFF_EASY);
                 spEdit.putString(KEY_USER_NAME, userName).apply();
-                // spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
-
-
+                // download challenges here
+                startChallengeDownloadThread();
                 break;
             default:
                 break;
@@ -363,6 +363,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                dialog.show();
                 // resize image (add later)
                 /* ----- */
                 // convert image to byte array
@@ -370,15 +372,43 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 // save byte array in db
                 saveByteArrayToDb(array);
                 Log.e(LOGTAG, "finished profile picture thread");
+            }
+        });
+    }
 
-
-
+    private void startChallengeDownloadThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getChallengesFromServer();
+                dialog.cancel();
                 Intent intent = new Intent(WelcomeActivity.this, BaseActivity.class);
                 intent.putExtra(KEY_REQUEST_ACTION, showNewChallenge);
                 startActivity(intent);
             }
-        });
-//        thread.start();
+        }).start();
+    }
+
+    private void getChallengesFromServer() {
+        try {
+            Request request = new Request.Builder()
+                    .url(baseURI)
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            String json = response.body().string();
+
+            Challenge[] challenges = gson.fromJson(json, Challenge[].class);
+            int batch = 1;
+            for (Challenge c : challenges) {
+                batch = c.getId();
+                dbHandler.addChallengeToDb(c);
+            }
+
+            spEdit.putInt(KEY_LAST_BATCH, batch).apply();
+        } catch (IOException ex) {
+            Log.e("GET CHALLENGES", "Something went wrong getting challenges.");
+        }
     }
 
     @Override
@@ -398,7 +428,6 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 .withMessage("Cancel setup and quit the app?")
                 .withActionMessage("Confirm")
                 .withTextColorId(R.color.accent)
-                //.withTextColorId(getResources().getColor(R.color.white))
                 .withBackgroundColorId(R.color.com_facebook_blue)
                 .show();
 

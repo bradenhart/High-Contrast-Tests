@@ -21,7 +21,7 @@ public class StandinFragment extends Fragment implements View.OnClickListener{
     private final String LOGTAG = "StandinFragment class";
     private Context context;
     private FloatingActionButton fab;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
     private FragmentManager manager;
 

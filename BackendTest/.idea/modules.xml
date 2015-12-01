@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BackendTest.iml" filepath="$PROJECT_DIR$/BackendTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/endpoint-backend/endpoint-backend.iml" filepath="$PROJECT_DIR$/endpoint-backend/endpoint-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gcm-backend/gcm-backend.iml" filepath="$PROJECT_DIR$/gcm-backend/gcm-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/servlets-backend/servlets-backend.iml" filepath="$PROJECT_DIR$/servlets-backend/servlets-backend.iml" />
+    </modules>
+  </component>
+</project>
