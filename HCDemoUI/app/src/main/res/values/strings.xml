@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">HC Demo UI</string>
+    <string name="app_title">High Contrast</string>
     <string name="action_settings">Settings</string>
+    <string name="title_challenges">Challenges</string>
+    <string name="filter_card_header">Filter by:</string>
+    <string name="filter_card_newest">Newest</string>
+    <string name="filter_card_completed">Completed</string>
+    <string name="filter_card_uncompleted">Uncompleted</string>
+    <string name="filter_card_difficulty_eh">Difficulty (Easiest - Hardest)</string>
+    <string name="filter_card_difficulty_he">Difficulty (Hardest - Easiest)</string>
+
+
 </resources>

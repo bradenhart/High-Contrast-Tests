@@ -16,6 +16,53 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+    <!-- this is causing the popup menu to change color, this is the style for the overflow menu -->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark">
+        <!--<item name="android:background">@color/colorAccent</item>-->
+    </style>
+
+    <!--<style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+        <!--&lt;!&ndash; This would set the toolbar's background color &ndash;&gt;-->
+        <!--<item name="android:background">@color/colorIcons</item>-->
+        <!--&lt;!&ndash; android:textColorPrimary is the color of the title text in the Toolbar  &ndash;&gt;-->
+        <!--<item name="android:textColorPrimary">@color/colorPrimaryText</item>-->
+        <!--&lt;!&ndash; android:actionMenuTextColor is the color of the text of action (menu) items  &ndash;&gt;-->
+        <!--<item name="actionMenuTextColor">#ffffff</item>-->
+        <!--&lt;!&ndash; Enable these below if you want clicking icons to trigger a ripple effect &ndash;&gt;-->
+        <!--&lt;!&ndash;-->
+        <!--<item name="selectableItemBackground">?android:selectableItemBackground</item>-->
+        <!--<item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>-->
+        <!--&ndash;&gt;-->
+    <!--</style>-->
+
+    <!--&lt;!&ndash; This configures the styles for the title within the Toolbar  &ndash;&gt;-->
+    <!--<style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">-->
+        <!--<item name="android:textSize">21sp</item>-->
+        <!--&lt;!&ndash;<item name="android:textStyle">italic</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <style name="PopupMenuTheme">
+        <item name="android:background">#ffffff</item>
+    </style>
+
+    <style name="ChallengeLeftOptionsStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
+    </style>
+
+    <style name="ChallengeRightOptionsStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
+    </style>
 
 </resources>

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bradenhart.hcdemoui.ChallengeActivity"
+    tools:context=".activity.ChallengeActivity"
     tools:showIn="@layout/activity_challenge">
 
     <TextView
@@ -13,44 +13,48 @@
         android:layout_height="wrap_content"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         android:padding="50dp"
-        android:layout_marginTop="72dp"/>
+        android:layout_marginTop="@dimen/new_challenge_text_margin_top"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tabGrey"
-        android:gravity="center"
+        android:layout_height="@dimen/fab_diameter"
+        android:padding="5dp"
+        android:background="#34495e"
         android:layout_alignParentBottom="true">
-        <ImageView
-            android:id="@+id/random_challenge_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_shuffle_white_24dp"
-            android:padding="5dp"
-            android:layout_marginLeft="@dimen/new_challenge_option_spacing"
-            android:layout_marginRight="@dimen/new_challenge_option_spacing"
-            android:layout_marginTop="@dimen/new_challenge_option_padding"
-            android:layout_marginBottom="@dimen/new_challenge_option_padding"/>
-        <ImageView
-            android:id="@+id/skip_challenge_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
-            android:padding="5dp"
-            android:layout_marginLeft="@dimen/new_challenge_option_spacing"
-            android:layout_marginRight="@dimen/new_challenge_option_spacing"
-            android:layout_marginTop="@dimen/new_challenge_option_padding"
-            android:layout_marginBottom="@dimen/new_challenge_option_padding"/>
-        <ImageView
-            android:id="@+id/challenge_settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_settings_white_24dp"
-            android:padding="5dp"
-            android:layout_marginLeft="@dimen/new_challenge_option_spacing"
-            android:layout_marginRight="@dimen/new_challenge_option_spacing"
-            android:layout_marginTop="@dimen/new_challenge_option_padding"
-            android:layout_marginBottom="@dimen/new_challenge_option_padding"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="left|start">
+            <TextView
+                android:id="@+id/random_challenge_btn"
+                style="@style/ChallengeLeftOptionsStyle"
+                android:drawableTop="@drawable/ic_shuffle_white_24dp"
+                android:text="random"/>
+            <TextView
+                android:id="@+id/skip_challenge_btn"
+                style="@style/ChallengeLeftOptionsStyle"
+                android:drawableTop="@drawable/ic_keyboard_arrow_right_white_24dp"
+                android:text="skip"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|end">
+            <TextView
+                android:id="@+id/all_challenges_button"
+                style="@style/ChallengeRightOptionsStyle"
+                android:drawableTop="@drawable/ic_view_list_white_24dp"
+                android:text="challenges"/>
+            <TextView
+                android:id="@+id/challenge_settings_button"
+                style="@style/ChallengeRightOptionsStyle"
+                android:drawableTop="@drawable/ic_settings_white_24dp"
+                android:text="settings"/>
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

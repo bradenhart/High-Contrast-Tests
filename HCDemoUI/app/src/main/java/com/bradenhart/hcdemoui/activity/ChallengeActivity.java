@@ -1,39 +1,49 @@
-package com.bradenhart.hcdemoui;
+package com.bradenhart.hcdemoui.activity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bradenhart.hcdemoui.R;
+import com.melnykov.fab.FloatingActionButton;
 
 public class ChallengeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FloatingActionButton fab;
-    private ImageView randomChallengeBtn, skipChallengeBtn, challengeSettingsBtn;
+    private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setUpToolbar();
 
         fab = (FloatingActionButton) findViewById(R.id.fab1);
-        randomChallengeBtn = (ImageView) findViewById(R.id.random_challenge_btn);
-        skipChallengeBtn = (ImageView) findViewById(R.id.skip_challenge_btn);
-        challengeSettingsBtn = (ImageView) findViewById(R.id.challenge_settings_button);
+        randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
+        skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
+        allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
+        challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
 
+        fab.setOnClickListener(this);
         randomChallengeBtn.setOnClickListener(this);
         skipChallengeBtn.setOnClickListener(this);
+        allChallengeBtn.setOnClickListener(this);
         challengeSettingsBtn.setOnClickListener(this);
 
+    }
+
+    private void setUpToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.new_challenge_toolbar);
+        setSupportActionBar(toolbar);
+        // Remove default title text
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(getResources().getString(R.string.app_title));
     }
 
     @Override
@@ -65,12 +75,17 @@ public class ChallengeActivity extends AppCompatActivity implements View.OnClick
 
         switch (id) {
             case R.id.fab1:
+                Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.random_challenge_btn:
                 Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.skip_challenge_btn:
                 Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.all_challenges_button:
+                Intent allChallengesIntent = new Intent(this, AllChallengesActivity.class);
+                startActivity(allChallengesIntent);
                 break;
             case R.id.challenge_settings_button:
                 Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();

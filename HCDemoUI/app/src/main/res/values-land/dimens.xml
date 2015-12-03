@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="new_challenge_text_margin_top">36dp</dimen>
+    <dimen name="new_challenge_option_spacing">50dp</dimen>
+</resources>

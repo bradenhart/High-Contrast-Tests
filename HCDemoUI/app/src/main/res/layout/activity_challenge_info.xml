@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e0e0e0"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include
+            android:id="@+id/challenge_info_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#424242"
+        card_view:cardElevation="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="25dp">
+
+            <TextView
+                android:id="@+id/challenge_info_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Title"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/challenge_info_description"
+                style="@style/Base.TextAppearance.AppCompat.Body2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/challenge_info_title"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:text="Description" />
+
+            <TextView
+                android:id="@+id/challenge_info_group_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/challenge_info_description"
+                android:layout_marginLeft="45dp"
+                android:drawableTop="@drawable/ic_person_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="1 - 2"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/challenge_info_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/challenge_info_description"
+                android:layout_marginRight="45dp"
+                android:drawableTop="@drawable/ic_radio_button_unchecked_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text=" "
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/min_size_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/challenge_info_group_size"
+                android:layout_marginLeft="20dp"
+                android:padding="3dp"
+                android:text="min: 1 player(s)" />
+
+            <TextView
+                android:id="@+id/max_size_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/min_size_description"
+                android:layout_marginLeft="20dp"
+                android:padding="3dp"
+                android:text="max: 2 players" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
