@@ -1,5 +1,6 @@
 package com.bradenhart.hcdemoui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
+import com.bradenhart.hcdemoui.Utils;
 import com.melnykov.fab.FloatingActionButton;
 
 public class ChallengeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -84,15 +86,20 @@ public class ChallengeActivity extends AppCompatActivity implements View.OnClick
                 Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.all_challenges_button:
-                Intent allChallengesIntent = new Intent(this, AllChallengesActivity.class);
-                startActivity(allChallengesIntent);
+                Utils.startActivity(this, AllChallengesActivity.class);
                 break;
             case R.id.challenge_settings_button:
-                Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();
+                Utils.startActivity(this, GameSettingsActivity.class);
                 break;
             default:
                 break;
         }
 
     }
+
+//    private void startActivity(Class<?> theClass) {
+//        Intent intent = new Intent(this, theClass);
+//        startActivity(intent);
+//    }
 }

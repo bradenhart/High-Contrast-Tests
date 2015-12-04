@@ -21,6 +21,7 @@ public class ChallengeInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Remove default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(getResources().getString(R.string.challenge_info_title));
 
     }
 }

@@ -1,6 +1,7 @@
 package com.bradenhart.hcdemoui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 
 /**
@@ -19,5 +20,10 @@ public class Utils {
 
     public static int getTabsHeight(Context context) {
         return (int) context.getResources().getDimension(R.dimen.tabs_height);
+    }
+
+    public static void startActivity(Context context, Class<?> theClass) {
+        Intent intent = new Intent(context, theClass);
+        context.startActivity(intent);
     }
 }

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
     card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="2dp"
+    card_view:cardUseCompatPadding="true"
     android:background="?android:selectableItemBackground">
 
     <RelativeLayout
+        android:id="@+id/short_recycler_item"
         android:layout_width="match_parent"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/listPreferredItemHeightSmall"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingTop="2dp"
@@ -28,7 +33,7 @@
             android:textColor="@android:color/holo_blue_light"/>
 
         <TextView
-            android:id="@+id/item_textview"
+            android:id="@+id/item_description_textview"
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,30 +46,106 @@
             android:text="Description" />
 
         <TextView
-            android:id="@+id/random_red_view"
+            android:id="@+id/recycler_item_small_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:drawableTop="@drawable/ic_radio_button_unchecked_black_24dp"
             android:gravity="center"
-            android:text="done"
+            android:text=""
             android:textSize="10sp"
             android:padding="2dp"/>
 
         <TextView
+            android:id="@+id/recycler_item_small_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/random_red_view"
+            android:layout_toLeftOf="@id/recycler_item_small_done"
             android:drawableTop="@drawable/ic_person_black_24dp"
             android:gravity="center"
             android:text="1/2"
             android:textSize="10sp"
             android:padding="2dp"/>
 
+        <View
+            android:id="@+id/recycler_item_divider"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@android:color/transparent"
+            android:layout_below="@id/item_description_textview"/>
+
+        <RelativeLayout
+            android:id="@+id/long_recycler_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recycler_item_divider"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/challenge_info_group_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/challenge_info_description"
+                android:layout_marginLeft="45dp"
+                android:drawableTop="@drawable/ic_person_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="1 - 2"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/challenge_info_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/challenge_info_description"
+                android:layout_marginRight="45dp"
+                android:drawableTop="@drawable/ic_radio_button_unchecked_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="not completed"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/min_size_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/challenge_info_group_size"
+                android:layout_marginLeft="20dp"
+                android:padding="3dp"
+                android:text="min: 1 player(s)" />
+
+            <TextView
+                android:id="@+id/max_size_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/min_size_description"
+                android:layout_marginLeft="20dp"
+                android:padding="3dp"
+                android:text="max: 2 players" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorPrimaryLight"
+                android:layout_below="@id/max_size_description"
+                android:text="Do It"
+                style="?android:attr/borderlessButtonStyle"/>
+
+        </RelativeLayout>
+
+
     </RelativeLayout>
+
+
 
 </android.support.v7.widget.CardView>

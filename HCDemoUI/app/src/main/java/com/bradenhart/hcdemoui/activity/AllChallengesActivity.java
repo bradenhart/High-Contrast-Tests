@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
+import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -23,13 +24,14 @@ import java.util.List;
 /**
  * Created by bradenhart on 1/12/15.
  */
-public class AllChallengesActivity extends AppCompatActivity implements View.OnClickListener {
+public class AllChallengesActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemViewHolder.ViewExpandedListener {
 
     private FloatingActionButton filterFab;
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
     private TextView headerTab;
+    private View expandedView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         RecyclerAdapter recyclerAdapter = new RecyclerAdapter(createItemList());
+        recyclerAdapter.setExpandListener(this);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
@@ -115,6 +118,21 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
         }
 
         return itemList;
+    }
+
+    @Override
+    public void onExpand(View toExpandView) {
+        expandedView = toExpandView;
+    }
+
+    @Override
+    public void onCollapse() {
+        expandedView = null;
+    }
+
+    @Override
+    public View getExpandedView() {
+        return expandedView;
     }
 
     private class FilterClickListener implements View.OnClickListener {

@@ -9,6 +9,8 @@
     <string name="filter_card_uncompleted">Uncompleted</string>
     <string name="filter_card_difficulty_eh">Difficulty (Easiest - Hardest)</string>
     <string name="filter_card_difficulty_he">Difficulty (Hardest - Easiest)</string>
+    <string name="game_settings_title">Game Settings</string>
+    <string name="challenge_info_title">Challenge Details</string>
 
 
 </resources>

@@ -19,6 +19,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private Context context;
     private List<String> mItemList;
+    private RecyclerItemViewHolder.ViewExpandedListener mExpandListener;
 
     // Constructor
     public RecyclerAdapter(List<String> itemList) {
@@ -35,8 +36,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
+        holder.setViewExpandListener(mExpandListener);
         String itemText = mItemList.get(position);
         holder.setItemText(itemText);
+    }
+
+    public void setExpandListener(RecyclerItemViewHolder.ViewExpandedListener expandListener) {
+        this.mExpandListener = expandListener;
     }
 
     @Override
