@@ -16,7 +16,7 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    protected String setTitle() {
+    protected String setToolbarTitle() {
         return "Test Activity";
     }
 }

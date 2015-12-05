@@ -24,14 +24,14 @@ import java.util.List;
 /**
  * Created by bradenhart on 1/12/15.
  */
-public class AllChallengesActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemViewHolder.ViewExpandedListener {
+public class AllChallengesActivity extends BaseActivity implements View.OnClickListener, RecyclerItemViewHolder.ViewExpandedListener {
 
     private FloatingActionButton filterFab;
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
-    private TextView headerTab;
     private View expandedView = null;
+    private TextView headerTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setTitle(getResources().getString(R.string.title_challenges));
 
-        headerTab = (TextView) findViewById(R.id.challenges_header_tab);
+        headerTab = (TextView) findViewById(R.id.all_challenges_header_tab);
         headerTab.setText(getResources().getString(R.string.filter_card_newest));
 
         filterFab = (FloatingActionButton) findViewById(R.id.filter_challenges_btn);
@@ -61,6 +61,14 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    @Override
+    protected boolean useToolbar() {
+        // we don't want to use the base toolbar,
+        // we'll use the one included in the layout
+        // so the scrolling behaviour will work with the coordinator layout
+        return false;
+    }
+
     private void initFilterButtons() {
         fNewestBtn = (Button) filterCard.findViewById(R.id.filter_by_newest);
         fCompletedBtn = (Button) filterCard.findViewById(R.id.filter_by_completed);
@@ -68,11 +76,11 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
         fDifficultyEHBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_eh);
         fDifficultyHEBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_he);
 
-        fNewestBtn.setOnClickListener(new FilterClickListener(fNewestBtn, headerTab));
-        fCompletedBtn.setOnClickListener(new FilterClickListener(fCompletedBtn, headerTab));
-        fUncompletedBtn.setOnClickListener(new FilterClickListener(fUncompletedBtn, headerTab));
-        fDifficultyEHBtn.setOnClickListener(new FilterClickListener(fDifficultyEHBtn, headerTab));
-        fDifficultyHEBtn.setOnClickListener(new FilterClickListener(fDifficultyHEBtn, headerTab));
+        fNewestBtn.setOnClickListener(new FilterClickListener());
+        fCompletedBtn.setOnClickListener(new FilterClickListener());
+        fUncompletedBtn.setOnClickListener(new FilterClickListener());
+        fDifficultyEHBtn.setOnClickListener(new FilterClickListener());
+        fDifficultyHEBtn.setOnClickListener(new FilterClickListener());
     }
 
     @Override
@@ -89,7 +97,6 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
 
         switch (id) {
             case R.id.filter_challenges_btn:
-//                Toast.makeText(this, "Filtering... ", Toast.LENGTH_SHORT).show();
                 if (filterCard.getVisibility() == View.GONE) {
                     filterCard.setVisibility(View.VISIBLE);
                 } else {
@@ -137,12 +144,11 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
 
     private class FilterClickListener implements View.OnClickListener {
 
-        private View view;
-        private TextView header;
 
-        public FilterClickListener(View view, TextView header) {
-            this.view = view;
-            this.header = header;
+//        public FilterClickListener(View view) {
+//        }
+
+        public FilterClickListener() {
         }
 
         @Override
@@ -152,19 +158,19 @@ public class AllChallengesActivity extends AppCompatActivity implements View.OnC
 
             switch (id) {
                 case R.id.filter_by_newest:
-                    header.setText(getResources().getString(R.string.filter_card_newest));
+                    headerTab.setText(getResources().getString(R.string.filter_card_newest));
                     break;
                 case R.id.filter_by_completed:
-                    header.setText(getResources().getString(R.string.filter_card_completed));
+                    headerTab.setText(getResources().getString(R.string.filter_card_completed));
                     break;
                 case R.id.filter_by_uncompleted:
-                    header.setText(getResources().getString(R.string.filter_card_uncompleted));
+                    headerTab.setText(getResources().getString(R.string.filter_card_uncompleted));
                     break;
                 case R.id.filter_by_difficulty_eh:
-                    header.setText(getResources().getString(R.string.filter_card_difficulty_eh));
+                    headerTab.setText(getResources().getString(R.string.filter_card_difficulty_eh));
                     break;
                 case R.id.filter_by_difficulty_he:
-                    header.setText(getResources().getString(R.string.filter_card_difficulty_he));
+                    headerTab.setText(getResources().getString(R.string.filter_card_difficulty_he));
                     break;
                 default:
                     break;
