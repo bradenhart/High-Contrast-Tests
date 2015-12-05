@@ -15,7 +15,7 @@ import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.Utils;
 import com.melnykov.fab.FloatingActionButton;
 
-public class ChallengeActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChallengeActivity extends BaseActivity implements View.OnClickListener {
 
     private FloatingActionButton fab;
     private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
@@ -24,7 +24,7 @@ public class ChallengeActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
-        setUpToolbar();
+//        setUpToolbar();
 
         fab = (FloatingActionButton) findViewById(R.id.fab1);
         randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
@@ -40,13 +40,23 @@ public class ChallengeActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.new_challenge_toolbar);
-        setSupportActionBar(toolbar);
-        // Remove default title text
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle(getResources().getString(R.string.app_title));
+    @Override
+    protected boolean useToolbar() {
+        return true;
     }
+
+    @Override
+    protected String setToolbarTitle() {
+        return getResources().getString(R.string.app_title);
+    }
+
+//    private void setUpToolbar() {
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.new_challenge_toolbar);
+//        setSupportActionBar(toolbar);
+//        // Remove default title text
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        toolbar.setTitle(getResources().getString(R.string.app_title));
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

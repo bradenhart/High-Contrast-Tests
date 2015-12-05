@@ -11,7 +11,7 @@ import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 /**
  * Created by bradenhart on 4/12/15.
  */
-public class GameSettingsActivity extends AppCompatActivity {
+public class GameSettingsActivity extends BaseActivity {
 
     private View view1, view2;
 
@@ -20,10 +20,10 @@ public class GameSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_settings);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.game_settings_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle(getResources().getString(R.string.game_settings_title));
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.game_settings_toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        toolbar.setTitle(getResources().getString(R.string.game_settings_title));
 
         view1 = findViewById(R.id.view1);
         view2 = findViewById(R.id.view2);
