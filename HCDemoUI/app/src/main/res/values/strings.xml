@@ -12,5 +12,7 @@
     <string name="game_settings_title">Game Settings</string>
     <string name="challenge_info_title">Challenge Details</string>
 
+    <string name="drawer_open">open drawer</string>
+    <string name="drawer_close">close drawer</string>
 
 </resources>
