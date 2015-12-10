@@ -22,8 +22,4 @@ public class Utils {
         return (int) context.getResources().getDimension(R.dimen.tabs_height);
     }
 
-    public static void startActivity(Context context, Class<?> theClass) {
-        Intent intent = new Intent(context, theClass);
-        context.startActivity(intent);
-    }
 }

@@ -1,12 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="AppTheme.Base">
         <!-- Customize your theme here. -->
 
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
         <!-- go into the v21 file to change the status bar color -->
@@ -28,30 +28,6 @@
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/colorAccent</item>
     </style>
-
-    <!--<style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
-        <!--&lt;!&ndash; This would set the toolbar's background color &ndash;&gt;-->
-        <!--<item name="android:background">@color/colorIcons</item>-->
-        <!--&lt;!&ndash; android:textColorPrimary is the color of the title text in the Toolbar  &ndash;&gt;-->
-        <!--<item name="android:textColorPrimary">@color/colorPrimaryText</item>-->
-        <!--&lt;!&ndash; android:actionMenuTextColor is the color of the text of action (menu) items  &ndash;&gt;-->
-        <!--<item name="actionMenuTextColor">#ffffff</item>-->
-        <!--&lt;!&ndash; Enable these below if you want clicking icons to trigger a ripple effect &ndash;&gt;-->
-        <!--&lt;!&ndash;-->
-        <!--<item name="selectableItemBackground">?android:selectableItemBackground</item>-->
-        <!--<item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>-->
-        <!--&ndash;&gt;-->
-    <!--</style>-->
-
-    <!--&lt;!&ndash; This configures the styles for the title within the Toolbar  &ndash;&gt;-->
-    <!--<style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">-->
-        <!--<item name="android:textSize">21sp</item>-->
-        <!--&lt;!&ndash;<item name="android:textStyle">italic</item>&ndash;&gt;-->
-    <!--</style>-->
-
-    <!--<style name="PopupMenuTheme">-->
-        <!--<item name="android:background">@color/colorAccent</item>-->
-    <!--</style>-->
 
     <style name="ChallengeLeftOptionsStyle">
         <item name="android:layout_width">wrap_content</item>

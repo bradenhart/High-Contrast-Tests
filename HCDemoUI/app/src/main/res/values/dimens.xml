@@ -12,4 +12,6 @@
     <dimen name="fab_diameter_plus_padding">72dp</dimen>
     <dimen name="tabs_height">48dp</dimen>
     <dimen name="options_bottom_spacing">0dp</dimen>
+    <dimen name="header_view_height">148dp</dimen>
+    <dimen name="header_view_empty_space_top">0dp</dimen>
 </resources>

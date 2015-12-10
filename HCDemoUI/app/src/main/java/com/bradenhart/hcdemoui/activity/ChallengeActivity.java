@@ -26,6 +26,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_challenge);
 //        setUpToolbar();
 
+        mapContext(R.id.new_challenge, getApplicationContext());
+
         fab = (FloatingActionButton) findViewById(R.id.fab1);
         randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
         skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
@@ -49,14 +51,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     protected String setToolbarTitle() {
         return getResources().getString(R.string.app_title);
     }
-
-//    private void setUpToolbar() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.new_challenge_toolbar);
-//        setSupportActionBar(toolbar);
-//        // Remove default title text
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        toolbar.setTitle(getResources().getString(R.string.app_title));
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,11 +90,11 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.all_challenges_button:
-                Utils.startActivity(this, AllChallengesActivity.class);
+                startActivity(this, AllChallengesActivity.class);
                 break;
             case R.id.challenge_settings_button:
 //                Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();
-                Utils.startActivity(this, GameSettingsActivity.class);
+                startActivity(this, GameSettingsActivity.class);
                 break;
             default:
                 break;
@@ -108,8 +102,4 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-//    private void startActivity(Class<?> theClass) {
-//        Intent intent = new Intent(this, theClass);
-//        startActivity(intent);
-//    }
 }

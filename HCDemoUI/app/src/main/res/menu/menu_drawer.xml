@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/new_challenge"
+            android:checked="false"
+            android:title="New Challenge" />
+
+        <item
+            android:id="@+id/challenges"
+            android:title="Challenges"/>
+
+    </group>
+
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/settings"
+            android:checked="false"
+            android:title="Settings" />
+
+        <item
+            android:id="@+id/help_feedback"
+            android:title="Help &amp; feedback" />
+
+    </group>
+
+</menu>

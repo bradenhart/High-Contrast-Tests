@@ -44,6 +44,8 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setTitle(getResources().getString(R.string.title_challenges));
 
+        mapContext(R.id.challenges, getApplicationContext());
+
         headerTab = (TextView) findViewById(R.id.all_challenges_header_tab);
         headerTab.setText(getResources().getString(R.string.filter_card_newest));
 
@@ -179,5 +181,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             filterCard.setVisibility(View.GONE);
 
         }
+
     }
 }

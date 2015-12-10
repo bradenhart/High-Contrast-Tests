@@ -10,8 +10,7 @@
 
         <activity
             android:name=".activity.ChallengeActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,26 +19,23 @@
         </activity>
 
         <activity
-            android:name=".activity.AllChallengesActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".activity.AllChallengesActivity"/>
 
         <activity
-            android:name=".activity.ChallengeInfoActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".activity.ChallengeInfoActivity"/>
 
         <activity
-            android:name=".activity.GameSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".activity.GameSettingsActivity"/>
 
-        <activity android:name=".activity.TestActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".activity.TestActivity">
 
 
 
         </activity>
 
         <activity android:name=".activity.BaseActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.Base"/>
 
     </application>
 

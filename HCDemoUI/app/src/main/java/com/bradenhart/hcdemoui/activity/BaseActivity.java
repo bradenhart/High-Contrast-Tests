@@ -1,31 +1,38 @@
 package com.bradenhart.hcdemoui.activity;
 
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
+import com.bradenhart.hcdemoui.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by bradenhart on 5/12/15.
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private ActionBarDrawerToggle drawerToggle;
+    public static boolean isLaunch;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private View headerView;
+    private Integer activityId = null;
+    private Map<Integer, Context> map = new HashMap<>();
 
     @Override
     public void setContentView(int layoutResID) {
@@ -52,7 +59,6 @@ public class BaseActivity extends AppCompatActivity {
             toolbar.setVisibility(View.GONE);
         }
 
-//        initDrawerToggle();
         initNavigationView();
 
     }
@@ -61,11 +67,9 @@ public class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            // THIS IS YOUR DRAWER/HAMBURGER BUTTON
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);  // OPEN DRAWER
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -76,8 +80,35 @@ public class BaseActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    ////.......
+
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.new_challenge:
+                        if (!menuItem.isChecked()) {
+                            activityId = id;
+                            startActivity(getActivityContext(id), ChallengeActivity.class);
+                        }
+                        break;
+                    case R.id.challenges:
+                        if (!menuItem.isChecked()) {
+                            activityId = id;
+                            Log.e("MAP", map.toString());
+                            startActivity(getApplicationContext(), AllChallengesActivity.class);
+                            //startActivity(getActivityContext(activityId), AllChallengesActivity.class);
+                        }
+                        break;
+                    case R.id.settings:
+                        if (!menuItem.isChecked()) {
+                            activityId = id;
+                            // start activity
+                        }
+                        break;
+                    case R.id.help_feedback:
+                        if (!menuItem.isChecked()) {
+                            activityId = id;
+                            // start activity
+                        }
+                        break;
 
                 }
                 drawerLayout.closeDrawer(GravityCompat.START); // CLOSE DRAWER
@@ -85,54 +116,27 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
+        headerView = navView.getHeaderView(0);
+        headerView.setClickable(true);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (navDrawerIsOpen()) {
+                    closeNavDrawer();
+                }
+            }
+        });
+
+
     }
 
-    private void initDrawerToggle() {
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-        drawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                R.string.drawer_open,
-                R.string.drawer_close
-        );
-
-//            @Override
-//            public void onDrawerSlide(View drawerView, float slideOffset) {
-//                // TODO Auto-generated method stub
-//                super.onDrawerSlide(drawerView, slideOffset);
-//            }
-//
-//            /** Called when a drawer has settled in a completely closed state. */
-//            @Override
-//            public void onDrawerClosed(View view) {
-//                super.onDrawerClosed(view);
-////                getSupportActionBar().setTitle("hello");
-//            }
-//
-//            /** Called when a drawer has settled in a completely open state. */
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-////                getSupportActionBar().setTitle("hi");
-//            }
-
-//        };
-//
-//        drawerLayout.setDrawerListener(drawerToggle);
-//        drawerToggle.syncState();
+    private boolean navDrawerIsOpen() {
+        return drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        drawerToggle.syncState();
-//    }
-//
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        drawerToggle.onConfigurationChanged(newConfig);
-//    }
+    private void closeNavDrawer() {
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
 
     protected String setToolbarTitle() {
         return getResources().getString(R.string.app_title);
@@ -140,6 +144,37 @@ public class BaseActivity extends AppCompatActivity {
 
     protected boolean useToolbar() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (navDrawerIsOpen()) {
+            closeNavDrawer();
+            return;
+        }
+
+        if (activityId != null) {
+            if (activityId == R.id.new_challenge) {
+                // two back presses and exit
+            } else {
+                startActivity(this, ChallengeActivity.class);
+            }
+        }
+
+    }
+
+    public void startActivity(Context context, Class<?> theClass) {
+        Intent intent = new Intent(context, theClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public void mapContext(int id, Context context) {
+        map.put(id, context);
+    }
+
+    private Context getActivityContext(int id) {
+        return map.get(id);
     }
 
 }
