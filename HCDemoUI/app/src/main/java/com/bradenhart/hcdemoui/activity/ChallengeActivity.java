@@ -1,10 +1,6 @@
 package com.bradenhart.hcdemoui.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
@@ -13,8 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
-import com.bradenhart.hcdemoui.Utils;
-import com.melnykov.fab.FloatingActionButton;
 
 public class ChallengeActivity extends BaseActivity implements View.OnClickListener {
 
@@ -23,7 +17,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_main);
+        setContentView(R.layout.activity_challenge);
+
+        updateCheckedDrawerItem(R.id.new_challenge);
 
         randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
         skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
@@ -55,6 +51,12 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected int setFabIcon() {
         return R.drawable.ic_done_white_24dp;
+    }
+
+    @Override
+    protected int[] setFabMargins() {
+        // left, top, right, bottom
+        return new int[] {0, 0, 0, (int) getResources().getDimension(R.dimen.fab_radius)};
     }
 
     @Override
@@ -95,11 +97,11 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.all_challenges_button:
-                startActivity(this, AllChallengesActivity.class);
+                startActivity(AllChallengesActivity.class);
                 break;
             case R.id.challenge_settings_button:
 //                Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();
-                startActivity(this, GameSettingsActivity.class);
+                startActivity(GameSettingsActivity.class);
                 break;
             default:
                 break;

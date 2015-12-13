@@ -17,7 +17,6 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     private Context context;
     private ViewExpandedListener mExpandListener;
-//    private View expandedViewCurrent = null;
     private final TextView titleTextView, descriptionTextView, smallGroupImageView, smallDoneImageView;
     private final RelativeLayout topView, bottomView;
 

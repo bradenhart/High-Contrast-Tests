@@ -1,8 +1,6 @@
 package com.bradenhart.hcdemoui.activity;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 
 import com.bradenhart.hcdemoui.R;
@@ -15,7 +13,7 @@ public class TestMainActivity extends TestBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_main);
+        setContentView(R.layout.activity_challenge);
     }
 
     @Override

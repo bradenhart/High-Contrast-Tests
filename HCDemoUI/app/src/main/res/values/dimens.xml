@@ -12,6 +12,13 @@
     <dimen name="fab_diameter_plus_padding">72dp</dimen>
     <dimen name="tabs_height">48dp</dimen>
     <dimen name="options_bottom_spacing">0dp</dimen>
+
+    <dimen name="filter_card_left_margin">44dp</dimen>
+    <dimen name="filter_card_top_margin">44dp</dimen>
+    <dimen name="filter_card_right_margin">44dp</dimen>
+    <dimen name="filter_card_bottom_margin">100dp</dimen>
+
     <dimen name="header_view_height">148dp</dimen>
     <dimen name="header_view_empty_space_top">0dp</dimen>
+
 </resources>

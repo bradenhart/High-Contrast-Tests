@@ -29,7 +29,7 @@
             <TextView
                 android:id="@+id/base_header_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/listPreferredItemHeightSmall"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textAppearance="?attr/textAppearanceListItem"
@@ -40,8 +40,7 @@
         <FrameLayout
             android:id="@+id/base_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_height="match_parent"/>
 
         <com.melnykov.fab.FloatingActionButton
             android:id="@+id/base_fab"
@@ -49,8 +48,7 @@
             android:layout_height="wrap_content"
             app:fabSize="normal"
             app:fab_colorNormal="@color/colorAccent"
-            app:fab_colorPressed="@color/colorPressed"
-            android:layout_margin="@dimen/fab_margin"/>
+            app:fab_colorPressed="@color/colorPressed"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

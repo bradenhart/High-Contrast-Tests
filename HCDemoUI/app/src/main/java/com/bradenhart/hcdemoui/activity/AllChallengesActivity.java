@@ -30,22 +30,28 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
-    private View expandedView = null;
-    private TextView headerTab;
+    private View expandedView = null, transparentView;
+    private TextView headerBar;
+
+    private final String KEY_FILTER_VISIBILITY = "filter_visibility";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_challenges);
 
-//        headerTab = (TextView) findViewById(R.id.base_header_bar);
-//        headerTab.setText(getResources().getString(R.string.filter_card_newest));
+        updateCheckedDrawerItem(R.id.challenges);
+
+        headerBar = (TextView) findViewById(R.id.base_header_bar);
+        headerBar.setText(getResources().getString(R.string.filter_card_newest));
 
         filterFab = (FloatingActionButton) findViewById(R.id.base_fab);
         filterFab.setOnClickListener(this);
 
         filterCard = (CardView) findViewById(R.id.filter_card);
-
+        transparentView = findViewById(R.id.transparent_view);
+        transparentView.setOnClickListener(this);
 
         initFilterButtons();
 
@@ -53,6 +59,15 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         setupRecyclerView(recyclerView);
 
         filterFab.attachToRecyclerView(recyclerView);
+
+        if (savedInstanceState != null) {
+
+            if (savedInstanceState.getInt(KEY_FILTER_VISIBILITY) == View.VISIBLE) {
+                filterCard.setVisibility(View.VISIBLE);
+            } else {
+                filterCard.setVisibility(View.GONE);
+            }
+        }
 
     }
 
@@ -69,6 +84,18 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     @Override
     protected int setFabIcon() {
         return R.drawable.ic_filter_list_white_24dp;
+    }
+
+    @Override
+    protected int[] setFabMargins() {
+        // left, top, right, bottom
+        int margin = (int) getResources().getDimension(R.dimen.fab_margin);
+        return new int[] {0, 0, margin, margin};
+    }
+
+    @Override
+    protected boolean useScrollingBehavior() {
+        return true;
     }
 
     private void initFilterButtons() {
@@ -101,10 +128,18 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             case R.id.base_fab:
                 if (filterCard.getVisibility() == View.GONE) {
                     filterCard.setVisibility(View.VISIBLE);
+                    transparentView.setVisibility(View.VISIBLE);
                 } else {
                     filterCard.setVisibility(View.GONE);
+                    transparentView.setVisibility(View.GONE);
+                    recyclerView.setClickable(true);
                 }
                 break;
+            case R.id.transparent_view:
+                if (filterCard.getVisibility() == View.VISIBLE) {
+                    filterCard.setVisibility(View.GONE);
+                    transparentView.setVisibility(View.GONE);
+                }
             default:
                 break;
         }
@@ -144,6 +179,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         return expandedView;
     }
 
+
+
+
     private class FilterClickListener implements View.OnClickListener {
 
         public FilterClickListener() {
@@ -156,19 +194,19 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
             switch (id) {
                 case R.id.filter_by_newest:
-                    headerTab.setText(getResources().getString(R.string.filter_card_newest));
+                    headerBar.setText(getResources().getString(R.string.filter_card_newest));
                     break;
                 case R.id.filter_by_completed:
-                    headerTab.setText(getResources().getString(R.string.filter_card_completed));
+                    headerBar.setText(getResources().getString(R.string.filter_card_completed));
                     break;
                 case R.id.filter_by_uncompleted:
-                    headerTab.setText(getResources().getString(R.string.filter_card_uncompleted));
+                    headerBar.setText(getResources().getString(R.string.filter_card_uncompleted));
                     break;
                 case R.id.filter_by_difficulty_eh:
-                    headerTab.setText(getResources().getString(R.string.filter_card_difficulty_eh));
+                    headerBar.setText(getResources().getString(R.string.filter_card_difficulty_eh));
                     break;
                 case R.id.filter_by_difficulty_he:
-                    headerTab.setText(getResources().getString(R.string.filter_card_difficulty_he));
+                    headerBar.setText(getResources().getString(R.string.filter_card_difficulty_he));
                     break;
                 default:
                     break;
@@ -177,6 +215,14 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             filterCard.setVisibility(View.GONE);
 
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(KEY_FILTER_VISIBILITY, filterCard.getVisibility());
 
     }
 }

@@ -3,4 +3,9 @@
 <resources>
     <dimen name="new_challenge_text_margin_top">36dp</dimen>
     <dimen name="new_challenge_option_spacing">50dp</dimen>
+
+    <dimen name="filter_card_left_margin">44dp</dimen>
+    <dimen name="filter_card_top_margin">15dp</dimen>
+    <dimen name="filter_card_right_margin">44dp</dimen>
+    <dimen name="filter_card_bottom_margin">92dp</dimen>
 </resources>
