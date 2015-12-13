@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,24 +18,18 @@ import com.melnykov.fab.FloatingActionButton;
 
 public class ChallengeActivity extends BaseActivity implements View.OnClickListener {
 
-    private FloatingActionButton fab;
     private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_challenge);
-//        setUpToolbar();
+        setContentView(R.layout.activity_test_main);
 
-        mapContext(R.id.new_challenge, getApplicationContext());
-
-        fab = (FloatingActionButton) findViewById(R.id.fab1);
         randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
         skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
         allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
         challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
 
-        fab.setOnClickListener(this);
         randomChallengeBtn.setOnClickListener(this);
         skipChallengeBtn.setOnClickListener(this);
         allChallengeBtn.setOnClickListener(this);
@@ -43,13 +38,23 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    protected boolean useToolbar() {
+    protected String setToolbarTitle() {
+        return getResources().getString(R.string.app_title);
+    }
+
+    @Override
+    protected boolean useFab() {
         return true;
     }
 
     @Override
-    protected String setToolbarTitle() {
-        return getResources().getString(R.string.app_title);
+    protected int setFabGravity() {
+        return Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+    }
+
+    @Override
+    protected int setFabIcon() {
+        return R.drawable.ic_done_white_24dp;
     }
 
     @Override
@@ -80,7 +85,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         int id = view.getId();
 
         switch (id) {
-            case R.id.fab1:
+            case R.id.test_fab:
                 Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.random_challenge_btn:

@@ -2,47 +2,49 @@ package com.bradenhart.hcdemoui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
-import com.bradenhart.hcdemoui.Utils;
 import com.melnykov.fab.FloatingActionButton;
 
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by bradenhart on 5/12/15.
+ * Created by bradenhart on 12/12/15.
  */
-public class BaseActivity extends AppCompatActivity {
+public class TestBaseActivity extends AppCompatActivity {
 
+    public static boolean isLaunch;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private View headerView;
     private Integer activityId = null;
+    private Map<Integer, Context> map = new HashMap<>();
 
     @Override
     public void setContentView(int layoutResID) {
-        drawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_base, null);
-        FrameLayout activityContainer = (FrameLayout) drawerLayout.findViewById(R.id.base_container);
+        drawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_test_base, null);
+        FrameLayout activityContainer = (FrameLayout) drawerLayout.findViewById(R.id.test_container);
         getLayoutInflater().inflate(layoutResID, activityContainer, true);
         super.setContentView(drawerLayout);
 
         // set up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.base_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.test_toolbar);
         if (useToolbar()) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -59,13 +61,13 @@ public class BaseActivity extends AppCompatActivity {
             toolbar.setVisibility(View.GONE);
         }
 
-        TextView headerBar = (TextView) findViewById(R.id.base_header_bar);
+        TextView headerBar = (TextView) findViewById(R.id.test_header_tab);
 
         if (!useHeaderBar()) {
             headerBar.setVisibility(View.GONE);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.base_fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.test_fab);
 
         if (useFab()) {
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
@@ -74,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
             // set color
             fab.setColorNormalResId(setFabColor());
             // set icon/src
-            fab.setImageResource(setFabIcon());
+            fab.setImageResource(R.drawable.ic_filter_list_white_24dp);
         } else {
             fab.setVisibility(View.GONE);
         }
@@ -96,43 +98,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void initNavigationView() {
 
-        navView = (NavigationView) findViewById(R.id.navigation_view);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                int id = menuItem.getItemId();
-                switch (id) {
-                    case R.id.new_challenge:
-                        if (!menuItem.isChecked()) {
-                            activityId = id;
-
-                        }
-                        break;
-                    case R.id.challenges:
-                        if (!menuItem.isChecked()) {
-                            activityId = id;
-                            startActivity(getApplicationContext(), AllChallengesActivity.class);
-                        }
-                        break;
-                    case R.id.settings:
-                        if (!menuItem.isChecked()) {
-                            activityId = id;
-                            // start activity
-                        }
-                        break;
-                    case R.id.help_feedback:
-                        if (!menuItem.isChecked()) {
-                            activityId = id;
-                            // start activity
-                        }
-                        break;
-
-                }
-                drawerLayout.closeDrawer(GravityCompat.START); // CLOSE DRAWER
-                return true;
-            }
-        });
+        navView = (NavigationView) findViewById(R.id.test_navigation_view);
 
         headerView = navView.getHeaderView(0);
         headerView.setClickable(true);
@@ -144,7 +110,6 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-
 
     }
 
@@ -187,18 +152,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (navDrawerIsOpen()) {
-            closeNavDrawer();
-            return;
-        }
-
-        if (activityId != null) {
-            if (activityId == R.id.new_challenge) {
-                // two back presses and exit
-            } else {
-                startActivity(this, ChallengeActivity.class);
-            }
-        }
 
     }
 
@@ -207,5 +160,4 @@ public class BaseActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
-
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/challenges_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EEEEEE"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <include
+        android:id="@+id/filter_card"
+        layout="@layout/filter_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="40dp" />
+
+    <!--<com.melnykov.fab.FloatingActionButton-->
+        <!--android:id="@+id/filter_challenges_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--android:src="@drawable/ic_filter_list_white_24dp"-->
+        <!--app:elevation="15dp"-->
+        <!--app:fabSize="normal"-->
+        <!--app:fab_colorNormal="@color/colorAccent"-->
+        <!--app:fab_colorPressed="@color/colorPressedLight" />-->
+
+</FrameLayout>

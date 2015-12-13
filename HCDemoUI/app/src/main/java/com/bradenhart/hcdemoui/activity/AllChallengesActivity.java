@@ -38,21 +38,14 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_challenges);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.all_challenges_toolbar);
-        setSupportActionBar(toolbar);
-        // Remove default title text
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle(getResources().getString(R.string.title_challenges));
+//        headerTab = (TextView) findViewById(R.id.base_header_bar);
+//        headerTab.setText(getResources().getString(R.string.filter_card_newest));
 
-        mapContext(R.id.challenges, getApplicationContext());
-
-        headerTab = (TextView) findViewById(R.id.all_challenges_header_tab);
-        headerTab.setText(getResources().getString(R.string.filter_card_newest));
-
-        filterFab = (FloatingActionButton) findViewById(R.id.filter_challenges_btn);
+        filterFab = (FloatingActionButton) findViewById(R.id.base_fab);
         filterFab.setOnClickListener(this);
 
         filterCard = (CardView) findViewById(R.id.filter_card);
+
 
         initFilterButtons();
 
@@ -64,11 +57,18 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    protected boolean useToolbar() {
-        // we don't want to use the base toolbar,
-        // we'll use the one included in the layout
-        // so the scrolling behaviour will work with the coordinator layout
-        return false;
+    protected boolean useHeaderBar() {
+        return true;
+    }
+
+    @Override
+    protected boolean useFab() {
+        return true;
+    }
+
+    @Override
+    protected int setFabIcon() {
+        return R.drawable.ic_filter_list_white_24dp;
     }
 
     private void initFilterButtons() {
@@ -98,7 +98,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         int id = view.getId();
 
         switch (id) {
-            case R.id.filter_challenges_btn:
+            case R.id.base_fab:
                 if (filterCard.getVisibility() == View.GONE) {
                     filterCard.setVisibility(View.VISIBLE);
                 } else {
@@ -145,10 +145,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     private class FilterClickListener implements View.OnClickListener {
-
-
-//        public FilterClickListener(View view) {
-//        }
 
         public FilterClickListener() {
         }

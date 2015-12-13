@@ -1,128 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            android:id="@+id/all_challenges_toolbar"
-            layout="@layout/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"/>
-
-        <TextView
-            android:id="@+id/all_challenges_header_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:textAppearance="?attr/textAppearanceListItem"/>
-
-    </android.support.design.widget.AppBarLayout>
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/challenges_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EEEEEE"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </android.support.v7.widget.RecyclerView>
+        android:background="#EEEEEE"/>
 
-    <include
+    <android.support.v7.widget.CardView
         android:id="@+id/filter_card"
-        layout="@layout/filter_card"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="40dp" />
+        android:padding="5dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="5dp"
+        android:visibility="gone"
+        android:layout_margin="40dp">
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/filter_challenges_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_filter_list_white_24dp"
-        app:fabSize="normal"
-        app:fab_colorNormal="@color/colorAccent"
-        app:fab_colorPressed="@color/colorPressedLight"
-        app:elevation="15dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical">
 
-</android.support.design.widget.CoordinatorLayout>
-
-
-    <!--
-    <LinearLayout
-                android:id="@+id/filter_card"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="88dp"
+                android:text="@string/filter_card_header"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:textSize="18sp"
                 android:padding="5dp"
-                android:orientation="vertical"
-                android:layout_gravity="bottom|center_horizontal"
-                android:visibility="visible">
+                android:gravity="center"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Filter by:"
-                    android:textSize="18sp"
-                    android:padding="5dp"
-                    android:gravity="center"/>
+            <Button
+                android:id="@+id/filter_by_newest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/filter_card_newest"
+                android:textColor="@android:color/holo_blue_light"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorDivider"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"/>
+            <Button
+                android:id="@+id/filter_by_completed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/filter_card_completed"
+                android:textColor="@android:color/holo_blue_light"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Newest"
-                    android:textColor="@android:color/holo_blue_light"/>
+            <Button
+                android:id="@+id/filter_by_uncompleted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/filter_card_uncompleted"
+                android:textColor="@android:color/holo_blue_light"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Completed"
-                    android:textColor="@android:color/holo_blue_light"/>
+            <Button
+                android:id="@+id/filter_by_difficulty_eh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/filter_card_difficulty_eh"
+                android:textColor="@android:color/holo_blue_light"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Uncompleted"
-                    android:textColor="@android:color/holo_blue_light"/>
+            <Button
+                android:id="@+id/filter_by_difficulty_he"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/filter_card_difficulty_he"
+                android:textColor="@android:color/holo_blue_light"/>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Difficulty (Easiest - Hardest)"
-                    android:textColor="@android:color/holo_blue_light"/>
+        </LinearLayout>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Difficulty (Hardest - Easiest)"
-                    android:textColor="@android:color/holo_blue_light"/>
+    </android.support.v7.widget.CardView>
 
-            </LinearLayout>
-
-
-    -->
+</FrameLayout>
