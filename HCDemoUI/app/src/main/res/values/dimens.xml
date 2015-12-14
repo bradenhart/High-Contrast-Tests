@@ -6,7 +6,7 @@
     <dimen name="tab_radius">10dp</dimen>
     <dimen name="new_challenge_option_spacing">18dp</dimen>
     <dimen name="new_challenge_option_padding">10dp</dimen>
-    <dimen name="new_challenge_text_margin_top">72dp</dimen>
+    <dimen name="new_challenge_text_margin_top">92dp</dimen>
     <dimen name="fab_diameter">56dp</dimen>
     <dimen name="fab_radius">28dp</dimen>
     <dimen name="fab_diameter_plus_padding">72dp</dimen>

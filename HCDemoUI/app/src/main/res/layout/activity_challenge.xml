@@ -5,15 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/challenge_text"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        android:padding="50dp"
-        android:layout_marginTop="@dimen/new_challenge_text_margin_top"
         android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"/>
+        android:layout_marginTop="@dimen/new_challenge_text_margin_top"
+        android:layout_marginRight="3dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/challenge_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title goes here..."
+            android:padding="5dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceSearchResultTitle"/>
+
+        <TextView
+            android:id="@+id/challenge_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            android:paddingLeft="50dp"
+            android:paddingTop="25dp"
+            android:paddingRight="50dp"
+            android:paddingBottom="30dp"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,5 +73,61 @@
                 android:text="settings"/>
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/game_settings_popup_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/tabGrey"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="25dp"
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/fab_diameter"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/difficulty_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_drop_down_white_24dp"
+            android:padding="5dp"/>
+        <ImageView
+            android:id="@+id/difficulty_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/difficulty_down"
+            android:src="@drawable/ic_fitness_center_white_24dp"
+            android:padding="5dp"/>
+        <ImageView
+            android:id="@+id/difficulty_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/difficulty_icon"
+            android:src="@drawable/ic_arrow_drop_up_white_24dp"
+            android:padding="5dp"/>
+
+        <ImageView
+            android:id="@+id/group_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/difficulty_down"
+            android:src="@drawable/ic_arrow_drop_down_white_24dp"
+            android:padding="5dp"/>
+        <ImageView
+            android:id="@+id/group_size_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_group_white_24dp"
+            android:layout_toRightOf="@id/group_down"
+            android:layout_below="@id/difficulty_icon"
+            android:padding="5dp"/>
+        <ImageView
+            android:id="@+id/group_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/group_size_icon"
+            android:layout_below="@id/difficulty_up"
+            android:src="@drawable/ic_arrow_drop_up_white_24dp"
+            android:padding="5dp"/>
+    </RelativeLayout>
 
 </FrameLayout>

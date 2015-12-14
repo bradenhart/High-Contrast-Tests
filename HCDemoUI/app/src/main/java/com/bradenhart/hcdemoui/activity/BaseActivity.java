@@ -158,28 +158,28 @@ public class BaseActivity extends AppCompatActivity {
 
                 int id = menuItem.getItemId();
                 switch (id) {
-                    case R.id.new_challenge:
+                    case R.id.nav_new_challenge:
                         if (!menuItem.isChecked()) {
                             activityId = id;
                             startActivity(ChallengeActivity.class);
                         }
                         break;
-                    case R.id.challenges:
+                    case R.id.nav_challenges:
                         if (!menuItem.isChecked()) {
                             activityId = id;
                             startActivity(AllChallengesActivity.class);
                         }
                         break;
-                    case R.id.settings:
+                    case R.id.nav_settings:
                         if (!menuItem.isChecked()) {
                             activityId = id;
-                            // start activity
+                            startActivity(GameSettingsActivity.class);
                         }
                         break;
-                    case R.id.help_feedback:
+                    case R.id.nav_help_feedback:
                         if (!menuItem.isChecked()) {
                             activityId = id;
-                            // start activity
+                            startActivity(HelpFeedbackActivity.class);
                         }
                         break;
 
@@ -363,7 +363,7 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         if (activityId != null) {
-            if (activityId == R.id.new_challenge) {
+            if (activityId == R.id.nav_new_challenge) {
                 // two back presses and exit
             } else {
                 startActivity(ChallengeActivity.class);

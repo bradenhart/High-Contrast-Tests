@@ -26,21 +26,13 @@
         <activity
             android:name=".activity.GameSettingsActivity"/>
 
+        <activity
+            android:name=".activity.HelpFeedbackActivity"/>
+
         <activity android:name=".activity.BaseActivity"
             android:theme="@style/AppTheme.Base"/>
 
 
-
-        <activity android:name=".activity.TestBaseActivity"
-            android:theme="@style/AppTheme.Base"/>
-
-        <activity android:name=".activity.TestMainActivity">
-
-        </activity>
-
-        <activity android:name=".activity.TestScrollActivity">
-
-        </activity>
 
     </application>
 

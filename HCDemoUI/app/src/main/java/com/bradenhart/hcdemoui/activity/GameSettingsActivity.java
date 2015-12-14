@@ -13,31 +13,12 @@ import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
  */
 public class GameSettingsActivity extends BaseActivity {
 
-    private View view1, view2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_settings);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.game_settings_toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        toolbar.setTitle(getResources().getString(R.string.game_settings_title));
-
-        view1 = findViewById(R.id.view1);
-        view2 = findViewById(R.id.view2);
-
-        view1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (view2.getVisibility() == View.VISIBLE) {
-                    view2.setVisibility(View.GONE);
-                } else {
-                    view2.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        updateCheckedDrawerItem(R.id.nav_settings);
 
     }
 
