@@ -60,6 +60,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (useOptionsMenu()) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_base, menu);
+        }
+        return useOptionsMenu();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -68,6 +77,10 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean useOptionsMenu() {
+        return true;
     }
 
     /**

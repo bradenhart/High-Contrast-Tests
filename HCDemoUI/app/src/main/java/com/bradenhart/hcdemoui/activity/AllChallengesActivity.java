@@ -109,13 +109,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_challenge, menu);
-        return true;
-    }
-
-    @Override
     public void onClick(View view) {
 
         int id = view.getId();
