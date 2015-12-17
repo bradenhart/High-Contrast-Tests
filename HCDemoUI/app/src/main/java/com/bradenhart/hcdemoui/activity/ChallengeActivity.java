@@ -1,32 +1,62 @@
 package com.bradenhart.hcdemoui.activity;
 
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bradenhart.hcdemoui.Utils;
+import com.bradenhart.hcdemoui.database.Challenge;
+import com.bradenhart.hcdemoui.database.DatabaseHelper;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+
 import com.bradenhart.hcdemoui.R;
 
+import java.util.Date;
+import java.util.List;
+
 public class ChallengeActivity extends BaseActivity implements View.OnClickListener {
+
+    private final String LOGTAG = "ChallengeActivity";
 
     private FrameLayout root;
     private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
     private RelativeLayout popupMenu;
     private TextView challengeTitle, challengeText;
     private ImageView diffDown, diffUp, groupDown, groupUp;
-
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEdit;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
+    private final String KEY_HAD_FIRST_USE = "first_use";
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
+        sp = getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        spEdit = sp.edit();
+
+        dbHelper = DatabaseHelper.getInstance(this);
+
+        initiateFirstDataDownload();
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
 
@@ -200,5 +230,91 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_POPUP_VISIBILITY, popupMenu.getVisibility());
+    }
+
+    private void initiateFirstDataDownload() {
+        if (sp != null) {
+            if (sp.contains(KEY_HAD_FIRST_USE)) {
+                // data has been loaded already
+                Log.e(LOGTAG, "app has had first use");
+            } else {
+                // need to load data
+                ProgressDialog pd = new ProgressDialog(this);
+                pd.setTitle("Downloading App Data");
+                pd.setMessage("Downloading Challenges from the cloud. \nWon't be long.");
+                pd.setCancelable(false);
+                pd.show();
+                downloadDataFromParse();
+                pd.cancel();
+                sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
+            }
+        }
+    }
+
+    private void downloadDataFromParse() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    // no error
+                    Log.e(LOGTAG, "calling insertChallenges method");
+                    dbHelper.insertChallengesToDb(objects);
+
+                } else {
+                    Log.e(LOGTAG, "error occurred querying for challenges");
+                }
+            }
+        });
+    }
+
+    private void testDownloadDataFromParse() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
+        query.getInBackground("PEQcJBDRYv", new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+                    // object is the Challenge
+//                    String name = object.getString("name");
+//                    String description = object.getString("description");
+//                    String difficulty = object.getString("difficulty");
+//                    int groupMin = object.getInt("groupMin");
+//                    int groupMax = object.getInt("groupMax");
+//                    Date createdAt = object.getCreatedAt();
+
+                    Log.e(LOGTAG, challengeObjectToString(object));
+                    Log.e(LOGTAG, "this date: " + new Date());
+
+                } else {
+                    // something went wrong
+                }
+            }
+        });
+    }
+
+    private String challengeObjectToString(ParseObject object) {
+        String name = object.getString("name");
+        String description = object.getString("description");
+        String difficulty = object.getString("difficulty");
+        int groupMin = object.getInt("groupMin");
+        int groupMax = object.getInt("groupMax");
+        Date createdAt = object.getCreatedAt();
+        Date today = new Date();
+
+        if (today.after(createdAt)) {
+            Log.e(LOGTAG, "dates work");
+        }
+
+        String string = "";
+        string += "name: " + name + ",\n";
+        string += "description: " + description + ",\n";
+        string += "difficulty: " + difficulty + ",\n";
+        string += "groupMin: " + groupMin + ",\n";
+        string += "groupMax: " + groupMax + ",\n";
+        string += "createdAt: " + createdAt + ".";
+
+        return string;
+
     }
 }

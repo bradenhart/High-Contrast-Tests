@@ -7,10 +7,19 @@ import android.content.res.TypedArray;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by bradenhart on 3/12/15.
  */
 public class Utils {
+
+    public static final String SHARED_PREFERENCES = "mySharedPreferences";
+    public static final String KEY_LAST_DATE = "last_date";
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
@@ -55,6 +64,24 @@ public class Utils {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / (metrics.densityDpi / 160f);
         return dp;
+    }
+
+    public static String getDateTime(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
+    public static Date convertDateTimeToDate(String dateTime) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd" + 'T' + "HH:mm:ss.SSS" + 'Z', Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(date);
+        return date;
     }
 
 }

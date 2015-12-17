@@ -1,20 +1,32 @@
 package com.bradenhart.hcdemoui.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
+import com.bradenhart.hcdemoui.Utils;
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
+import com.bradenhart.hcdemoui.database.DatabaseHelper;
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,13 +34,16 @@ import java.util.List;
  */
 public class AllChallengesActivity extends BaseActivity implements View.OnClickListener, RecyclerItemViewHolder.ViewExpandedListener {
 
+    private final String LOGTAG = "AllChallengesActivity";
+
     private FloatingActionButton filterFab;
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
     private View expandedView = null, transparentView;
     private TextView headerBar;
-
+    private SharedPreferences sp;
+    private DatabaseHelper dbHelper;
     private final String KEY_FILTER_VISIBILITY = "filter_visibility";
 
 
@@ -36,6 +51,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_challenges);
+
+        sp = getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        dbHelper = DatabaseHelper.getInstance(this);
 
         updateCheckedDrawerItem(R.id.nav_challenges);
 
@@ -65,6 +83,18 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             }
         }
 
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_update) {
+            handleUpdateChallengesRequest();
+        }
+        return true;
+
     }
 
     @Override
@@ -91,6 +121,11 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected boolean useScrollingBehavior() {
+        return true;
+    }
+
+    @Override
+    protected boolean useUpdateButton() {
         return true;
     }
 
@@ -205,6 +240,36 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
         }
 
+    }
+
+    private void handleUpdateChallengesRequest() {
+        String dateStr = sp.getString(Utils.KEY_LAST_DATE, null);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
+
+        if (dateStr != null) {
+            // a date has been saved before
+            Date date = Utils.convertDateTimeToDate(dateStr);
+            if (date != null) {
+                // date string was converted to date successfully
+                // add to query that we want data created after the saved date
+                query.whereGreaterThan("createdAt", date);
+            }
+        }
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    // no error
+                    Log.e(LOGTAG, "calling insertChallenges method");
+                    dbHelper.insertChallengesToDb(objects);
+
+                } else {
+                    Log.e(LOGTAG, "error occurred querying for challenges");
+                }
+            }
+        });
     }
 
     @Override
