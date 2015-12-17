@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
+import com.bradenhart.hcdemoui.database.Challenge;
 
 /**
  * Created by bradenhart on 3/12/15.
@@ -17,18 +17,25 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     private Context context;
     private ViewExpandedListener mExpandListener;
-    private final TextView titleTextView, descriptionTextView, smallGroupImageView, smallDoneImageView;
+    private final TextView titleTV, descriptionTV, smGroupIcon, smDoneIcon;
+    private final TextView lgGroupIcon, minTV, maxTV, lgDoneIcon;
     private final RelativeLayout topView, bottomView;
+    private Challenge challenge;
+    private Integer min, max;
 
     public RecyclerItemViewHolder(final View parent, RelativeLayout topView, RelativeLayout bottomView) {
         super(parent);
         this.context = parent.getContext();
-        this.titleTextView = (TextView) topView.findViewById(R.id.item_title_textview);
-        this.descriptionTextView = (TextView) topView.findViewById(R.id.item_description_textview);
-        this.smallGroupImageView = (TextView) topView.findViewById(R.id.recycler_item_small_group);
-        this.smallDoneImageView = (TextView) topView.findViewById(R.id.recycler_item_small_done);
         this.topView = topView;
         this.bottomView = bottomView;
+        this.titleTV = (TextView) topView.findViewById(R.id.item_title_textview);
+        this.descriptionTV = (TextView) topView.findViewById(R.id.item_description_textview);
+        this.smGroupIcon = (TextView) topView.findViewById(R.id.recycler_item_small_group);
+        this.smDoneIcon = (TextView) topView.findViewById(R.id.recycler_item_small_done);
+        this.lgGroupIcon = (TextView) bottomView.findViewById(R.id.challenge_info_group_size);
+        this.lgDoneIcon = (TextView) bottomView.findViewById(R.id.challenge_info_completed);
+        this.minTV = (TextView) bottomView.findViewById(R.id.min_size_description);
+        this.maxTV = (TextView) bottomView.findViewById(R.id.max_size_description);
         parent.setOnClickListener(this);
     }
 
@@ -38,8 +45,19 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         return new RecyclerItemViewHolder(parent, topView, bottomView);
     }
 
-    public void setItemText(CharSequence text) {
-        titleTextView.setText(text);
+    public void setItemText(Challenge item) {
+        this.challenge = item;
+        titleTV.setText(item.getName());
+        descriptionTV.setText(item.getDescription());
+        this.min = item.getGroupMin();
+        this.max = item.getGroupMax();
+        String groupStr = this.min + "-" + this.max;
+        smGroupIcon.setText(groupStr);
+        if (!item.getCompleted()) {
+            smDoneIcon.setVisibility(View.GONE);
+        }
+
+
     }
 
     public void setViewExpandListener(ViewExpandedListener expandListener) {
@@ -72,31 +90,47 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     }
 
     /*
-        descriptionTextView ellipsize = none
-        descriptionTextView singleLine = false
+        descriptionTV ellipsize = none
+        descriptionTV singleLine = false
         bottomView visibility = View.VISIBLE
         hide top icons
      */
     private void expandCardView() {
-        this.descriptionTextView.setEllipsize(null);
-        this.descriptionTextView.setSingleLine(false);
+        String groupStr = challenge.getGroupMin() + " - " + challenge.getGroupMax();
+        this.lgGroupIcon.setText(groupStr);
+        String minStr = min > 1 ? "min: " + min + " people" : "min: " + min + "person";
+        String maxStr = max > 1 ? "max: " + max + " people" : "max: " + max + "person";
+        this.minTV.setText(minStr);
+        this.maxTV.setText(maxStr);
+        this.descriptionTV.setEllipsize(null);
+        this.descriptionTV.setSingleLine(false);
         this.bottomView.setVisibility(View.VISIBLE);
-        this.smallGroupImageView.setVisibility(View.INVISIBLE);
-        this.smallDoneImageView.setVisibility(View.INVISIBLE);
+        this.smGroupIcon.setVisibility(View.INVISIBLE);
+        this.smDoneIcon.setVisibility(View.INVISIBLE);
+        if (challenge.getCompleted()) {
+            this.lgDoneIcon.setVisibility(View.VISIBLE);
+        } else {
+            this.lgDoneIcon.setVisibility(View.INVISIBLE);
+        }
     }
 
     /*
-        descriptionTextView ellipsize = end
-        descriptionTextView singleLine = true
+        descriptionTV ellipsize = end
+        descriptionTV singleLine = true
         bottomView visibility = View.GONE
         show top icons
      */
     private void collapseCardView() {
-        this.descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
-        this.descriptionTextView.setSingleLine(true);
+        this.descriptionTV.setEllipsize(TextUtils.TruncateAt.END);
+        this.descriptionTV.setSingleLine(true);
         this.bottomView.setVisibility(View.GONE);
-        this.smallGroupImageView.setVisibility(View.VISIBLE);
-        this.smallDoneImageView.setVisibility(View.VISIBLE);
+        this.smGroupIcon.setVisibility(View.VISIBLE);
+        this.smDoneIcon.setVisibility(View.VISIBLE);
+        if (challenge.getCompleted()) {
+            this.lgDoneIcon.setVisibility(View.VISIBLE);
+        } else {
+            this.lgDoneIcon.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void collapseExpandedCardView(View view) {

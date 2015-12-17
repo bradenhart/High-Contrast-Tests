@@ -73,12 +73,12 @@ public class Utils {
 
     public static String getDateTime(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault());
         return dateFormat.format(date);
     }
 
     public static Date convertDateTimeToDate(String dateTime) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd" + 'T' + "HH:mm:ss.SSS" + 'Z', Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
         Date date = null;
         try {
             date = format.parse(dateTime);

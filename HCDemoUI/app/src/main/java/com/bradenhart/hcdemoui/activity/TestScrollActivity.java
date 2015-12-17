@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
+import com.bradenhart.hcdemoui.database.Challenge;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class TestScrollActivity extends TestBaseActivity {
         }
     }
 
-    private List<String> createItemList() {
+    private List<Challenge> createItemList() {
         List<String> itemList = new ArrayList<>();
 
         int itemsCount = 20;
@@ -52,7 +53,7 @@ public class TestScrollActivity extends TestBaseActivity {
             itemList.add("Item " + i);
         }
 
-        return itemList;
+        return null;
     }
 
     @Override

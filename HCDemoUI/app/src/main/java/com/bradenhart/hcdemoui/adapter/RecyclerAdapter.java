@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
+import com.bradenhart.hcdemoui.database.Challenge;
 
 import java.util.List;
 
@@ -18,11 +19,11 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private List<String> mItemList;
+    private List<Challenge> mItemList;
     private RecyclerItemViewHolder.ViewExpandedListener mExpandListener;
 
     // Constructor
-    public RecyclerAdapter(List<String> itemList) {
+    public RecyclerAdapter(List<Challenge> itemList) {
         mItemList = itemList;
     }
 
@@ -37,8 +38,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
         holder.setViewExpandListener(mExpandListener);
-        String itemText = mItemList.get(position);
-        holder.setItemText(itemText);
+        Challenge item = mItemList.get(position);
+        holder.setItemText(item);
     }
 
     public void setExpandListener(RecyclerItemViewHolder.ViewExpandedListener expandListener) {

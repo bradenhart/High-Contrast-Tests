@@ -18,6 +18,7 @@ import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.Utils;
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
+import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
@@ -177,15 +178,8 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         recyclerView.setAdapter(recyclerAdapter);
     }
 
-    private List<String> createItemList() {
-        List<String> itemList = new ArrayList<>();
-
-        int itemsCount = 20;
-        for (int i = 1; i <= itemsCount; i++) {
-            itemList.add("Item " + i);
-        }
-
-        return itemList;
+    private List<Challenge> createItemList() {
+        return dbHelper.getChallengeWithFilter("Newest");
     }
 
     @Override
