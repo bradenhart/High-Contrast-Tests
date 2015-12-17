@@ -1,9 +1,15 @@
 package com.bradenhart.hcdemoui.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.bradenhart.hcdemoui.Utils;
+import com.parse.ParseObject;
+
+import java.util.List;
 
 /**
  * Created by bradenhart on 17/12/15.
@@ -79,5 +85,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         onCreate(db);
 
+    }
+
+    public void insertChallengesToDb(List<ParseObject> objects) {
+
+        if (objects.get(0).getClassName().equals("Challenge")) {
+
+            SQLiteDatabase db = getWritableDatabase();
+
+            ContentValues cv = new ContentValues();
+
+            for (ParseObject c : objects) {
+                cv.put(KEY_OBJECT_ID, c.getString("objectId"));
+                cv.put(KEY_NAME, c.getString("name"));
+                cv.put(KEY_DESCRIPTION, c.getString("description"));
+                cv.put(KEY_DIFFICULTY, c.getString("difficulty"));
+                cv.put(KEY_GROUP_MIN, c.getInt("groupMin"));
+                cv.put(KEY_GROUP_MAX, c.getInt("groupMax"));
+                cv.put(KEY_CREATED_AT, Utils.getDateTime(c.getCreatedAt()));
+                db.insert(TABLE_CHALLENGE, null, cv);
+                cv.clear();
+            }
+
+            Log.e(LOGTAG, "finished inserting challenges in db");
+
+        }
     }
 }
