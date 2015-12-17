@@ -5,6 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.ChallengeActivity">
     <item
+        android:id="@+id/action_update"
+        android:orderInCategory="0"
+        android:title="@string/action_update"
+        android:icon="@drawable/ic_refresh_white_24dp"/>
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

@@ -64,6 +64,12 @@ public class BaseActivity extends AppCompatActivity {
         if (useOptionsMenu()) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.menu_base, menu);
+            MenuItem update = menu.findItem(R.id.action_update);
+            if (useUpdateButton()) {
+                update.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            } else {
+                update.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            }
         }
         return useOptionsMenu();
     }
@@ -338,6 +344,10 @@ public class BaseActivity extends AppCompatActivity {
      * @return boolean scrolling behavior is used - true/false
      */
     protected boolean useScrollingBehavior() {
+        return false;
+    }
+
+    protected boolean useUpdateButton() {
         return false;
     }
 
