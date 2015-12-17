@@ -20,6 +20,11 @@ public class Utils {
 
     public static final String SHARED_PREFERENCES = "mySharedPreferences";
     public static final String KEY_LAST_DATE = "last_date";
+    public static final String NEWEST = "Newest";
+    public static final String COMPLETED = "Completed";
+    public static final String UNCOMPLETED = "Uncompleted";
+    public static final String DIFFICULTY_E_H = "Difficulty (Easiest - Hardest)";
+    public static final String DIFFICULTY_H_E = "Difficulty (Hardest - Easiest)";
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
