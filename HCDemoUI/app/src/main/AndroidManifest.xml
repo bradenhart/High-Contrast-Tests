@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bradenhart.hcdemoui">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
+        android:name=".application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -33,6 +37,13 @@
             android:theme="@style/AppTheme.Base"/>
 
 
+
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="sMrjZ5qLBuAKwe1nttGfqvbV90NNsQSxucpFsjxo" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="MC38jIHOIV6hRn1NkDejqHnFfnah429mUsQnR9g6" />
 
     </application>
 
