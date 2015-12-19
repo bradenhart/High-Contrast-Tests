@@ -112,7 +112,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cv.put(KEY_GROUP_MIN, c.getInt("groupMin"));
                 cv.put(KEY_GROUP_MAX, c.getInt("groupMax"));
                 String dateString = getDateTime(c.getCreatedAt());
-                Log.e(LOGTAG, "insertChallengeToDb: " + dateString);
                 cv.put(KEY_CREATED_AT, dateString);
                 spEdit.putString(KEY_LAST_DATE, dateString);
                 cv.put(KEY_COMPLETED, 0);
@@ -161,9 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
                 Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
                 String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
-                Log.e(LOGTAG, "retrieved date-time: " + dateStr);
                 Date createdAt = convertDateTimeToDate(dateStr);
-                Log.e(LOGTAG, "retrieved date: " + createdAt);
                 Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
 
                 c.setObjectId(objectId);

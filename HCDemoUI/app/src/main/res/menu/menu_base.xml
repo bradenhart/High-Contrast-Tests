@@ -8,7 +8,9 @@
         android:id="@+id/action_update"
         android:orderInCategory="0"
         android:title="@string/action_update"
-        android:icon="@drawable/ic_refresh_white_24dp"/>
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

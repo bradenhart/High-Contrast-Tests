@@ -1,15 +1,20 @@
 package com.bradenhart.hcdemoui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,6 +45,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private final String LOGTAG = "AllChallengesActivity";
 
     private FloatingActionButton filterFab;
+    private final Integer updateMenuItemId = 10181;
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;

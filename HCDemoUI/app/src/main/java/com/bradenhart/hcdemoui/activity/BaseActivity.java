@@ -66,9 +66,9 @@ public class BaseActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.menu_base, menu);
             MenuItem update = menu.findItem(R.id.action_update);
             if (useUpdateButton()) {
-                update.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                update.setVisible(true);
             } else {
-                update.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                update.setVisible(false);
             }
         }
         return useOptionsMenu();
