@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
+import com.parse.ParseObject;
 
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return mItemList == null ? 0 : mItemList.size();
+    }
+
+    public void updateList(List<Challenge> list) {
+        this.mItemList = list;
     }
 
 }

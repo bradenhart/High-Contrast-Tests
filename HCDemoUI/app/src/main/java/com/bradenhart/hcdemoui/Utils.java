@@ -78,14 +78,14 @@ public final class Utils {
     }
 
     public static Date convertDateTimeToDate(String dateTime) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.ENGLISH);
         Date date = null;
         try {
             date = format.parse(dateTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(date);
+//        System.out.println(date);
         return date;
     }
 

@@ -2,12 +2,13 @@ package com.bradenhart.hcdemoui.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.bradenhart.hcdemoui.Utils;
+import static com.bradenhart.hcdemoui.Utils.*;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
@@ -60,6 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Drop table sql statement
     private static final String DROP_TABLE = "drop table if exists ";
 
+    private SharedPreferences sp;
+
 
     public static synchronized DatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -70,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        sp = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -98,6 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             ContentValues cv = new ContentValues();
 
+            SharedPreferences.Editor spEdit = sp.edit();
+
             for (ParseObject c : objects) {
                 cv.put(KEY_OBJECT_ID, c.getString("objectId"));
                 cv.put(KEY_NAME, c.getString("name"));
@@ -105,12 +111,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cv.put(KEY_DIFFICULTY, getDifficultyValue(c.getString("difficulty")));
                 cv.put(KEY_GROUP_MIN, c.getInt("groupMin"));
                 cv.put(KEY_GROUP_MAX, c.getInt("groupMax"));
-                cv.put(KEY_CREATED_AT, Utils.getDateTime(c.getCreatedAt()));
+                String dateString = getDateTime(c.getCreatedAt());
+                Log.e(LOGTAG, "insertChallengeToDb: " + dateString);
+                cv.put(KEY_CREATED_AT, dateString);
+                spEdit.putString(KEY_LAST_DATE, dateString);
                 cv.put(KEY_COMPLETED, 0);
                 db.insert(TABLE_CHALLENGE, null, cv);
                 cv.clear();
             }
 
+            spEdit.apply();
             Log.e(LOGTAG, "finished inserting challenges in db");
 
         }
@@ -122,19 +132,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         switch (filter) {
-            case Utils.NEWEST:
+            case NEWEST:
                 cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " desc", null);
                 break;
-            case Utils.COMPLETED:
+            case COMPLETED:
                 cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"1"});
                 break;
-            case Utils.UNCOMPLETED:
+            case UNCOMPLETED:
                 cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"0"});
                 break;
-            case Utils.DIFFICULTY_E_H:
+            case DIFFICULTY_E_H:
                 cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " asc", null);
                 break;
-            case Utils.DIFFICULTY_H_E:
+            case DIFFICULTY_H_E:
                 cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " asc", null);
                 break;
         }
@@ -151,7 +161,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
                 Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
                 String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
-                Date createdAt = Utils.convertDateTimeToDate(dateStr);
+                Log.e(LOGTAG, "retrieved date-time: " + dateStr);
+                Date createdAt = convertDateTimeToDate(dateStr);
+                Log.e(LOGTAG, "retrieved date: " + createdAt);
                 Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
 
                 c.setObjectId(objectId);

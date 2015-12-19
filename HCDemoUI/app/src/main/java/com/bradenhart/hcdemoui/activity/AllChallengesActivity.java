@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -46,7 +48,8 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private SharedPreferences sp;
     private DatabaseHelper dbHelper;
     private final String KEY_FILTER_VISIBILITY = "filter_visibility";
-
+    private Animation translateAnim;
+    private RecyclerAdapter recyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             }
         }
 
+        translateAnim = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
 
 
     }
@@ -173,7 +177,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(createItemList());
+        recyclerAdapter = new RecyclerAdapter(createItemList());
         recyclerAdapter.setExpandListener(this);
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -185,6 +189,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onExpand(View toExpandView) {
         expandedView = toExpandView;
+//        filterFab.startAnimation(translateAnim);
     }
 
     @Override
@@ -247,8 +252,13 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             if (date != null) {
                 // date string was converted to date successfully
                 // add to query that we want data created after the saved date
+                Log.e(LOGTAG, "date not null, handleUpdateChallengesRequest");
                 query.whereGreaterThan("createdAt", date);
+            } else {
+                Log.e(LOGTAG, "date is null");
             }
+        } else {
+            Log.e(LOGTAG, "date string is null");
         }
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -257,14 +267,21 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                 if (e == null) {
                     // no error
                     Log.e(LOGTAG, "calling insertChallenges method");
+                    Log.e(LOGTAG, "found " + objects.size() + " new challenges.");
                     dbHelper.insertChallengesToDb(objects);
-
+                    updateRecyclerView(createItemList());
                 } else {
                     Log.e(LOGTAG, "error occurred querying for challenges");
                 }
             }
         });
     }
+
+    private void updateRecyclerView(List<Challenge> list) {
+        recyclerAdapter.updateList(list);
+        recyclerAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
