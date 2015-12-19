@@ -83,7 +83,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/min_size_description"
+                android:id="@+id/item_min_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/challenge_info_group_size"
@@ -95,7 +95,7 @@
                 android:id="@+id/max_size_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/min_size_description"
+                android:layout_below="@id/item_min_textview"
                 android:layout_marginLeft="20dp"
                 android:padding="3dp"
                 android:text="max: 2 players" />

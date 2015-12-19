@@ -16,7 +16,7 @@ import java.util.Locale;
 /**
  * Created by bradenhart on 3/12/15.
  */
-public class Utils {
+public final class Utils {
 
     public static final String SHARED_PREFERENCES = "mySharedPreferences";
     public static final String KEY_LAST_DATE = "last_date";

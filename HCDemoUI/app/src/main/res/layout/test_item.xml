@@ -12,6 +12,7 @@
     android:background="?android:selectableItemBackground">
 
     <RelativeLayout
+        android:id="@+id/short_recycler_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/listPreferredItemHeightSmall"
@@ -40,8 +41,7 @@
             android:layout_marginRight="100dp"
             android:gravity="center_vertical"
             android:padding="2dp"
-            android:ellipsize="end"
-            android:singleLine="true"
+
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat." />
 
         <LinearLayout
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true">
             <TextView
-                android:id="@+id/item_group_icon"
+                android:id="@+id/recycler_item_small_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_person_black_24dp"
@@ -58,23 +58,20 @@
                 android:textSize="10sp"
                 android:padding="2dp"/>
             <TextView
-                android:id="@+id/item_completed_icon"
+                android:id="@+id/recycler_item_small_done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_radio_button_checked_black_24dp"
                 android:gravity="center"
                 android:text=""
                 android:textSize="10sp"
-                android:padding="2dp"
-                android:visibility="gone"/>
+                android:padding="2dp"/>
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/item_expanded_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/item_description_textview"
-            android:visibility="gone">
+            android:layout_below="@id/item_description_textview">
             <TextView
                 android:id="@+id/item_min_textview"
                 android:layout_width="wrap_content"
@@ -85,7 +82,7 @@
                 android:text="min: 1 player(s)"/>
 
             <TextView
-                android:id="@+id/item_max_textview"
+                android:id="@+id/max_size_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
@@ -94,7 +91,6 @@
                 android:layout_below="@id/item_min_textview"/>
 
             <Button
-                android:id="@+id/do_it_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Do it"
@@ -103,6 +99,7 @@
 
 
     </RelativeLayout>
+
 
 
 </android.support.v7.widget.CardView>

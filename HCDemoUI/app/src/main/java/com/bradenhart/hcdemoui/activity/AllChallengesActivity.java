@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
-import com.bradenhart.hcdemoui.Utils;
+import static com.bradenhart.hcdemoui.Utils.*;
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
@@ -53,7 +53,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_challenges);
 
-        sp = getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
         dbHelper = DatabaseHelper.getInstance(this);
 
         updateCheckedDrawerItem(R.id.nav_challenges);
@@ -237,13 +237,13 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     private void handleUpdateChallengesRequest() {
-        String dateStr = sp.getString(Utils.KEY_LAST_DATE, null);
+        String dateStr = sp.getString(KEY_LAST_DATE, null);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
 
         if (dateStr != null) {
             // a date has been saved before
-            Date date = Utils.convertDateTimeToDate(dateStr);
+            Date date = convertDateTimeToDate(dateStr);
             if (date != null) {
                 // date string was converted to date successfully
                 // add to query that we want data created after the saved date

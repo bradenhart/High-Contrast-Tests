@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bradenhart.hcdemoui.Utils;
+import static com.bradenhart.hcdemoui.Utils.*;
 import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
 import com.parse.FindCallback;
@@ -51,7 +51,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-        sp = getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
         spEdit = sp.edit();
 
         dbHelper = DatabaseHelper.getInstance(this);
