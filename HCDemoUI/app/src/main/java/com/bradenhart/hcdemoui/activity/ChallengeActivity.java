@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -45,6 +47,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_HAD_FIRST_USE = "first_use";
     private DatabaseHelper dbHelper;
+    private Animation slideDownAnim, slideUpAnim, spinAnim;
+    private RelativeLayout loadingLayout;
+    private ImageView loadingIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,13 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         spEdit = sp.edit();
 
         dbHelper = DatabaseHelper.getInstance(this);
+
+        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
+        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
+        spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
+
+        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
+        loadingIcon = (ImageView) findViewById(R.id.download_icon);
 
         initiateFirstDataDownload();
 
@@ -130,8 +142,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 startActivity(AllChallengesActivity.class);
                 break;
             case R.id.challenge_settings_button:
-//                Toast.makeText(this, "Change challenge settings... ", Toast.LENGTH_SHORT).show();
-//                startActivity(GameSettingsActivity.class);
                 if (popupMenu.getVisibility() == View.VISIBLE) {
                     popupMenu.setVisibility(View.GONE);
                 } else {
@@ -226,6 +236,25 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    private void showLoadingAnimation() {
+        if (loadingLayout != null && loadingIcon != null) {
+            loadingLayout.setAnimation(slideDownAnim);
+            loadingLayout.setVisibility(View.VISIBLE);
+            loadingIcon.setAnimation(spinAnim);
+        }
+    }
+
+    private void hideLoadingAnimation() {
+        if (loadingLayout != null && loadingIcon != null) {
+            if (loadingLayout.getVisibility() == View.VISIBLE) {
+                spinAnim.cancel();
+                spinAnim.reset();
+                loadingLayout.startAnimation(slideUpAnim);
+                loadingLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -239,13 +268,15 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 Log.e(LOGTAG, "app has had first use");
             } else {
                 // need to load data
-                ProgressDialog pd = new ProgressDialog(this);
-                pd.setTitle("Downloading App Data");
-                pd.setMessage("Downloading Challenges from the cloud. \nWon't be long.");
-                pd.setCancelable(false);
-                pd.show();
+//                ProgressDialog pd = new ProgressDialog(this);
+//                pd.setTitle("Downloading App Data");
+//                pd.setMessage("Downloading Challenges from the cloud. \nWon't be long.");
+//                pd.setCancelable(false);
+//                pd.show();
+                showLoadingAnimation();
                 downloadDataFromParse();
-                pd.cancel();
+//                hideLoadingAnimation();
+//                pd.cancel();
                 sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
             }
         }
@@ -261,6 +292,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     // no error
                     Log.e(LOGTAG, "calling insertChallenges method");
                     dbHelper.insertChallengesToDb(objects);
+                    hideLoadingAnimation();
 
                 } else {
                     Log.e(LOGTAG, "error occurred querying for challenges");
