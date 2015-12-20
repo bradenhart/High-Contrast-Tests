@@ -1,25 +1,21 @@
 package com.bradenhart.hcdemoui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ActionProvider;
-import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
 import static com.bradenhart.hcdemoui.Utils.*;
@@ -33,7 +29,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +40,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private final String LOGTAG = "AllChallengesActivity";
 
     private FloatingActionButton filterFab;
-    private final Integer updateMenuItemId = 10181;
     private CardView filterCard;
     private RecyclerView recyclerView;
     private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
@@ -54,8 +48,12 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private SharedPreferences sp;
     private DatabaseHelper dbHelper;
     private final String KEY_FILTER_VISIBILITY = "filter_visibility";
-    private Animation translateAnim;
+    private final String KEY_FILTER_TERM = "filter_term";
+    private Animation fabOutAnim, fabInAnim, spinAnim, slideDownAnim, slideUpAnim;
     private RecyclerAdapter recyclerAdapter;
+    private RelativeLayout updateLayout;
+    private ImageView updateIcon;
+    private String filterTerm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +75,10 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         transparentView = findViewById(R.id.transparent_view);
         transparentView.setOnClickListener(this);
 
+        updateLayout = (RelativeLayout) findViewById(R.id.list_refresh_layout);
+        updateIcon = (ImageView) findViewById(R.id.refresh_icon);
+
         initFilterButtons();
-
-        recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
-        setupRecyclerView(recyclerView);
-
-        filterFab.attachToRecyclerView(recyclerView);
 
         if (savedInstanceState != null) {
 
@@ -91,21 +87,58 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             } else {
                 filterCard.setVisibility(View.GONE);
             }
+
+            if (savedInstanceState.containsKey(KEY_FILTER_TERM)) {
+                filterTerm = savedInstanceState.getString(KEY_FILTER_TERM);
+            }
+
+        } else {
+            filterTerm = NEWEST;
         }
 
-        translateAnim = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+        recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
+        setupRecyclerView(recyclerView);
 
+        filterFab.attachToRecyclerView(recyclerView);
 
+        fabOutAnim = AnimationUtils.loadAnimation(this, R.anim.anim_translate_fab_out);
+        fabInAnim = AnimationUtils.loadAnimation(this, R.anim.anim_translate_fab_in);
+        spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
+        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
+        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_update) {
+            showListUpdateAnimation();
             handleUpdateChallengesRequest();
+            //hideListUpdateAnimation();
         }
         return true;
 
+    }
+
+    private void showListUpdateAnimation() {
+        if (updateLayout != null && updateIcon != null) {
+            if (updateLayout.getVisibility() == View.GONE) {
+                updateLayout.startAnimation(slideDownAnim);
+                updateLayout.setVisibility(View.VISIBLE);
+                updateIcon.startAnimation(spinAnim);
+            }
+        }
+    }
+
+    private void hideListUpdateAnimation() {
+        if (updateLayout != null && updateIcon != null) {
+            if (updateLayout.getVisibility() == View.VISIBLE) {
+                spinAnim.cancel();
+                spinAnim.reset();
+                updateLayout.startAnimation(slideUpAnim);
+                updateLayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -183,24 +216,27 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new RecyclerAdapter(createItemList());
+        recyclerAdapter = new RecyclerAdapter(createItemList(filterTerm));
         recyclerAdapter.setExpandListener(this);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
-    private List<Challenge> createItemList() {
-        return dbHelper.getChallengeWithFilter("Newest");
+    private List<Challenge> createItemList(String term) {
+        return dbHelper.getChallengesWithFilter(term);
     }
 
     @Override
     public void onExpand(View toExpandView) {
         expandedView = toExpandView;
-//        filterFab.startAnimation(translateAnim);
+        filterFab.startAnimation(fabOutAnim);
+        filterFab.setVisibility(View.GONE);
     }
 
     @Override
     public void onCollapse() {
         expandedView = null;
+        filterFab.startAnimation(fabInAnim);
+        filterFab.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -223,25 +259,31 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
             switch (id) {
                 case R.id.filter_by_newest:
-                    headerBar.setText(getResources().getString(R.string.filter_card_newest));
+                    filterTerm = NEWEST;
+                    updateRecyclerView();
                     break;
                 case R.id.filter_by_completed:
-                    headerBar.setText(getResources().getString(R.string.filter_card_completed));
+                    filterTerm = COMPLETED;
+                    updateRecyclerView();
                     break;
                 case R.id.filter_by_uncompleted:
-                    headerBar.setText(getResources().getString(R.string.filter_card_uncompleted));
+                    filterTerm = UNCOMPLETED;
+                    updateRecyclerView();
                     break;
                 case R.id.filter_by_difficulty_eh:
-                    headerBar.setText(getResources().getString(R.string.filter_card_difficulty_eh));
+                    filterTerm = DIFFICULTY_E_H;
+                    updateRecyclerView();
                     break;
                 case R.id.filter_by_difficulty_he:
-                    headerBar.setText(getResources().getString(R.string.filter_card_difficulty_he));
+                    filterTerm = DIFFICULTY_H_E;
+                    updateRecyclerView();
                     break;
                 default:
                     break;
             }
 
             filterCard.setVisibility(View.GONE);
+            transparentView.setVisibility(View.GONE);
 
         }
 
@@ -274,8 +316,13 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                     // no error
                     Log.e(LOGTAG, "calling insertChallenges method");
                     Log.e(LOGTAG, "found " + objects.size() + " new challenges.");
-                    dbHelper.insertChallengesToDb(objects);
-                    updateRecyclerView(createItemList());
+                    if (objects.size() > 0) {
+                        dbHelper.insertChallengesToDb(objects);
+                        updateRecyclerView();
+                    } else {
+                        Toast.makeText(AllChallengesActivity.this, "No new challenges found.", Toast.LENGTH_SHORT).show();
+                    }
+                    hideListUpdateAnimation();
                 } else {
                     Log.e(LOGTAG, "error occurred querying for challenges");
                 }
@@ -283,7 +330,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         });
     }
 
-    private void updateRecyclerView(List<Challenge> list) {
+    private void updateRecyclerView() {
+        headerBar.setText(filterTerm);
+        List<Challenge> list = createItemList(filterTerm);
         recyclerAdapter.updateList(list);
         recyclerAdapter.notifyDataSetChanged();
     }
