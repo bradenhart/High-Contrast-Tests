@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradenhart.hcdemoui.R;
+
 import static com.bradenhart.hcdemoui.Utils.*;
+
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
@@ -160,7 +162,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     protected int[] setFabMargins() {
         // left, top, right, bottom
         int margin = (int) getResources().getDimension(R.dimen.fab_margin);
-        return new int[] {0, 0, margin, margin};
+        return new int[]{0, 0, margin, margin};
     }
 
     @Override
@@ -199,6 +201,8 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                 if (filterCard.getVisibility() == View.GONE) {
                     filterCard.setVisibility(View.VISIBLE);
                     transparentView.setVisibility(View.VISIBLE);
+                    fCompletedBtn.setEnabled(!dbHelper.noChallengesCompleted());
+
                 } else {
                     filterCard.setVisibility(View.GONE);
                     transparentView.setVisibility(View.GONE);
@@ -245,8 +249,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     public View getExpandedView() {
         return expandedView;
     }
-
-
 
 
     private class FilterClickListener implements View.OnClickListener {

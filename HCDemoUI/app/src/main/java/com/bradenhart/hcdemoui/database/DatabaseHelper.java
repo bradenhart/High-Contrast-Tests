@@ -184,11 +184,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
+    public boolean noChallengesCompleted() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?",
+                new String[] {"1", "1"});
+        // true - we found no challenges, false - we did
+        return !cursor.moveToFirst();
+    }
+
     public int setChallengeCompleted(String name) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(KEY_COMPLETED, 1);
-        return db.update(TABLE_CHALLENGE, cv, "where " + KEY_NAME + " =?", new String[] { name });
+        return db.update(TABLE_CHALLENGE, cv, "where " + KEY_NAME + " =?",
+                new String[] { name });
     }
 
     private Integer getDifficultyValue(String difficulty) {

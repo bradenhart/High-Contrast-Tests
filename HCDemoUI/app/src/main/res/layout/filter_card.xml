@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/filter_card_completed"
-                    android:textColor="@android:color/holo_blue_light" />
+                    android:textColor="@drawable/filter_button_selector" />
 
                 <Button
                     android:id="@+id/filter_by_uncompleted"
