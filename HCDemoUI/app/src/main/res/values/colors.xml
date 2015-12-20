@@ -4,6 +4,7 @@
     <color name="materialYellow700">#fbc02d</color>
     <color name="tabOrange">#f46632</color>
     <color name="tabGrey">#626a81</color>
+    <color name="loadingBackground">#d4adedea</color>
 
     <!-- light green, orange material theme -->
     <!--<color name="colorPrimary">#8BC34A</color>-->
