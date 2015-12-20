@@ -29,4 +29,18 @@
         android:layout_marginTop="@dimen/filter_card_top_margin"
         android:layout_marginBottom="@dimen/filter_card_bottom_margin"/>
 
+    <RelativeLayout
+        android:id="@+id/list_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:background="@color/loadingBackground"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/refresh_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sync_white_48dp"/>
+    </RelativeLayout>
+    
 </FrameLayout>
