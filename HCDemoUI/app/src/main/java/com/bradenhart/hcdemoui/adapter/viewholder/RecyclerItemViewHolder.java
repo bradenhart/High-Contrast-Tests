@@ -18,8 +18,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     private Context context;
     private ViewExpandedListener mExpandListener;
-    private TextView titleTv, descriptionTV, minTV, maxTV, groupV, completedV;
-    private Button doItBtn;
+    private TextView titleTv, descriptionTV, minTV, maxTV, groupV, completedV, difficultyTV, completedTV;
     private RelativeLayout expandedView;
 
     private Challenge challenge;
@@ -34,7 +33,8 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         this.maxTV = (TextView) parent.findViewById(R.id.item_max_textview);
         this.groupV = (TextView) parent.findViewById(R.id.item_group_icon);
         this.completedV = (TextView) parent.findViewById(R.id.item_completed_icon);
-        this.doItBtn = (Button) parent.findViewById(R.id.do_it_button);
+        this.difficultyTV = (TextView) parent.findViewById(R.id.item_difficulty_textview);
+        this.completedTV = (TextView) parent.findViewById(R.id.item_completed_textview);
         this.expandedView = (RelativeLayout) parent.findViewById(R.id.item_expanded_view);
         parent.setOnClickListener(this);
     }
@@ -55,8 +55,12 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         groupV.setText(groupStr);
         minTV.setText(minStr);
         maxTV.setText(maxStr);
+        difficultyTV.setText("Difficulty: " + item.getDifficulty());
         if (item.getCompleted()) {
+            completedTV.setText("Completed: Yep");
             completedV.setVisibility(View.VISIBLE);
+        } else {
+            completedTV.setText("Completed: Nope");
         }
 
 
@@ -86,9 +90,6 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             expandCardView();
             mExpandListener.onExpand(v);
         }
-
-//        Intent intent = new Intent(context, ChallengeInfoActivity.class);
-//        context.startActivity(intent);
     }
 
     /*
