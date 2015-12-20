@@ -53,6 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateList(List<Challenge> list) {
+        this.mItemList.clear();
         this.mItemList = list;
     }
 
