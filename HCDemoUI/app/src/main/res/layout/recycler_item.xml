@@ -56,7 +56,8 @@
                 android:gravity="center"
                 android:text="1 - 2"
                 android:textSize="10sp"
-                android:padding="2dp"/>
+                android:padding="2dp"
+                android:layout_marginRight="10dp"/>
             <TextView
                 android:id="@+id/item_completed_icon"
                 android:layout_width="wrap_content"
@@ -77,28 +78,40 @@
             android:visibility="gone">
             <TextView
                 android:id="@+id/item_min_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="0dp"
                 android:padding="3dp"
-                android:text="min: 1 player(s)"/>
-
+                android:text="min: 1 player(s)"
+                android:layout_alignParentLeft="true"/>
             <TextView
                 android:id="@+id/item_max_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:padding="3dp"
                 android:text="max: 2 players"
-                android:layout_below="@id/item_min_textview"/>
-
-            <Button
-                android:id="@+id/do_it_button"
-                android:layout_width="wrap_content"
+                android:layout_below="@id/item_min_textview"
+                android:layout_alignParentLeft="true"/>
+            <TextView
+                android:id="@+id/item_difficulty_textview"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Do it"
-                android:layout_alignParentRight="true" />
+                android:text="Difficulty: "
+                android:padding="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/item_completed_textview"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:text="Completed: Nope"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/item_difficulty_textview"
+                android:layout_alignParentRight="true"/>
         </RelativeLayout>
 
 
