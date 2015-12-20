@@ -125,7 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Challenge> getChallengeWithFilter(String filter) {
+    public List<Challenge> getChallengesWithFilter(String filter) {
         SQLiteDatabase db = getReadableDatabase();
         String selectStr = "select * from " + TABLE_CHALLENGE ;
         Cursor cursor = null;
