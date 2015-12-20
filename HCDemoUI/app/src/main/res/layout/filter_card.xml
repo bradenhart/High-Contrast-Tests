@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
-            android:text="@string/filter_card_header"
+            android:text="@string/filter_card_header_1"
             android:textSize="18sp" />
 
         <ScrollView
@@ -33,14 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/filter_by_newest"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filter_card_newest"
-                    android:textColor="@android:color/holo_blue_light" />
 
                 <Button
                     android:id="@+id/filter_by_completed"
@@ -58,6 +50,42 @@
                     android:text="@string/filter_card_uncompleted"
                     android:textColor="@android:color/holo_blue_light" />
 
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/filter_card_header_2"
+            android:textSize="18sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/filter_by_newest"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_card_newest"
+                    android:textColor="@android:color/holo_blue_light" />
+
+                <Button
+                    android:id="@+id/filter_by_oldest"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_card_oldest"
+                    android:textColor="@android:color/holo_blue_light" />
+
                 <Button
                     android:id="@+id/filter_by_difficulty_eh"
                     style="?android:attr/borderlessButtonStyle"
@@ -73,6 +101,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/filter_card_difficulty_he"
                     android:textColor="@android:color/holo_blue_light" />
+
             </LinearLayout>
         </ScrollView>
 

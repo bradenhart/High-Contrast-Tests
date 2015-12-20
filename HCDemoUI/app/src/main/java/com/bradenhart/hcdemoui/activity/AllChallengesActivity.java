@@ -42,7 +42,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private FloatingActionButton filterFab;
     private CardView filterCard;
     private RecyclerView recyclerView;
-    private Button fNewestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
+    private Button fNewestBtn, fOldestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
     private View expandedView = null, transparentView;
     private TextView headerBar;
     private SharedPreferences sp;
@@ -175,12 +175,14 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     private void initFilterButtons() {
         fNewestBtn = (Button) filterCard.findViewById(R.id.filter_by_newest);
+        fOldestBtn = (Button) filterCard.findViewById(R.id.filter_by_oldest);
         fCompletedBtn = (Button) filterCard.findViewById(R.id.filter_by_completed);
         fUncompletedBtn = (Button) filterCard.findViewById(R.id.filter_by_uncompleted);
         fDifficultyEHBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_eh);
         fDifficultyHEBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_he);
 
         fNewestBtn.setOnClickListener(new FilterClickListener());
+        fOldestBtn.setOnClickListener(new FilterClickListener());
         fCompletedBtn.setOnClickListener(new FilterClickListener());
         fUncompletedBtn.setOnClickListener(new FilterClickListener());
         fDifficultyEHBtn.setOnClickListener(new FilterClickListener());
@@ -260,6 +262,10 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             switch (id) {
                 case R.id.filter_by_newest:
                     filterTerm = NEWEST;
+                    updateRecyclerView();
+                    break;
+                case R.id.filter_by_oldest:
+                    filterTerm = OLDEST;
                     updateRecyclerView();
                     break;
                 case R.id.filter_by_completed:

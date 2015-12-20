@@ -21,6 +21,7 @@ public final class Utils {
     public static final String SHARED_PREFERENCES = "mySharedPreferences";
     public static final String KEY_LAST_DATE = "last_date";
     public static final String NEWEST = "Newest";
+    public static final String OLDEST = "Oldest";
     public static final String COMPLETED = "Completed";
     public static final String UNCOMPLETED = "Uncompleted";
     public static final String DIFFICULTY_E_H = "Difficulty (Easiest - Hardest)";

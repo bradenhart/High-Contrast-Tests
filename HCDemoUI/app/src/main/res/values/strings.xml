@@ -5,8 +5,10 @@
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
     <string name="title_challenges">Challenges</string>
-    <string name="filter_card_header">Filter by:</string>
+    <string name="filter_card_header_1">Filter by:</string>
+    <string name="filter_card_header_2">Sort by:</string>
     <string name="filter_card_newest">Newest</string>
+    <string name="filter_card_oldest">Oldest</string>
     <string name="filter_card_completed">Completed</string>
     <string name="filter_card_uncompleted">Uncompleted</string>
     <string name="filter_card_difficulty_eh">Difficulty (Easiest - Hardest)</string>

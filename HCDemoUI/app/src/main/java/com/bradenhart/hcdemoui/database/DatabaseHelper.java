@@ -134,6 +134,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case NEWEST:
                 cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " desc", null);
                 break;
+            case OLDEST:
+                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " asc", null);
+                break;
             case COMPLETED:
                 cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"1"});
                 break;
