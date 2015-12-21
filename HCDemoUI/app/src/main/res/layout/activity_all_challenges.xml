@@ -14,20 +14,19 @@
         android:id="@+id/transparent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
+        android:background="#30aaaeee"
         android:clickable="true"
         android:visibility="gone"/>
 
     <include
-        android:id="@+id/filter_card"
-        layout="@layout/filter_card"
+        android:id="@+id/split_card_view"
+        layout="@layout/split_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="@dimen/filter_card_left_margin"
-        android:layout_marginRight="@dimen/filter_card_right_margin"
-        android:layout_marginTop="@dimen/filter_card_top_margin"
-        android:layout_marginBottom="@dimen/filter_card_bottom_margin"/>
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="125dp"/>
 
     <RelativeLayout
         android:id="@+id/list_refresh_layout"

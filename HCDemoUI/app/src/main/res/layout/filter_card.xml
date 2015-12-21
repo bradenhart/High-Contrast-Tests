@@ -50,6 +50,8 @@
                     android:text="@string/filter_card_uncompleted"
                     android:textColor="@android:color/holo_blue_light" />
 
+
+
             </LinearLayout>
         </ScrollView>
 

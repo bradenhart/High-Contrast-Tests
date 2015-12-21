@@ -320,7 +320,8 @@ public class BaseActivity extends AppCompatActivity {
      * @return int[] the array of margin values
      */
     protected int[] setFabMargins() {
-        return new int[] {16, 16, 16, 16};
+        int margin = (int) getResources().getDimension(R.dimen.fab_margin);
+        return new int[] {margin, margin, margin, margin};
     }
 
     private int[] convertDpArrayToPixel(int[] array) {
