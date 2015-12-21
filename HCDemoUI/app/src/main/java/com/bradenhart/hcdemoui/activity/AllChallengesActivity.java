@@ -1,6 +1,7 @@
 package com.bradenhart.hcdemoui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -353,4 +354,12 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         outState.putInt(KEY_FILTER_VISIBILITY, filterCard.getVisibility());
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, ChallengeActivity.class);
+        startActivity(intent);
+    }
+
 }

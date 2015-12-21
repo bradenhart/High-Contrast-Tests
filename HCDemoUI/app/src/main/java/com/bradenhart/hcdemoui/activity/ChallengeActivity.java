@@ -3,8 +3,10 @@ package com.bradenhart.hcdemoui.activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.bradenhart.hcdemoui.Utils.*;
+
 import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
 import com.parse.FindCallback;
@@ -49,12 +52,18 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private DatabaseHelper dbHelper;
     private Animation slideDownAnim, slideUpAnim, spinAnim;
     private RelativeLayout loadingLayout;
+    private View screenBlock;
     private ImageView loadingIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
+        // initialise all views here
+        initViews();
+        // set onClickListener for all views here
+        setClickListenerOnViews();
 
         sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
         spEdit = sp.edit();
@@ -65,17 +74,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
         spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
 
-        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
-        loadingIcon = (ImageView) findViewById(R.id.download_icon);
-
         initiateFirstDataDownload();
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
-
-        // initialise all views here
-        initViews();
-        // set onClickListener for all views here
-        setClickListenerOnViews();
 
         // restore activity from savedInstanceState
         restoreFromSavedInstanceState(savedInstanceState);
@@ -200,6 +201,12 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         groupDown = (ImageView) findViewById(R.id.group_down);
         // button to increase the group size for challenges
         groupUp = (ImageView) findViewById(R.id.group_up);
+        // layout that contains a spinning loading icon and a message for the user
+        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
+        // the loading image that will spin while data is being downloaded
+        loadingIcon = (ImageView) findViewById(R.id.download_icon);
+        // a view that will block any buttons that need to be disabled while data is being downloaded
+        screenBlock = findViewById(R.id.download_screen_block);
     }
 
     private void setClickListenerOnViews() {
@@ -224,33 +231,34 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     private void restoreFromSavedInstanceState(Bundle state) {
         if (state != null) {
-
             // restores the popup menu to the visible state it had before screen orientation changed
             if (state.getInt(KEY_POPUP_VISIBILITY) == View.VISIBLE) {
                 popupMenu.setVisibility(View.VISIBLE);
             } else {
                 popupMenu.setVisibility(View.GONE);
             }
-
-
         }
     }
 
     private void showLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null) {
+        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
             loadingLayout.setAnimation(slideDownAnim);
             loadingLayout.setVisibility(View.VISIBLE);
             loadingIcon.setAnimation(spinAnim);
+            screenBlock.setVisibility(View.VISIBLE);
+            setFabEnabled(false);
         }
     }
 
     private void hideLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null) {
-            if (loadingLayout.getVisibility() == View.VISIBLE) {
+        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
+            if (loadingLayout.getVisibility() == View.VISIBLE && screenBlock.getVisibility() == View.VISIBLE) {
                 spinAnim.cancel();
                 spinAnim.reset();
                 loadingLayout.startAnimation(slideUpAnim);
                 loadingLayout.setVisibility(View.GONE);
+                screenBlock.setVisibility(View.GONE);
+                setFabEnabled(true);
             }
         }
     }
@@ -268,15 +276,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 Log.e(LOGTAG, "app has had first use");
             } else {
                 // need to load data
-//                ProgressDialog pd = new ProgressDialog(this);
-//                pd.setTitle("Downloading App Data");
-//                pd.setMessage("Downloading Challenges from the cloud. \nWon't be long.");
-//                pd.setCancelable(false);
-//                pd.show();
-                showLoadingAnimation();
+//                showLoadingAnimation();
                 downloadDataFromParse();
-//                hideLoadingAnimation();
-//                pd.cancel();
                 sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
             }
         }
@@ -284,7 +285,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     private void downloadDataFromParse() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
-
+        showLoadingAnimation();
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -301,52 +302,22 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    private void testDownloadDataFromParse() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
-        query.getInBackground("PEQcJBDRYv", new GetCallback<ParseObject>() {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.challenge_root), "Close app?", Snackbar.LENGTH_LONG);
+
+        snackbar.setAction("YEAH", new View.OnClickListener() {
             @Override
-            public void done(ParseObject object, ParseException e) {
-                if (e == null) {
-                    // object is the Challenge
-//                    String name = object.getString("name");
-//                    String description = object.getString("description");
-//                    String difficulty = object.getString("difficulty");
-//                    int groupMin = object.getInt("groupMin");
-//                    int groupMax = object.getInt("groupMax");
-//                    Date createdAt = object.getCreatedAt();
-
-                    Log.e(LOGTAG, challengeObjectToString(object));
-                    Log.e(LOGTAG, "this date: " + new Date());
-
-                } else {
-                    // something went wrong
-                }
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_MAIN);
+                i.addCategory(Intent.CATEGORY_HOME);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
             }
         });
-    }
 
-    private String challengeObjectToString(ParseObject object) {
-        String name = object.getString("name");
-        String description = object.getString("description");
-        String difficulty = object.getString("difficulty");
-        int groupMin = object.getInt("groupMin");
-        int groupMax = object.getInt("groupMax");
-        Date createdAt = object.getCreatedAt();
-        Date today = new Date();
-
-        if (today.after(createdAt)) {
-            Log.e(LOGTAG, "dates work");
-        }
-
-        String string = "";
-        string += "name: " + name + ",\n";
-        string += "description: " + description + ",\n";
-        string += "difficulty: " + difficulty + ",\n";
-        string += "groupMin: " + groupMin + ",\n";
-        string += "groupMax: " + groupMax + ",\n";
-        string += "createdAt: " + createdAt + ".";
-
-        return string;
+        snackbar.show();
 
     }
 }

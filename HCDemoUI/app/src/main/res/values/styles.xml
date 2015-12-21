@@ -37,6 +37,7 @@
         <item name="android:drawablePadding">5dp</item>
         <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
         <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="ChallengeRightOptionsStyle">
@@ -47,6 +48,7 @@
         <item name="android:drawablePadding">5dp</item>
         <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
         <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
 </resources>

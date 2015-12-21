@@ -366,6 +366,10 @@ public class BaseActivity extends AppCompatActivity {
         activityId = id;
     }
 
+    public void setFabEnabled(boolean enabled) {
+        fab.setEnabled(enabled);
+    }
+
     /**
      * Starts the activity specified by the Class type parameter.
      *
@@ -385,13 +389,13 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        if (activityId != null) {
-            if (activityId == R.id.nav_new_challenge) {
-                // two back presses and exit
-            } else {
-                startActivity(ChallengeActivity.class);
-            }
-        }
+//        if (activityId != null) {
+//            if (activityId == R.id.nav_new_challenge) {
+//                // two back presses and exit
+//            } else {
+//                startActivity(ChallengeActivity.class);
+//            }
+//        }
 
     }
 
