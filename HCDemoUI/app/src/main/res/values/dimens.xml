@@ -21,4 +21,7 @@
     <dimen name="header_view_height">148dp</dimen>
     <dimen name="header_view_empty_space_top">0dp</dimen>
 
+    <dimen name="icon_card_margin_top">0dp</dimen>
+    <dimen name="icon_card_margin_bottom">114dp</dimen>
+
 </resources>

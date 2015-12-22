@@ -8,4 +8,8 @@
     <dimen name="filter_card_top_margin">15dp</dimen>
     <dimen name="filter_card_right_margin">44dp</dimen>
     <dimen name="filter_card_bottom_margin">92dp</dimen>
+
+    <dimen name="icon_card_margin_top">16dp</dimen>
+    <dimen name="icon_card_margin_bottom">58dp</dimen>
+
 </resources>
