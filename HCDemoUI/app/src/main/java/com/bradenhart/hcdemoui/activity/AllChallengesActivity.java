@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,14 +45,15 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private final String LOGTAG = "AllChallengesActivity";
 
     private FloatingActionButton filterFab;
-//    private CardView filterCard;
     private RecyclerView recyclerView;
-    private Button fNewestBtn, fOldestBtn, fCompletedBtn, fUncompletedBtn, fDifficultyEHBtn, fDifficultyHEBtn;
+    private Button fCompleted, fUncompleted, fEasy, fMedium, fHard, fInsane, sNewest, sOldest, sDifficultyAsc, sDifficultyDesc;
     private View expandedView = null, transparentView;
     private TextView headerBar;
     private SharedPreferences sp;
     private DatabaseHelper dbHelper;
     private final String KEY_FILTER_VISIBILITY = "filter_visibility";
+//    private final String KEY_FILTER_TAB_SELECTED = "filter_tab_selected";
+    private final String KEY_SORT_TAB_SELECTED = "sort_tab_selected";
     private final String KEY_FILTER_TERM = "filter_term";
     private Animation fabOutAnim, fabInAnim, spinAnim, slideDownAnim, slideUpAnim;
     private RecyclerAdapter recyclerAdapter;
@@ -59,9 +61,10 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private ImageView updateIcon;
     private String filterTerm;
 
-    private LinearLayout splitCardView;
-    private TextView filterHeader, sortHeader;
-    private LinearLayout filterLayout, sortLayout;
+    private RelativeLayout filterCard;
+    private ImageView filterTab, sortTab;
+    private ScrollView filterLayout, sortLayout;
+    private TextView cardHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +78,10 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
         updateCheckedDrawerItem(R.id.nav_challenges);
 
-//        initFilterButtons();
+        initFilterButtons();
 
         restoreFromSavedInstance(savedInstanceState);
 
-//        recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
         setupRecyclerView();
 
         filterFab.attachToRecyclerView(recyclerView);
@@ -107,22 +109,21 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         filterFab = (FloatingActionButton) findViewById(R.id.base_fab);
         filterFab.setOnClickListener(this);
 
-        splitCardView = (LinearLayout) findViewById(R.id.split_card_view);
-        filterHeader = (TextView) findViewById(R.id.filter_by_header);
-        sortHeader = (TextView) findViewById(R.id.sort_by_header);
-        filterLayout = (LinearLayout) findViewById(R.id.filter_button_layout);
-        sortLayout = (LinearLayout) findViewById(R.id.sort_button_layout);
-
-        filterHeader.setOnClickListener(this);
-        sortHeader.setOnClickListener(this);
-
-//        filterCard = (CardView) findViewById(R.id.filter_card);
         transparentView = findViewById(R.id.transparent_view);
         transparentView.setOnClickListener(this);
 
         updateLayout = (RelativeLayout) findViewById(R.id.list_refresh_layout);
         updateIcon = (ImageView) findViewById(R.id.refresh_icon);
 
+        filterCard = (RelativeLayout) findViewById(R.id.icon_card_view);
+        filterTab = (ImageView) findViewById(R.id.filter_icon_tab);
+        sortTab = (ImageView) findViewById(R.id.sort_icon_tab);
+        filterLayout = (ScrollView) findViewById(R.id.filter_layout);
+        sortLayout = (ScrollView) findViewById(R.id.sort_layout);
+        cardHeader = (TextView) findViewById(R.id.icon_card_header);
+
+        filterTab.setOnClickListener(this);
+        sortTab.setOnClickListener(this);
 
     }
 
@@ -132,24 +133,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
         slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
         slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
-    }
-
-    private void restoreFromSavedInstance(Bundle bundle) {
-        if (bundle != null) {
-
-            if (bundle.getInt(KEY_FILTER_VISIBILITY) == View.VISIBLE) {
-                splitCardView.setVisibility(View.VISIBLE);
-            } else {
-                splitCardView.setVisibility(View.GONE);
-            }
-
-            if (bundle.containsKey(KEY_FILTER_TERM)) {
-                filterTerm = bundle.getString(KEY_FILTER_TERM);
-            }
-
-        } else {
-            filterTerm = NEWEST;
-        }
     }
 
     private void showListUpdateAnimation() {
@@ -206,19 +189,29 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initFilterButtons() {
-//        fNewestBtn = (Button) filterCard.findViewById(R.id.filter_by_newest);
-//        fOldestBtn = (Button) filterCard.findViewById(R.id.filter_by_oldest);
-//        fCompletedBtn = (Button) filterCard.findViewById(R.id.filter_by_completed);
-//        fUncompletedBtn = (Button) filterCard.findViewById(R.id.filter_by_uncompleted);
-//        fDifficultyEHBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_eh);
-//        fDifficultyHEBtn = (Button) filterCard.findViewById(R.id.filter_by_difficulty_he);
+        fCompleted = (Button) filterCard.findViewById(R.id.filter_by_completed);
+        fUncompleted = (Button) filterCard.findViewById(R.id.filter_by_uncompleted);
+        fEasy = (Button) filterCard.findViewById(R.id.filter_by_easy);
+        fMedium = (Button) filterCard.findViewById(R.id.filter_by_medium);
+        fHard = (Button) filterCard.findViewById(R.id.filter_by_hard);
+        fInsane = (Button) filterCard.findViewById(R.id.filter_by_insane);
 
-//        fNewestBtn.setOnClickListener(new FilterClickListener());
-//        fOldestBtn.setOnClickListener(new FilterClickListener());
-//        fCompletedBtn.setOnClickListener(new FilterClickListener());
-//        fUncompletedBtn.setOnClickListener(new FilterClickListener());
-//        fDifficultyEHBtn.setOnClickListener(new FilterClickListener());
-//        fDifficultyHEBtn.setOnClickListener(new FilterClickListener());
+        sNewest = (Button) filterCard.findViewById(R.id.sort_by_newest);
+        sOldest = (Button) filterCard.findViewById(R.id.sort_by_oldest);
+        sDifficultyAsc = (Button) filterCard.findViewById(R.id.sort_by_difficulty_asc);
+        sDifficultyDesc = (Button) filterCard.findViewById(R.id.sort_by_difficulty_desc);
+
+        fCompleted.setOnClickListener(new FilterClickListener());
+        fUncompleted.setOnClickListener(new FilterClickListener());
+        fEasy.setOnClickListener(new FilterClickListener());
+        fMedium.setOnClickListener(new FilterClickListener());
+        fHard.setOnClickListener(new FilterClickListener());
+        fInsane.setOnClickListener(new FilterClickListener());
+
+        sNewest.setOnClickListener(new FilterClickListener());
+        sOldest.setOnClickListener(new FilterClickListener());
+        sDifficultyAsc.setOnClickListener(new FilterClickListener());
+        sDifficultyDesc.setOnClickListener(new FilterClickListener());
     }
 
     @Override
@@ -228,62 +221,73 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
         switch (id) {
             case R.id.base_fab:
-                if (splitCardView.getVisibility() == View.VISIBLE) {
-                    hideSplitCardView();
+                if (filterCard.getVisibility() == View.VISIBLE) {
+                    closeFilterCard();
                 } else {
-                    showSplitCardView();
+                    openFilterCard();
                 }
-                break;
-            case R.id.filter_by_header:
-                handleFilterHeaderClick();
-                break;
-            case R.id.sort_by_header:
-                handleSortHeaderClick();
                 break;
             case R.id.transparent_view:
-                if (splitCardView.getVisibility() == View.VISIBLE) {
-                    hideSplitCardView();
+                closeFilterCard();
+            case R.id.filter_icon_tab:
+                if (!filterTab.isSelected()) {
+                    hideSortLayout();
+                    showFilterLayout();
                 }
+                break;
+            case R.id.sort_icon_tab:
+                if (!sortTab.isSelected()) {
+                    hideFilterLayout();
+                    showSortLayout();
+                }
+                break;
             default:
                 break;
         }
 
     }
 
-    private void showSplitCardView() {
-        filterLayout.setVisibility(View.VISIBLE);
-        sortLayout.setVisibility(View.GONE);
-        splitCardView.setVisibility(View.VISIBLE);
+    private void openFilterCard() {
+        filterCard.setVisibility(View.VISIBLE);
+        showFilterLayout();
         transparentView.setVisibility(View.VISIBLE);
     }
 
-    private void hideSplitCardView() {
-        filterLayout.setVisibility(View.VISIBLE);
-        sortLayout.setVisibility(View.GONE);
-        splitCardView.setVisibility(View.GONE);
+    private void closeFilterCard() {
+        filterCard.setVisibility(View.GONE);
+        hideFilterLayout();
+        hideSortLayout();
         transparentView.setVisibility(View.GONE);
     }
 
-    private void handleFilterHeaderClick() {
-        if (filterLayout.getVisibility() == View.VISIBLE) {
-            filterLayout.setVisibility(View.GONE);
-        } else {
-            filterLayout.setVisibility(View.VISIBLE);
+    private void showFilterLayout() {
+        if (dbHelper.noChallengesCompleted()) {
+            fCompleted.setEnabled(false);
         }
-        if (sortLayout.getVisibility() == View.VISIBLE) {
-            sortLayout.setVisibility(View.GONE);
+        if (sortTab.isSelected()) {
+            sortTab.setSelected(false);
         }
+        filterTab.setSelected(true);
+        filterLayout.setVisibility(View.VISIBLE);
+        cardHeader.setText("Filter");
     }
 
-    private void handleSortHeaderClick() {
-        if (sortLayout.getVisibility() == View.VISIBLE) {
-            sortLayout.setVisibility(View.GONE);
-        } else {
-            sortLayout.setVisibility(View.VISIBLE);
-        }
-        if (filterLayout.getVisibility() == View.VISIBLE) {
-            filterLayout.setVisibility(View.GONE);
-        }
+    private void showSortLayout() {
+        hideFilterLayout();
+        sortTab.setSelected(true);
+        sortLayout.setVisibility(View.VISIBLE);
+        cardHeader.setText("Sort");
+    }
+
+    private void hideFilterLayout() {
+        filterTab.setSelected(false);
+        filterLayout.setVisibility(View.GONE);
+    }
+
+    private void hideSortLayout() {
+        sortTab.setSelected(false);
+        sortLayout.setVisibility(View.GONE);
+
     }
 
     private void setupRecyclerView() {
@@ -329,37 +333,42 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
             int id = v.getId();
 
             switch (id) {
-                case R.id.filter_by_newest:
-                    filterTerm = NEWEST;
-                    updateRecyclerView();
-                    break;
-                case R.id.filter_by_oldest:
-                    filterTerm = OLDEST;
-                    updateRecyclerView();
-                    break;
                 case R.id.filter_by_completed:
                     filterTerm = COMPLETED;
-                    updateRecyclerView();
                     break;
                 case R.id.filter_by_uncompleted:
                     filterTerm = UNCOMPLETED;
-                    updateRecyclerView();
                     break;
-                case R.id.filter_by_difficulty_eh:
-                    filterTerm = DIFFICULTY_E_H;
-                    updateRecyclerView();
+                case R.id.filter_by_easy:
+                    filterTerm = EASY;
                     break;
-                case R.id.filter_by_difficulty_he:
-                    filterTerm = DIFFICULTY_H_E;
-                    updateRecyclerView();
+                case R.id.filter_by_medium:
+                    filterTerm = MEDIUM;
+                    break;
+                case R.id.filter_by_hard:
+                    filterTerm = HARD;
+                    break;
+                case R.id.filter_by_insane:
+                    filterTerm = INSANE;
+                    break;
+                case R.id.sort_by_newest:
+                    filterTerm = NEWEST;
+                    break;
+                case R.id.sort_by_oldest:
+                    filterTerm = OLDEST;
+                    break;
+                case R.id.sort_by_difficulty_asc:
+                    filterTerm = DIFFICULTY_ASC;
+                    break;
+                case R.id.sort_by_difficulty_desc:
+                    filterTerm = DIFFICULTY_DESC;
                     break;
                 default:
                     break;
             }
 
-//            filterCard.setVisibility(View.GONE);
-            transparentView.setVisibility(View.GONE);
-
+            updateRecyclerView();
+            closeFilterCard();
         }
 
     }
@@ -413,11 +422,34 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
 
+    private void restoreFromSavedInstance(Bundle bundle) {
+        if (bundle != null) {
+
+            if (bundle.getInt(KEY_FILTER_VISIBILITY) == View.VISIBLE) {
+                openFilterCard();
+                if (bundle.getBoolean(KEY_SORT_TAB_SELECTED)) {
+                    showSortLayout();
+                }
+            } else {
+                closeFilterCard();
+            }
+
+            if (bundle.containsKey(KEY_FILTER_TERM)) {
+                filterTerm = bundle.getString(KEY_FILTER_TERM);
+            }
+
+        } else {
+            filterTerm = NEWEST;
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(KEY_FILTER_VISIBILITY, splitCardView.getVisibility());
+        outState.putInt(KEY_FILTER_VISIBILITY, filterCard.getVisibility());
+        outState.putString(KEY_FILTER_TERM, filterTerm);
+        outState.putBoolean(KEY_SORT_TAB_SELECTED, sortTab.isSelected());
 
     }
 
