@@ -131,23 +131,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         switch (filter) {
-            case NEWEST:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " desc", null);
-                break;
-            case OLDEST:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " asc", null);
-                break;
             case COMPLETED:
                 cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"1"});
                 break;
             case UNCOMPLETED:
                 cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"0"});
                 break;
-            case DIFFICULTY_E_H:
+            case EASY:
+                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(EASY)) });
+                break;
+            case MEDIUM:
+                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(MEDIUM)) });
+                break;
+            case HARD:
+                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(HARD)) });
+                break;
+            case INSANE:
+                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(INSANE)) });
+                break;
+            case NEWEST:
+                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " desc", null);
+                break;
+            case OLDEST:
+                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " asc", null);
+                break;
+            case DIFFICULTY_ASC:
                 cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " asc", null);
                 break;
-            case DIFFICULTY_H_E:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " asc", null);
+            case DIFFICULTY_DESC:
+                cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " desc", null);
                 break;
         }
 
