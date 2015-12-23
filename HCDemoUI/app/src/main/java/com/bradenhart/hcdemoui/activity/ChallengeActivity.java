@@ -64,15 +64,13 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         initViews();
         // set onClickListener for all views here
         setClickListenerOnViews();
+        // initialise animations from anim folder
+        initAnimations();
 
         sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
         spEdit = sp.edit();
 
         dbHelper = DatabaseHelper.getInstance(this);
-
-        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
-        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
-        spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
 
         initiateFirstDataDownload();
 
@@ -83,6 +81,163 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     }
 
+    /** initialisations */
+    private void initViews() {
+        // root layout (the container this activity is loaded into)
+        root = (FrameLayout) findViewById(R.id.base_container);
+        // pop up menu for the game settings (difficulty and group size)
+        popupMenu = (RelativeLayout) findViewById(R.id.game_settings_popup_menu);
+        // the title for the challenge being displayed
+        challengeTitle = (TextView) findViewById(R.id.challenge_title);
+        // the description/text for the challenge being displayed
+        challengeText = (TextView) findViewById(R.id.challenge_text);
+        // button to randomise/shuffle the challenges
+        randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
+        // button to skip to the next challenge in the list
+        skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
+        // button to display all of the challenges in a list
+        allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
+        // button to open the popup menu for altering the current challenge settings
+        challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
+        // button to decrease the difficulty of challenges
+        diffDown = (ImageView) findViewById(R.id.difficulty_down);
+        // button to increase the difficulty of challenges
+        diffUp = (ImageView) findViewById(R.id.difficulty_up);
+        // button to decrease the group size for challenges
+        groupDown = (ImageView) findViewById(R.id.group_down);
+        // button to increase the group size for challenges
+        groupUp = (ImageView) findViewById(R.id.group_up);
+        // layout that contains a spinning loading icon and a message for the user
+        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
+        // the loading image that will spin while data is being downloaded
+        loadingIcon = (ImageView) findViewById(R.id.download_icon);
+        // a view that will block any buttons that need to be disabled while data is being downloaded
+        screenBlock = findViewById(R.id.download_screen_block);
+    }
+
+    private void setClickListenerOnViews() {
+        root.setOnClickListener(this);
+        challengeTitle.setOnClickListener(this);
+        challengeText.setOnClickListener(this);
+        randomChallengeBtn.setOnClickListener(this);
+        skipChallengeBtn.setOnClickListener(this);
+        allChallengeBtn.setOnClickListener(this);
+        challengeSettingsBtn.setOnClickListener(this);
+        diffDown.setOnClickListener(this);
+        diffUp.setOnClickListener(this);
+        groupDown.setOnClickListener(this);
+        groupUp.setOnClickListener(this);
+    }
+
+    private void initAnimations() {
+        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
+        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
+        spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
+    }
+
+    /** loading animations */
+    private void showLoadingAnimation() {
+        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
+            loadingLayout.setAnimation(slideDownAnim);
+            loadingLayout.setVisibility(View.VISIBLE);
+            loadingIcon.setAnimation(spinAnim);
+            screenBlock.setVisibility(View.VISIBLE);
+            setFabEnabled(false);
+        }
+    }
+
+    private void hideLoadingAnimation() {
+        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
+            if (loadingLayout.getVisibility() == View.VISIBLE && screenBlock.getVisibility() == View.VISIBLE) {
+                spinAnim.cancel();
+                spinAnim.reset();
+                loadingLayout.startAnimation(slideUpAnim);
+                loadingLayout.setVisibility(View.GONE);
+                screenBlock.setVisibility(View.GONE);
+                setFabEnabled(true);
+            }
+        }
+    }
+
+    /** popup menu methods */
+    private void hidePopupMenu() {
+        if (popupMenu.getVisibility() == View.VISIBLE) {
+            popupMenu.setVisibility(View.GONE);
+        }
+    }
+
+    /** download methods */
+    private void initiateFirstDataDownload() {
+        if (sp != null) {
+            if (sp.contains(KEY_HAD_FIRST_USE)) {
+                // data has been loaded already
+                Log.e(LOGTAG, "app has had first use");
+            } else {
+                // need to load data
+//                showLoadingAnimation();
+                downloadDataFromParse();
+                sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
+            }
+        }
+    }
+
+    private void downloadDataFromParse() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
+        showLoadingAnimation();
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    // no error
+                    Log.e(LOGTAG, "calling insertChallenges method");
+                    dbHelper.insertChallengesToDb(objects);
+                    hideLoadingAnimation();
+
+                } else {
+                    Log.e(LOGTAG, "error occurred querying for challenges");
+                }
+            }
+        });
+    }
+
+    /** restore methods */
+    private void restoreFromSavedInstanceState(Bundle state) {
+        if (state != null) {
+            // restores the popup menu to the visible state it had before screen orientation changed
+            if (state.getInt(KEY_POPUP_VISIBILITY) == View.VISIBLE) {
+                popupMenu.setVisibility(View.VISIBLE);
+            } else {
+                popupMenu.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /** overridden methods */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_POPUP_VISIBILITY, popupMenu.getVisibility());
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.challenge_root), "Close app?", Snackbar.LENGTH_LONG);
+
+        snackbar.setAction("YEAH", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_MAIN);
+                i.addCategory(Intent.CATEGORY_HOME);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        });
+
+        snackbar.show();
+    }
+
+    // parent methods
     @Override
     protected String setToolbarTitle() {
         return getResources().getString(R.string.app_title);
@@ -109,21 +264,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         return new int[]{0, 0, 0, (int) getResources().getDimension(R.dimen.fab_radius)};
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
+    // click interface implementation
     @Override
     public void onClick(View view) {
 
@@ -176,148 +317,4 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void initViews() {
-        // root layout (the container this activity is loaded into)
-        root = (FrameLayout) findViewById(R.id.base_container);
-        // pop up menu for the game settings (difficulty and group size)
-        popupMenu = (RelativeLayout) findViewById(R.id.game_settings_popup_menu);
-        // the title for the challenge being displayed
-        challengeTitle = (TextView) findViewById(R.id.challenge_title);
-        // the description/text for the challenge being displayed
-        challengeText = (TextView) findViewById(R.id.challenge_text);
-        // button to randomise/shuffle the challenges
-        randomChallengeBtn = (TextView) findViewById(R.id.random_challenge_btn);
-        // button to skip to the next challenge in the list
-        skipChallengeBtn = (TextView) findViewById(R.id.skip_challenge_btn);
-        // button to display all of the challenges in a list
-        allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
-        // button to open the popup menu for altering the current challenge settings
-        challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
-        // button to decrease the difficulty of challenges
-        diffDown = (ImageView) findViewById(R.id.difficulty_down);
-        // button to increase the difficulty of challenges
-        diffUp = (ImageView) findViewById(R.id.difficulty_up);
-        // button to decrease the group size for challenges
-        groupDown = (ImageView) findViewById(R.id.group_down);
-        // button to increase the group size for challenges
-        groupUp = (ImageView) findViewById(R.id.group_up);
-        // layout that contains a spinning loading icon and a message for the user
-        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
-        // the loading image that will spin while data is being downloaded
-        loadingIcon = (ImageView) findViewById(R.id.download_icon);
-        // a view that will block any buttons that need to be disabled while data is being downloaded
-        screenBlock = findViewById(R.id.download_screen_block);
-    }
-
-    private void setClickListenerOnViews() {
-        root.setOnClickListener(this);
-        challengeTitle.setOnClickListener(this);
-        challengeText.setOnClickListener(this);
-        randomChallengeBtn.setOnClickListener(this);
-        skipChallengeBtn.setOnClickListener(this);
-        allChallengeBtn.setOnClickListener(this);
-        challengeSettingsBtn.setOnClickListener(this);
-        diffDown.setOnClickListener(this);
-        diffUp.setOnClickListener(this);
-        groupDown.setOnClickListener(this);
-        groupUp.setOnClickListener(this);
-    }
-
-    private void hidePopupMenu() {
-        if (popupMenu.getVisibility() == View.VISIBLE) {
-            popupMenu.setVisibility(View.GONE);
-        }
-    }
-
-    private void restoreFromSavedInstanceState(Bundle state) {
-        if (state != null) {
-            // restores the popup menu to the visible state it had before screen orientation changed
-            if (state.getInt(KEY_POPUP_VISIBILITY) == View.VISIBLE) {
-                popupMenu.setVisibility(View.VISIBLE);
-            } else {
-                popupMenu.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private void showLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
-            loadingLayout.setAnimation(slideDownAnim);
-            loadingLayout.setVisibility(View.VISIBLE);
-            loadingIcon.setAnimation(spinAnim);
-            screenBlock.setVisibility(View.VISIBLE);
-            setFabEnabled(false);
-        }
-    }
-
-    private void hideLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
-            if (loadingLayout.getVisibility() == View.VISIBLE && screenBlock.getVisibility() == View.VISIBLE) {
-                spinAnim.cancel();
-                spinAnim.reset();
-                loadingLayout.startAnimation(slideUpAnim);
-                loadingLayout.setVisibility(View.GONE);
-                screenBlock.setVisibility(View.GONE);
-                setFabEnabled(true);
-            }
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_POPUP_VISIBILITY, popupMenu.getVisibility());
-    }
-
-    private void initiateFirstDataDownload() {
-        if (sp != null) {
-            if (sp.contains(KEY_HAD_FIRST_USE)) {
-                // data has been loaded already
-                Log.e(LOGTAG, "app has had first use");
-            } else {
-                // need to load data
-//                showLoadingAnimation();
-                downloadDataFromParse();
-                sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
-            }
-        }
-    }
-
-    private void downloadDataFromParse() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
-        showLoadingAnimation();
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    // no error
-                    Log.e(LOGTAG, "calling insertChallenges method");
-                    dbHelper.insertChallengesToDb(objects);
-                    hideLoadingAnimation();
-
-                } else {
-                    Log.e(LOGTAG, "error occurred querying for challenges");
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        final Snackbar snackbar = Snackbar.make(findViewById(R.id.challenge_root), "Close app?", Snackbar.LENGTH_LONG);
-
-        snackbar.setAction("YEAH", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_MAIN);
-                i.addCategory(Intent.CATEGORY_HOME);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            }
-        });
-
-        snackbar.show();
-
-    }
 }
