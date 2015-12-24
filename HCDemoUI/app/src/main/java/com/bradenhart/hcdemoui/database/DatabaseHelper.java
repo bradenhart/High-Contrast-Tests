@@ -44,18 +44,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_GROUP_MAX = "group_max";
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_COMPLETED = "completed";
+    private static final String KEY_COMPLETED_AT = "completed_at";
 
     // Table create statements
     private static final String CREATE_TABLE_CHALLENGE = "create table " + TABLE_CHALLENGE
             + "("
-            + KEY_OBJECT_ID + " text,"
-            + KEY_NAME + " text,"
-            + KEY_DESCRIPTION + " text,"
-            + KEY_DIFFICULTY + " integer,"
-            + KEY_GROUP_MIN + " integer,"
-            + KEY_GROUP_MAX + " integer,"
-            + KEY_CREATED_AT + " datetime,"
-            + KEY_COMPLETED + " integer default 0"
+            + KEY_OBJECT_ID + " text not null, "
+            + KEY_NAME + " text not null, "
+            + KEY_DESCRIPTION + " text not null, "
+            + KEY_DIFFICULTY + " integer not null, "
+            + KEY_GROUP_MIN + " integer not null, "
+            + KEY_GROUP_MAX + " integer not null, "
+            + KEY_CREATED_AT + " datetime not null, "
+            + KEY_COMPLETED + " integer default 0 not null, "
+            + KEY_COMPLETED_AT + " datetime default null"
             + ")";
 
     // Drop table sql statement
@@ -91,7 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         onCreate(db);
-
     }
 
     public void insertChallengesToDb(List<ParseObject> objects) {
@@ -105,7 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             SharedPreferences.Editor spEdit = sp.edit();
 
             for (ParseObject c : objects) {
-                cv.put(KEY_OBJECT_ID, c.getString("objectId"));
+                cv.put(KEY_OBJECT_ID, c.getObjectId());
                 cv.put(KEY_NAME, c.getString("name"));
                 cv.put(KEY_DESCRIPTION, c.getString("description"));
                 cv.put(KEY_DIFFICULTY, getDifficultyValue(c.getString("difficulty")));
@@ -127,41 +128,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public List<Challenge> getChallengesWithFilter(String filter) {
         SQLiteDatabase db = getReadableDatabase();
-        String selectStr = "select * from " + TABLE_CHALLENGE ;
-        Cursor cursor = null;
+        String select = "select * from " + TABLE_CHALLENGE ;
+        String queryString = null;
+        String[] queryParams = null;
+        Cursor cursor;
 
         switch (filter) {
             case COMPLETED:
-                cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"1"});
+                queryString = " where " + KEY_COMPLETED + " =?";
+                queryParams = new String[] {"1"};
                 break;
             case UNCOMPLETED:
-                cursor = db.rawQuery(selectStr + " where " + KEY_COMPLETED + " =?", new String[] {"0"});
+                queryString = " where " + KEY_COMPLETED + " =?";
+                queryParams = new String[] {"0"};
                 break;
             case EASY:
-                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(EASY)) });
+                queryString = " where " + KEY_DIFFICULTY + " =?";
+                queryParams = new String[] { String.valueOf(getDifficultyValue(EASY)) };
                 break;
             case MEDIUM:
-                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(MEDIUM)) });
+                queryString = " where " + KEY_DIFFICULTY + " =?";
+                queryParams = new String[] { String.valueOf(getDifficultyValue(MEDIUM)) };
                 break;
             case HARD:
-                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(HARD)) });
+                queryString = " where " + KEY_DIFFICULTY + " =?";
+                queryParams = new String[] { String.valueOf(getDifficultyValue(HARD)) };
                 break;
             case INSANE:
-                cursor = db.rawQuery(selectStr + " where " + KEY_DIFFICULTY + " =?", new String[] { String.valueOf(getDifficultyValue(INSANE)) });
+                queryString = " where " + KEY_DIFFICULTY + " =?";
+                queryParams = new String[] { String.valueOf(getDifficultyValue(INSANE)) };
                 break;
             case NEWEST:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " desc", null);
+                queryString = " order by " + KEY_CREATED_AT + " desc";
+                queryParams = null;
                 break;
             case OLDEST:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_CREATED_AT + " asc", null);
+                queryString = " order by " + KEY_CREATED_AT + " asc";
+                queryParams = null;
                 break;
             case DIFFICULTY_ASC:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " asc", null);
+                queryString = " order by " + KEY_DIFFICULTY + " asc";
+                queryParams = null;
                 break;
             case DIFFICULTY_DESC:
-                cursor = db.rawQuery(selectStr + " order by " + KEY_DIFFICULTY + " desc", null);
+                queryString = " order by " + KEY_DIFFICULTY + " desc";
+                queryParams = null;
                 break;
         }
+
+        cursor = db.rawQuery(select + queryString, queryParams);
 
         List<Challenge> results = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -196,20 +211,107 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
+    public Challenge retrieveNewChallenge(String difficulty, Integer groupMin) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Challenge c = null;
+
+        Cursor cursor = db.rawQuery(
+                String.format("select * from %s where %s =? AND %s =? AND %s =?", TABLE_CHALLENGE, KEY_COMPLETED, KEY_DIFFICULTY, KEY_GROUP_MIN),
+                new String[] { "0", String.valueOf(getDifficultyValue(difficulty)), String.valueOf(groupMin) });
+
+//        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED +
+//                        " =? AND " + KEY_DIFFICULTY + " =? AND " + KEY_GROUP_MIN + " =?",
+//                new String[] { "0", String.valueOf(getDifficultyValue(difficulty)), String.valueOf(groupMin) });
+
+        if (cursor.moveToFirst()) {
+            c = new Challenge();
+
+            String objectId = cursor.getString(cursor.getColumnIndex(KEY_OBJECT_ID));
+            String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+            String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
+            Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
+            String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
+            Date createdAt = convertDateTimeToDate(dateStr);
+            Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
+
+            c.setObjectId(objectId);
+            c.setName(name);
+            c.setDescription(description);
+            c.setDifficulty(difficulty);
+            c.setGroupMin(groupMin);
+            c.setGroupMax(groupMax);
+            c.setCreatedAt(createdAt);
+            c.setCompleted(completed);
+        } else {
+            Log.e(LOGTAG, "Cursor is empty");
+        }
+
+        cursor.close();
+        return c;
+    }
+
+    public Challenge retrieveChallengeById(String objectId) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Challenge c = null;
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_OBJECT_ID + " =?",
+                new String[] { objectId });
+
+        if (cursor.moveToFirst()) {
+            c = new Challenge();
+
+            String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+            String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
+            Integer diffValue = cursor.getInt(cursor.getColumnIndex(KEY_DIFFICULTY));
+            String difficulty = getDifficultyTerm(diffValue);
+            Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
+            Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
+            String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
+            Date createdAt = convertDateTimeToDate(dateStr);
+            Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
+
+            c.setObjectId(objectId);
+            c.setName(name);
+            c.setDescription(description);
+            c.setDifficulty(difficulty);
+            c.setGroupMin(groupMin);
+            c.setGroupMax(groupMax);
+            c.setCreatedAt(createdAt);
+            c.setCompleted(completed);
+        }
+
+        cursor.close();
+        return c;
+    }
+
     public boolean noChallengesCompleted() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?",
-                new String[] {"1", "1"});
+                new String[]{"1", "1"});
+
         // true - we found no challenges, false - we did
-        return !cursor.moveToFirst();
+        boolean result = !cursor.moveToFirst();
+
+        cursor.close();
+
+        return result;
     }
 
-    public int setChallengeCompleted(String name) {
+    public int setChallengeCompleted(String objectId) {
         SQLiteDatabase db = getWritableDatabase();
+
+        String completedAt = getDateTime(new Date());
+
         ContentValues cv = new ContentValues();
         cv.put(KEY_COMPLETED, 1);
-        return db.update(TABLE_CHALLENGE, cv, "where " + KEY_NAME + " =?",
-                new String[] { name });
+        cv.put(KEY_COMPLETED_AT, completedAt);
+
+        return db.update(TABLE_CHALLENGE,
+                cv,
+                KEY_OBJECT_ID + " =?",
+                new String[] { objectId });
     }
 
     private Integer getDifficultyValue(String difficulty) {
@@ -226,7 +328,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return null;
-
     }
 
     private String getDifficultyTerm(Integer value) {
