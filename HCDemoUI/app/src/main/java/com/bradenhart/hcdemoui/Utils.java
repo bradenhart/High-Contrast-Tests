@@ -18,9 +18,6 @@ import java.util.Locale;
  */
 public final class Utils {
 
-    public static final String SHARED_PREFERENCES = "mySharedPreferences";
-    public static final String KEY_LAST_DATE = "last_date";
-
     public static final String COMPLETED = "Completed";
     public static final String UNCOMPLETED = "Uncompleted";
     public static final String EASY = "Easy";
@@ -32,6 +29,15 @@ public final class Utils {
     public static final String OLDEST = "Oldest";
     public static final String DIFFICULTY_ASC = "Difficulty (asc)";
     public static final String DIFFICULTY_DESC = "Difficulty (desc)";
+
+    public static final String SHARED_PREFERENCES = "mySharedPreferences";
+    public static final String KEY_LAST_DATE = "last_date";
+    public static final String KEY_STATE_DIFFICULTY = "difficulty_state";
+    public static final String KEY_STATE_GROUP_SIZE = "group_size_state";
+    public static final String DEFAULT_DIFFICULTY_STATE = EASY;
+    public static final Integer DEFAULT_GROUP_SIZE_STATE = 1;
+    public static final String KEY_OBJECT_ID = "object_id";
+
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
