@@ -24,6 +24,7 @@ import static com.bradenhart.hcdemoui.Utils.*;
 
 import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -43,12 +44,16 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private FrameLayout root;
     private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
     private RelativeLayout popupMenu;
-    private TextView challengeTitle, challengeText;
+
+    private TextView challengeTitle, challengeText, challengeDifficulty, challengeMin, challengeMax;
     private ImageView diffDown, diffUp, groupDown, groupUp;
     private SharedPreferences sp;
     private SharedPreferences.Editor spEdit;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_HAD_FIRST_USE = "first_use";
+    private String stateDifficulty;
+    private Integer stateGroupSize;
+    private String currentObjectId;
     private DatabaseHelper dbHelper;
     private Animation slideDownAnim, slideUpAnim, spinAnim;
     private RelativeLayout loadingLayout;
@@ -71,6 +76,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         spEdit = sp.edit();
 
         dbHelper = DatabaseHelper.getInstance(this);
+
+        updateDifficultyState(null);
+        updateGroupSizeState(null);
 
         initiateFirstDataDownload();
 
@@ -113,6 +121,15 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         loadingIcon = (ImageView) findViewById(R.id.download_icon);
         // a view that will block any buttons that need to be disabled while data is being downloaded
         screenBlock = findViewById(R.id.download_screen_block);
+        // challenge difficulty
+        challengeDifficulty = (TextView) findViewById(R.id.challenge_difficulty_textview);
+        // challenge min
+        challengeMin = (TextView) findViewById(R.id.challenge_min);
+        // challenge max
+        challengeMax = (TextView) findViewById(R.id.challenge_max);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.base_fab);
+        fab.setOnClickListener(this);
     }
 
     private void setClickListenerOnViews() {
@@ -172,6 +189,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             if (sp.contains(KEY_HAD_FIRST_USE)) {
                 // data has been loaded already
                 Log.e(LOGTAG, "app has had first use");
+                //
+                retrieveNewChallenge();
             } else {
                 // need to load data
 //                showLoadingAnimation();
@@ -191,13 +210,79 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     // no error
                     Log.e(LOGTAG, "calling insertChallenges method");
                     dbHelper.insertChallengesToDb(objects);
+
                     hideLoadingAnimation();
 
+                    retrieveNewChallenge();
                 } else {
                     Log.e(LOGTAG, "error occurred querying for challenges");
                 }
             }
         });
+    }
+
+    /** retrieve/display challenge */
+    private void updateDifficultyState(String newState) {
+        if (newState == null) {
+            stateDifficulty = DEFAULT_DIFFICULTY_STATE;
+        } else {
+            if (sp.contains(KEY_STATE_DIFFICULTY)) {
+                stateDifficulty = newState;
+            } else {
+                stateDifficulty = DEFAULT_DIFFICULTY_STATE;
+            }
+        }
+
+        sp.edit().putString(KEY_STATE_DIFFICULTY, stateDifficulty).apply();
+    }
+
+    private void updateGroupSizeState(Integer newState) {
+        if (newState == null) {
+            stateGroupSize = DEFAULT_GROUP_SIZE_STATE;
+        } else {
+            if (sp.contains(KEY_STATE_GROUP_SIZE)) {
+                stateGroupSize = newState;
+            } else {
+                stateGroupSize = DEFAULT_GROUP_SIZE_STATE;
+            }
+        }
+
+        sp.edit().putInt(KEY_STATE_GROUP_SIZE, stateGroupSize).apply();
+    }
+
+    private void updateCurrentObjectId(String objectId) {
+        if (objectId != null) {
+            this.currentObjectId = objectId;
+            sp.edit().putString(KEY_OBJECT_ID, objectId).apply();
+        }
+    }
+
+    private void retrieveNewChallenge() {
+        Challenge c = dbHelper.retrieveNewChallenge("Easy", 1);
+
+        if (c != null) {
+            updateCurrentObjectId(c.getObjectId());
+            displayChallenge(c);
+        } else {
+            Log.e(LOGTAG, "Couldn't get a challenge from database");
+        }
+    }
+
+    private void restoreChallenge(String id) {
+        displayChallenge(dbHelper.retrieveChallengeById(id));
+    }
+
+    private void displayChallenge(Challenge c) {
+        // set text for title textview
+        challengeTitle.setText(c.getName());
+        // set text for description textview
+        challengeText.setText(c.getName());
+        // set text for difficulty textview
+        challengeDifficulty.setText(c.getDifficulty());
+        // set text for min textview
+        challengeMin.setText(String.valueOf(c.getGroupMin()));
+        // set text for max textview
+        challengeMax.setText(String.valueOf(c.getGroupMax()));
     }
 
     /** restore methods */
@@ -209,6 +294,14 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             } else {
                 popupMenu.setVisibility(View.GONE);
             }
+
+            // show challenge
+            if (state.getString(KEY_OBJECT_ID) != null) {
+                restoreChallenge(state.getString(KEY_OBJECT_ID));
+            } else {
+                Log.e(LOGTAG, "getting new challenge for restore");
+                retrieveNewChallenge();
+            }
         }
     }
 
@@ -217,6 +310,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_POPUP_VISIBILITY, popupMenu.getVisibility());
+        outState.putString(KEY_OBJECT_ID, currentObjectId);
     }
 
     @Override
@@ -271,8 +365,17 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         int id = view.getId();
 
         switch (id) {
-            case R.id.test_fab:
+            case R.id.base_fab:
+                // user has completed the current challenge
                 Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
+                // update the challenge to 'completed' in database
+                dbHelper.setChallengeCompleted(currentObjectId);
+                // get the next challenge to display
+                retrieveNewChallenge();
+                /*
+                    if there are no challenges left for current difficulty
+                 */
+                retrieveNewChallenge();
                 break;
             case R.id.random_challenge_btn:
                 Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
