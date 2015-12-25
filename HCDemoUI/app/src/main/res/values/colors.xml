@@ -5,6 +5,7 @@
     <color name="tabOrange">#f46632</color>
     <color name="tabGrey">#626a81</color>
     <color name="loadingBackground">#d4adedea</color>
+    <color name="bottomBarBackground">#34495e</color>
 
     <!-- light green, orange material theme -->
     <!--<color name="colorPrimary">#8BC34A</color>-->
