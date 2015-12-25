@@ -220,10 +220,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String.format("select * from %s where %s =? AND %s =? AND %s =?", TABLE_CHALLENGE, KEY_COMPLETED, KEY_DIFFICULTY, KEY_GROUP_MIN),
                 new String[] { "0", String.valueOf(getDifficultyValue(difficulty)), String.valueOf(groupMin) });
 
-//        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED +
-//                        " =? AND " + KEY_DIFFICULTY + " =? AND " + KEY_GROUP_MIN + " =?",
-//                new String[] { "0", String.valueOf(getDifficultyValue(difficulty)), String.valueOf(groupMin) });
-
         if (cursor.moveToFirst()) {
             c = new Challenge();
 
@@ -248,6 +244,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
+        return c;
+    }
+
+    public Challenge retrieveRandomChallenge() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =?", new String[]{"0"});
+
+        Challenge c = null;
+
+        if (cursor.moveToFirst()) {
+            c = new Challenge();
+
+            String objectId = cursor.getString(cursor.getColumnIndex(KEY_OBJECT_ID));
+            String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+            String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
+            String difficulty = getDifficultyTerm(cursor.getInt(cursor.getColumnIndex(KEY_DIFFICULTY)));
+            Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
+            Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
+            String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
+            Date createdAt = convertDateTimeToDate(dateStr);
+            Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
+
+            c.setObjectId(objectId);
+            c.setName(name);
+            c.setDescription(description);
+            c.setDifficulty(difficulty);
+            c.setGroupMin(groupMin);
+            c.setGroupMax(groupMax);
+            c.setCreatedAt(createdAt);
+            c.setCompleted(completed);
+        }
+
         return c;
     }
 

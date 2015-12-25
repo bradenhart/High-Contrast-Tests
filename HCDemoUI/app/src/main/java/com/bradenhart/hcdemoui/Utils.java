@@ -37,6 +37,8 @@ public final class Utils {
     public static final String DEFAULT_DIFFICULTY_STATE = EASY;
     public static final Integer DEFAULT_GROUP_SIZE_STATE = 1;
     public static final String KEY_OBJECT_ID = "object_id";
+    public static final String KEY_RANDOM_MODE = "random_mode";
+    public static final Boolean DEFAULT_RANDOM_MODE_STATE = false;
 
 
     public static int getToolbarHeight(Context context) {

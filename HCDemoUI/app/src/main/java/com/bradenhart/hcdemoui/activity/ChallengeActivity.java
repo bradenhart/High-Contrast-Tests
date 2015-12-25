@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -276,13 +277,27 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         // set text for title textview
         challengeTitle.setText(c.getName());
         // set text for description textview
-        challengeText.setText(c.getName());
+//        challengeText.setText(c.getName());
         // set text for difficulty textview
         challengeDifficulty.setText(c.getDifficulty());
         // set text for min textview
         challengeMin.setText(String.valueOf(c.getGroupMin()));
         // set text for max textview
         challengeMax.setText(String.valueOf(c.getGroupMax()));
+    }
+
+    private void setRandomChallengeMode(boolean isSet) {
+        if (!sp.contains(KEY_RANDOM_MODE)) {
+            sp.edit().putBoolean(KEY_RANDOM_MODE, DEFAULT_RANDOM_MODE_STATE).apply();
+        } else {
+            sp.edit().putBoolean(KEY_RANDOM_MODE, isSet);
+        }
+    }
+
+    private void retrieveRandomChallenge() {
+        Challenge c = dbHelper.retrieveRandomChallenge();
+        updateCurrentObjectId(c.getObjectId());
+        displayChallenge(c);
     }
 
     /** restore methods */
@@ -378,7 +393,15 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 retrieveNewChallenge();
                 break;
             case R.id.random_challenge_btn:
-                Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
+                if (randomChallengeBtn.isSelected()) {
+                    setRandomChallengeMode(false);
+                    randomChallengeBtn.setSelected(false);
+                } else {
+                    Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
+                    setRandomChallengeMode(true);
+                    randomChallengeBtn.setSelected(true);
+                    retrieveRandomChallenge();
+                }
                 break;
             case R.id.skip_challenge_btn:
                 Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
@@ -389,8 +412,10 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             case R.id.challenge_settings_button:
                 if (popupMenu.getVisibility() == View.VISIBLE) {
                     popupMenu.setVisibility(View.GONE);
+                    challengeSettingsBtn.setSelected(false);
                 } else {
                     popupMenu.setVisibility(View.VISIBLE);
+                    challengeSettingsBtn.setSelected(true);
                 }
                 break;
             case R.id.difficulty_down:
