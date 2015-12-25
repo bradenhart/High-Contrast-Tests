@@ -18,7 +18,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     private Context context;
     private ViewExpandedListener mExpandListener;
-    private TextView titleTv, descriptionTV, minTV, maxTV, groupV, completedV, difficultyTV, completedTV;
+    private TextView titleTv, descriptionTV, minTV, maxTV, groupV, difficultyTV, completedTV;
     private RelativeLayout expandedView;
 
     private Challenge challenge;
@@ -32,7 +32,6 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         this.minTV = (TextView) parent.findViewById(R.id.item_min_textview);
         this.maxTV = (TextView) parent.findViewById(R.id.item_max_textview);
         this.groupV = (TextView) parent.findViewById(R.id.item_group_icon);
-        this.completedV = (TextView) parent.findViewById(R.id.item_completed_icon);
         this.difficultyTV = (TextView) parent.findViewById(R.id.item_difficulty_textview);
         this.completedTV = (TextView) parent.findViewById(R.id.item_completed_textview);
         this.expandedView = (RelativeLayout) parent.findViewById(R.id.item_expanded_view);
@@ -57,12 +56,12 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         maxTV.setText(maxStr);
         difficultyTV.setText("Difficulty: " + item.getDifficulty());
         if (item.getCompleted()) {
+            titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_green_24dp, 0);
             completedTV.setText("Completed: Yep");
-            completedV.setVisibility(View.VISIBLE);
         } else {
             completedTV.setText("Completed: Nope");
+            titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.blank_icon, 0);
         }
-
 
     }
 
