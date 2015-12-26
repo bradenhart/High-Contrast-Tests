@@ -36,9 +36,23 @@ public final class Utils {
     public static final String KEY_STATE_GROUP_SIZE = "group_size_state";
     public static final String DEFAULT_DIFFICULTY_STATE = EASY;
     public static final Integer DEFAULT_GROUP_SIZE_STATE = 1;
-    public static final String KEY_OBJECT_ID = "object_id";
     public static final String KEY_RANDOM_MODE = "random_mode";
     public static final Boolean DEFAULT_RANDOM_MODE_STATE = false;
+
+    // DATABASE variables
+    // Table names
+    public static final String TABLE_CHALLENGE = "challenges";
+
+    // Column names
+    public static final String KEY_OBJECT_ID = "object_id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_DIFFICULTY = "difficulty";
+    public static final String KEY_GROUP_MIN = "group_min";
+    public static final String KEY_GROUP_MAX = "group_max";
+    public static final String KEY_CREATED_AT = "created_at";
+    public static final String KEY_COMPLETED = "completed";
+    public static final String KEY_COMPLETED_AT = "completed_at";
 
 
     public static int getToolbarHeight(Context context) {
@@ -102,6 +116,37 @@ public final class Utils {
         }
 //        System.out.println(date);
         return date;
+    }
+
+    public static Integer getDifficultyValue(String difficulty) {
+
+        switch (difficulty) {
+            case "Easy":
+                return 1;
+            case "Medium":
+                return 2;
+            case "Hard":
+                return 3;
+            case "Insane":
+                return 4;
+        }
+
+        return null;
+    }
+
+    public static String getDifficultyTerm(Integer value) {
+        switch (value) {
+            case 1:
+                return "Easy";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Hard";
+            case 4:
+                return "Insane";
+        }
+
+        return null;
     }
 
 }
