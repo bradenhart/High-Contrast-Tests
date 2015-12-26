@@ -32,20 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database name
     private static final String DATABASE_NAME = "HighContrastDb";
 
-    // Table names
-    private static final String TABLE_CHALLENGE = "challenges";
-
-    // Column names
-    private static final String KEY_OBJECT_ID = "object_id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_DIFFICULTY = "difficulty";
-    private static final String KEY_GROUP_MIN = "group_min";
-    private static final String KEY_GROUP_MAX = "group_max";
-    private static final String KEY_CREATED_AT = "created_at";
-    private static final String KEY_COMPLETED = "completed";
-    private static final String KEY_COMPLETED_AT = "completed_at";
-
     // Table create statements
     private static final String CREATE_TABLE_CHALLENGE = "create table " + TABLE_CHALLENGE
             + "("
@@ -211,6 +197,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
+    public Challenge getChallenge(String queryString, String[] queryParams) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Challenge c = null;
+
+        Cursor cursor = db.rawQuery(queryString, queryParams);
+
+        if (cursor.moveToFirst()) {
+            c = new Challenge();
+            String objectId = cursor.getString(cursor.getColumnIndex(KEY_OBJECT_ID));
+            String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+            String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
+            String difficulty = getDifficultyTerm(cursor.getInt(cursor.getColumnIndex(KEY_DIFFICULTY)));
+            Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
+            Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
+            Date createdAt = convertDateTimeToDate( cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)) );
+            Boolean completed = cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1;
+
+            c.setObjectId(objectId);
+            c.setName(name);
+            c.setDescription(description);
+            c.setDifficulty(difficulty);
+            c.setGroupMin(groupMin);
+            c.setGroupMax(groupMax);
+            c.setCreatedAt(createdAt);
+            c.setCompleted(completed);
+        } else {
+            Log.e(LOGTAG, "cursor is empty");
+        }
+
+        cursor.close();
+        return c;
+    }
+
     public Challenge retrieveNewChallenge(String difficulty, Integer groupMin) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -343,34 +363,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { objectId });
     }
 
-    private Integer getDifficultyValue(String difficulty) {
-
-        switch (difficulty) {
-            case "Easy":
-                return 1;
-            case "Medium":
-                return 2;
-            case "Hard":
-                return 3;
-            case "Insane":
-                return 4;
-        }
-
-        return null;
-    }
-
-    private String getDifficultyTerm(Integer value) {
-        switch (value) {
-            case 1:
-                return "Easy";
-            case 2:
-                return "Medium";
-            case 3:
-                return "Hard";
-            case 4:
-                return "Insane";
-        }
-
-        return null;
-    }
 }
