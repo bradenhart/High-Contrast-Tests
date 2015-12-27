@@ -51,9 +51,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private SharedPreferences sp;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_HAD_FIRST_USE = "first_use";
-    private String stateDifficulty;
-    private Integer stateGroupSize;
-    private String currentObjectId;
     private DatabaseHelper dbHelper;
     private Animation slideDownAnim, slideUpAnim, spinAnim;
     private RelativeLayout loadingLayout;
@@ -76,33 +73,31 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
         dbHelper = DatabaseHelper.getInstance(this);
 
-        updateDifficultyState(null); //  ???
-        updateGroupSizeState(null);  //  ???
+//        updateDifficultyState(null); //  ???
+//        updateGroupSizeState(null);  //  ???
+
+        // display saved challenge
+        // display random challenge
+        // display non-random challenge
 
         if (sp.contains(KEY_HAD_FIRST_USE)) {
-            currentObjectId = sp.getString(KEY_OBJECT_ID, null);
-            if (currentObjectId == null) {
+            if (storedObjectId() == null) {
                 // nothing saved, show new or random challenge
                 if (inRandomChallengeMode()) {
                     String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
                     String[] queryParams = new String[]{"0", "1"};
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 } else {
-                    stateDifficulty = sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
-                    String queryDifficulty = String.valueOf(getDifficultyValue(stateDifficulty));
-
-                    stateGroupSize = sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
-                    String queryGroupSize = String.valueOf(stateGroupSize);
 
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", queryDifficulty, queryGroupSize, "1" };
+                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
                     displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
                 }
             } else {
                 // something saved, display that challenge
                 String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_OBJECT_ID + " =? ";
-                String[] queryParams = new String[] { currentObjectId };
+                String[] queryParams = new String[] { storedObjectId() };
                 displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
             }
         } else {
@@ -235,16 +230,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
                     hideLoadingAnimation();
 
-//                    retrieveNewChallenge();
-                    stateDifficulty = sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
-                    String queryDifficulty = String.valueOf(getDifficultyValue(stateDifficulty));
-
-                    stateGroupSize = sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
-                    String queryGroupSize = String.valueOf(stateGroupSize);
-
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[]{"0", queryDifficulty, queryGroupSize, "1"};
+                    String[] queryParams = new String[]{"0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1"};
 
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 } else {
@@ -255,42 +243,47 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     }
 
+    /** */
+
+    private String storedDifficultyAsString() {
+        return sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
+    }
+
+    private Integer storedDifficultyAsInt() {
+        return getDifficultyValue(storedDifficultyAsString());
+    }
+
+    private Integer storedGroupMin() {
+        return sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
+    }
+
+    private String storedObjectId() {
+        return sp.getString(KEY_OBJECT_ID, null);
+    }
+
+    /** */
+
     /**
      * retrieve/display challenge
      */
     private void updateDifficultyState(String newState) {
         if (newState == null) {
-            stateDifficulty = DEFAULT_DIFFICULTY_STATE;
+            sp.edit().putString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE).apply();
         } else {
-            if (sp.contains(KEY_STATE_DIFFICULTY)) {
-                stateDifficulty = newState;
-            } else {
-                stateDifficulty = DEFAULT_DIFFICULTY_STATE;
-            }
+            sp.edit().putString(KEY_STATE_DIFFICULTY, newState).apply();
         }
-
-        sp.edit().putString(KEY_STATE_DIFFICULTY, stateDifficulty).apply();
     }
 
     private void updateGroupSizeState(Integer newState) {
         if (newState == null) {
-            stateGroupSize = DEFAULT_GROUP_SIZE_STATE;
+            sp.edit().putInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE).apply();
         } else {
-            if (sp.contains(KEY_STATE_GROUP_SIZE)) {
-                stateGroupSize = newState;
-            } else {
-                stateGroupSize = DEFAULT_GROUP_SIZE_STATE;
-            }
+            sp.edit().putInt(KEY_STATE_GROUP_SIZE, newState).apply();
         }
-
-        sp.edit().putInt(KEY_STATE_GROUP_SIZE, stateGroupSize).apply();
     }
 
     private void updateCurrentObjectId(String objectId) {
-        if (objectId != null) {
-            this.currentObjectId = objectId;
-            sp.edit().putString(KEY_OBJECT_ID, objectId).apply();
-        }
+        sp.edit().putString(KEY_OBJECT_ID, objectId).apply();
     }
 
 //    private void retrieveNewChallenge() {
@@ -454,22 +447,16 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 // user has completed the current challenge
 //                Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
                 // update the challenge to 'completed' in database
-                dbHelper.setChallengeCompleted(currentObjectId);
+                dbHelper.setChallengeCompleted(storedObjectId());
                 // get the next challenge to display
                 if (inRandomChallengeMode()) {
                     String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
                     String[] queryParams = new String[] { "0", "1" };
                     displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
                 } else {
-                    stateDifficulty = sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
-                    String queryDifficulty = String.valueOf(getDifficultyValue(stateDifficulty));
-
-                    stateGroupSize = sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
-                    String queryGroupSize = String.valueOf(stateGroupSize);
-
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", queryDifficulty, queryGroupSize, "1" };
+                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
                     displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
                 }
                 /*
@@ -481,15 +468,9 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     setRandomChallengeMode(false);
                     randomChallengeBtn.setSelected(false);
                     // go back to getting challenges based on game settings
-                    stateDifficulty = sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
-                    String queryDifficulty = String.valueOf(getDifficultyValue(stateDifficulty));
-
-                    stateGroupSize = sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
-                    String queryGroupSize = String.valueOf(stateGroupSize);
-
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", queryDifficulty, queryGroupSize, "1" };
+                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 } else {
 //                    Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
@@ -506,20 +487,15 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     Log.e(LOGTAG, "skip to next random challenge");
                     String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? and " + KEY_OBJECT_ID
                             + " !=? order by random() limit ?";
-                    String[] queryParams = new String[] { "0", currentObjectId, "1" };
+                    String[] queryParams = new String[] { "0", storedObjectId(), "1" };
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 } else {
                     Log.e(LOGTAG, "skip to next new challenge");
-                    stateDifficulty = sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
-                    String queryDifficulty = String.valueOf(getDifficultyValue(stateDifficulty));
-
-                    stateGroupSize = sp.getInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE);
-                    String queryGroupSize = String.valueOf(stateGroupSize);
-
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? and " + KEY_OBJECT_ID
                             + " !=? order by random() limit ?";
-                    String[] queryParams = new String[] { "0", queryDifficulty, queryGroupSize, currentObjectId,"1" };
+                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt())
+                            , String.valueOf(storedGroupMin()), storedObjectId(), "1" };
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 }
                 break;
