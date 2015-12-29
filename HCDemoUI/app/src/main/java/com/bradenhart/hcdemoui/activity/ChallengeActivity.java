@@ -1,25 +1,24 @@
 package com.bradenhart.hcdemoui.activity;
 
-import android.app.DownloadManager;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static com.bradenhart.hcdemoui.Utils.*;
 
@@ -27,7 +26,6 @@ import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -35,7 +33,6 @@ import com.parse.ParseQuery;
 
 import com.bradenhart.hcdemoui.R;
 
-import java.util.Date;
 import java.util.List;
 
 public class ChallengeActivity extends BaseActivity implements View.OnClickListener {
@@ -45,9 +42,13 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private FrameLayout root;
     private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
     private RelativeLayout popupMenu;
+    private ImageView difficultyTab, groupTab;
+    private LinearLayout difficultyLayout;
+    private LinearLayout groupLayout;
+    private TextView popupMenuHeader;
+    private NumberPicker difficultyPicker, groupSizePicker;
 
     private TextView challengeTitle, challengeText, challengeDifficulty, challengeMin, challengeMax;
-    private ImageView diffDown, diffUp, groupDown, groupUp;
     private SharedPreferences sp;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_HAD_FIRST_USE = "first_use";
@@ -68,44 +69,44 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         setClickListenerOnViews();
         // initialise animations from anim folder
         initAnimations();
+        //
+        initGroupSizePicker();
 
         sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         dbHelper = DatabaseHelper.getInstance(this);
 
-//        updateDifficultyState(null); //  ???
-//        updateGroupSizeState(null);  //  ???
-
-        // display saved challenge
-        // display random challenge
-        // display non-random challenge
-
         if (sp.contains(KEY_HAD_FIRST_USE)) {
             if (storedObjectId() == null) {
                 // nothing saved, show new or random challenge
                 if (inRandomChallengeMode()) {
-                    String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
-                    String[] queryParams = new String[]{"0", "1"};
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
+                    getChallenge(SELECT_SHUFFLE,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    LIMIT_ONE
+                            });
                 } else {
-
-                    String queryString = "select * from " + TABLE_CHALLENGE
-                            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
-                    displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
+                    getChallenge(SELECT_NORMAL,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    String.valueOf(storedDifficultyAsInt()),
+                                    String.valueOf(storedGroupMin()),
+                                    LIMIT_ONE
+                            });
                 }
             } else {
                 // something saved, display that challenge
-                String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_OBJECT_ID + " =? ";
-                String[] queryParams = new String[] { storedObjectId() };
-                displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
+                getChallenge(SELECT_BY_ID,
+                        new String[]{
+                                storedObjectId()
+                        });
             }
         } else {
             initiateFirstDataDownload();
             sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
+            Log.e(LOGTAG, "Stored difficulty: " + storedDifficultyAsString());
+            Log.e(LOGTAG, "Stored group min: " + storedGroupMin());
         }
-
-//        initiateFirstDataDownload();
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
 
@@ -122,6 +123,20 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         root = (FrameLayout) findViewById(R.id.base_container);
         // pop up menu for the game settings (difficulty and group size)
         popupMenu = (RelativeLayout) findViewById(R.id.game_settings_popup_menu);
+        // popup menu tab for difficulty layout
+        difficultyTab = (ImageView) findViewById(R.id.difficulty_icon_tab);
+        // popup menu tab for group size layout
+        groupTab = (ImageView) findViewById(R.id.group_icon_tab);
+        // difficulty layout in popup menu
+        difficultyLayout = (LinearLayout) findViewById(R.id.difficulty_layout);
+        // group size layout in popup menu
+        groupLayout = (LinearLayout) findViewById(R.id.group_layout);
+        // text header for popup menu
+        popupMenuHeader = (TextView) findViewById(R.id.popup_menu_header);
+        // number picker for difficulty
+        difficultyPicker = (NumberPicker) findViewById(R.id.pick_difficulty);
+        // number picker for group size
+        groupSizePicker = (NumberPicker) findViewById(R.id.pick_group_size);
         // the title for the challenge being displayed
         challengeTitle = (TextView) findViewById(R.id.challenge_title);
         // the description/text for the challenge being displayed
@@ -134,14 +149,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
         // button to open the popup menu for altering the current challenge settings
         challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
-        // button to decrease the difficulty of challenges
-        diffDown = (ImageView) findViewById(R.id.difficulty_down);
-        // button to increase the difficulty of challenges
-        diffUp = (ImageView) findViewById(R.id.difficulty_up);
-        // button to decrease the group size for challenges
-        groupDown = (ImageView) findViewById(R.id.group_down);
-        // button to increase the group size for challenges
-        groupUp = (ImageView) findViewById(R.id.group_up);
         // layout that contains a spinning loading icon and a message for the user
         loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
         // the loading image that will spin while data is being downloaded
@@ -161,16 +168,31 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     private void setClickListenerOnViews() {
         root.setOnClickListener(this);
-        challengeTitle.setOnClickListener(this);
-        challengeText.setOnClickListener(this);
         randomChallengeBtn.setOnClickListener(this);
         skipChallengeBtn.setOnClickListener(this);
         allChallengeBtn.setOnClickListener(this);
         challengeSettingsBtn.setOnClickListener(this);
-        diffDown.setOnClickListener(this);
-        diffUp.setOnClickListener(this);
-        groupDown.setOnClickListener(this);
-        groupUp.setOnClickListener(this);
+        difficultyTab.setOnClickListener(this);
+        groupTab.setOnClickListener(this);
+    }
+
+    private void initDifficultyPicker() {
+        String[] items = dbHelper.getValidDifficultyOptions();
+        Log.e(LOGTAG, printQueryParams(items));
+        if (items != null) {
+            difficultyPicker.setMinValue(0);
+            difficultyPicker.setMaxValue(items.length - 1);
+            difficultyPicker.setDisplayedValues(items);
+            difficultyPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        } else {
+            Log.e(LOGTAG, "items is null");
+        }
+    }
+
+    private void initGroupSizePicker() {
+        groupSizePicker.setMinValue(GROUP_SIZE_MINIMUM);
+        groupSizePicker.setMaxValue(GROUP_SIZE_MAXIMUM);
+        groupSizePicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
     }
 
     private void initAnimations() {
@@ -208,10 +230,50 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     /**
      * popup menu methods
      */
-    private void hidePopupMenu() {
-        if (popupMenu.getVisibility() == View.VISIBLE) {
-            popupMenu.setVisibility(View.GONE);
-        }
+    private void openPopupMenu() {
+        popupMenu.setVisibility(View.VISIBLE);
+        showDifficultyLayout();
+        challengeSettingsBtn.setSelected(true);
+        setButtonsEnabled(false);
+    }
+
+    private void closePopupMenu() {
+        popupMenu.setVisibility(View.GONE);
+        hideDifficultyLayout();
+        hideGroupLayout();
+        setButtonsEnabled(true);
+        challengeSettingsBtn.setSelected(false);
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        randomChallengeBtn.setClickable(enabled);
+        skipChallengeBtn.setClickable(enabled);
+        allChallengeBtn.setClickable(enabled);
+    }
+
+    private void showDifficultyLayout() {
+        groupTab.setSelected(false);
+        difficultyTab.setSelected(true);
+        initDifficultyPicker();
+        difficultyLayout.setVisibility(View.VISIBLE);
+        popupMenuHeader.setText("Difficulty");
+    }
+
+    private void hideDifficultyLayout() {
+        difficultyTab.setSelected(false);
+        difficultyLayout.setVisibility(View.GONE);
+    }
+
+    private void showGroupLayout() {
+        hideDifficultyLayout();
+        groupTab.setSelected(true);
+        groupLayout.setVisibility(View.VISIBLE);
+        popupMenuHeader.setText("Group Size");
+    }
+
+    private void hideGroupLayout() {
+        groupTab.setSelected(false);
+        groupLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -233,7 +295,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     String queryString = "select * from " + TABLE_CHALLENGE
                             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
                     String[] queryParams = new String[]{"0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1"};
-
+                    Log.e(LOGTAG, "query: " + queryString + " " + printQueryParams(queryParams));
                     displayChallenge(dbHelper.getChallenge(queryString, queryParams));
                 } else {
                     Log.e(LOGTAG, "error occurred querying for challenges");
@@ -243,8 +305,17 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    /** */
+    private String printQueryParams(String[] params) {
+        String string = "";
+        for (String s : params) {
+            string += s + ", ";
+        }
+        return string;
+    }
 
+    /**
+     * retrieve/display challenge
+     */
     private String storedDifficultyAsString() {
         return sp.getString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE);
     }
@@ -261,11 +332,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         return sp.getString(KEY_OBJECT_ID, null);
     }
 
-    /** */
-
-    /**
-     * retrieve/display challenge
-     */
     private void updateDifficultyState(String newState) {
         if (newState == null) {
             sp.edit().putString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE).apply();
@@ -286,57 +352,29 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         sp.edit().putString(KEY_OBJECT_ID, objectId).apply();
     }
 
-//    private void retrieveNewChallenge() {
-//        Challenge c = dbHelper.retrieveNewChallenge("Easy", 1);
-//
-//        if (c != null) {
-//            updateCurrentObjectId(c.getObjectId());
-//            displayChallenge(c);
-//        } else {
-//            Log.e(LOGTAG, "Couldn't get a challenge from database");
-//        }
-//    }
-
-    private void restoreChallenge(String id) {
-        displayChallenge(dbHelper.retrieveChallengeById(id));
-    }
-
     private void displayChallenge(Challenge c) {
-        if (c != null) {
-            updateCurrentObjectId(c.getObjectId());
-            // set text for title textview
-            challengeTitle.setText(c.getName());
-            // set text for description textview
+        updateCurrentObjectId(c.getObjectId());
+        // set text for title textview
+        challengeTitle.setText(c.getName());
+        // set text for description textview
 //        challengeText.setText(c.getDescription());
-            // set text for difficulty textview
-            challengeDifficulty.setText(c.getDifficulty());
-            // set text for min textview
-            challengeMin.setText(String.valueOf(c.getGroupMin()));
-            // set text for max textview
-            challengeMax.setText(String.valueOf(c.getGroupMax()));
-            Log.e(LOGTAG, "displaying challenge");
-        } else {
-            Log.e(LOGTAG, "Couldn't get a challenge from database");
-        }
+        // set text for difficulty textview
+        challengeDifficulty.setText(c.getDifficulty());
+        // set text for min textview
+        challengeMin.setText(String.valueOf(c.getGroupMin()));
+        // set text for max textview
+        challengeMax.setText(String.valueOf(c.getGroupMax()));
+        Log.e(LOGTAG, "displaying challenge");
     }
 
     private void setRandomChallengeMode(boolean isSet) {
-        if (!sp.contains(KEY_RANDOM_MODE)) {
-            sp.edit().putBoolean(KEY_RANDOM_MODE, DEFAULT_RANDOM_MODE_STATE).apply();
-        } else {
-            sp.edit().putBoolean(KEY_RANDOM_MODE, isSet).apply();
-        }
+        sp.edit().putBoolean(KEY_RANDOM_MODE, isSet).apply();
+
     }
 
     private boolean inRandomChallengeMode() {
         return sp.getBoolean(KEY_RANDOM_MODE, DEFAULT_RANDOM_MODE_STATE);
     }
-
-//    private void retrieveRandomChallenge() {
-//        Challenge c = dbHelper.retrieveRandomChallenge();
-//        updateCurrentObjectId(c.getObjectId());
-//        displayChallenge(c);
-//    }
 
     /**
      * restore methods
@@ -351,35 +389,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             }
         }
 
-        // show challenge
-        // get the challenge from SP instead of savedInstance bundle
-//        if (sp != null) {
-//            Log.e(LOGTAG, "sp not null");
-//            currentObjectId = sp.getString(KEY_OBJECT_ID, null);
-//            boolean randomState = sp.getBoolean(KEY_RANDOM_MODE, DEFAULT_RANDOM_MODE_STATE);
-//            if (currentObjectId == null) {
-//                Log.e(LOGTAG, "currentObjectId is null");
-//                // no challenge saved, need to get another
-//                if (randomState) {
-//                    Log.e(LOGTAG, "randomState is true");
-//                    // random button is selected, get a random challenge
-//                    retrieveRandomChallenge();
-//                } else {
-//                    Log.e(LOGTAG, "randomState is false");
-//                    // get a new challenge based on game settings
-//                    retrieveNewChallenge();
-//                }
-//            } else {
-//                Log.e(LOGTAG, "currentObjectId is  not null");
-//                // display the saved one
-//                restoreChallenge(currentObjectId);
-//            }
-//
-//        }
-
         randomChallengeBtn.setSelected(inRandomChallengeMode());
-
-
     }
 
     /**
@@ -436,6 +446,17 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         return new int[]{0, 0, 0, (int) getResources().getDimension(R.dimen.fab_radius)};
     }
 
+    private boolean getChallenge(String queryString, String[] queryParams) {
+        Challenge challenge = dbHelper.getChallenge(queryString, queryParams);
+        if (challenge != null) {
+            displayChallenge(challenge);
+            return true;
+        } else {
+            Log.e(LOGTAG, "Couldn't get a challenge from database");
+            return false;
+        }
+    }
+
     // click interface implementation
     @Override
     public void onClick(View view) {
@@ -445,22 +466,46 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         switch (id) {
             case R.id.base_fab:
                 // user has completed the current challenge
-//                Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
                 // update the challenge to 'completed' in database
                 dbHelper.setChallengeCompleted(storedObjectId());
                 // get the next challenge to display
                 if (inRandomChallengeMode()) {
-                    String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
-                    String[] queryParams = new String[] { "0", "1" };
-                    displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
+                    // if challenge is null, we must be out of challenges
+                    // TODO repeat mode or something that allows user to get any challenge, completed or not
+                    getChallenge(SELECT_SHUFFLE,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    LIMIT_ONE
+                            });
                 } else {
-                    String queryString = "select * from " + TABLE_CHALLENGE
-                            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
-                    displayChallenge( dbHelper.getChallenge(queryString, queryParams) );
+                    // TODO
+                    // if challenge is null, we must be out of challenges for set difficulty
+                    // need to increase or decrease difficulty
+                    boolean result = getChallenge(SELECT_NORMAL,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    String.valueOf(storedDifficultyAsInt()),
+                                    String.valueOf(storedGroupMin()),
+                                    LIMIT_ONE
+                            });
+
+                    if (!result) {
+                        AlertDialog dialog = new AlertDialog.Builder(this).create();
+                        dialog.setTitle("Woohoo!");
+                        dialog.setMessage("You've completed all the " + storedDifficultyAsString().toLowerCase() + " challenges!\nChange the difficulty up, or repeat some challenges.");
+                        dialog.setIcon(R.drawable.ic_done_green_24dp);
+                        dialog.setCancelable(true);
+                        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
                 }
-                /*
-                    if there are no challenges left for current difficulty
+                /**
+                 if there are no challenges left for current difficulty
                  */
                 break;
             case R.id.random_challenge_btn:
@@ -468,35 +513,42 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     setRandomChallengeMode(false);
                     randomChallengeBtn.setSelected(false);
                     // go back to getting challenges based on game settings
-                    String queryString = "select * from " + TABLE_CHALLENGE
-                            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1" };
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
+                    getChallenge(SELECT_NORMAL,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    String.valueOf(storedDifficultyAsInt()),
+                                    String.valueOf(storedGroupMin()),
+                                    LIMIT_ONE
+                            });
                 } else {
-//                    Toast.makeText(this, "Random challenge... ", Toast.LENGTH_SHORT).show();
                     setRandomChallengeMode(true);
                     randomChallengeBtn.setSelected(true);
-                    String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
-                    String[] queryParams = new String[] { "0", "1" };
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
+                    getChallenge(SELECT_SHUFFLE,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    LIMIT_ONE
+                            });
                 }
                 break;
             case R.id.skip_challenge_btn:
-//                Toast.makeText(this, "Skip challenge... ", Toast.LENGTH_SHORT).show();
                 if (inRandomChallengeMode()) {
                     Log.e(LOGTAG, "skip to next random challenge");
-                    String queryString = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? and " + KEY_OBJECT_ID
-                            + " !=? order by random() limit ?";
-                    String[] queryParams = new String[] { "0", storedObjectId(), "1" };
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
+                    getChallenge(SELECT_SHUFFLE_SKIP,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    storedObjectId(),
+                                    LIMIT_ONE
+                            });
                 } else {
                     Log.e(LOGTAG, "skip to next new challenge");
-                    String queryString = "select * from " + TABLE_CHALLENGE
-                            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? and " + KEY_OBJECT_ID
-                            + " !=? order by random() limit ?";
-                    String[] queryParams = new String[] { "0", String.valueOf(storedDifficultyAsInt())
-                            , String.valueOf(storedGroupMin()), storedObjectId(), "1" };
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
+                    getChallenge(SELECT_NORMAL_SKIP,
+                            new String[]{
+                                    COMPLETED_FALSE,
+                                    String.valueOf(storedDifficultyAsInt()),
+                                    String.valueOf(storedGroupMin()),
+                                    storedObjectId(),
+                                    LIMIT_ONE
+                            });
                 }
                 break;
             case R.id.all_challenges_button:
@@ -504,33 +556,22 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.challenge_settings_button:
                 if (popupMenu.getVisibility() == View.VISIBLE) {
-                    popupMenu.setVisibility(View.GONE);
-                    challengeSettingsBtn.setSelected(false);
+                    closePopupMenu();
                 } else {
-                    popupMenu.setVisibility(View.VISIBLE);
-                    challengeSettingsBtn.setSelected(true);
+                    openPopupMenu();
                 }
                 break;
-            case R.id.difficulty_down:
-
+            case R.id.difficulty_icon_tab:
+                if (!difficultyTab.isSelected()) {
+                    hideGroupLayout();
+                    showDifficultyLayout();
+                }
                 break;
-            case R.id.difficulty_up:
-
-                break;
-            case R.id.group_down:
-
-                break;
-            case R.id.group_up:
-
-                break;
-            case R.id.base_container:
-                hidePopupMenu();
-                break;
-            case R.id.challenge_title:
-                hidePopupMenu();
-                break;
-            case R.id.challenge_text:
-                hidePopupMenu();
+            case R.id.group_icon_tab:
+                if (!groupTab.isSelected()) {
+                    hideDifficultyLayout();
+                    showGroupLayout();
+                }
                 break;
             default:
                 break;

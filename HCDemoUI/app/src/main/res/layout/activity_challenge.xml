@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="@string/challenge_title_placeholder"
                 android:textAppearance="?attr/textAppearanceSearchResultTitle" />
 
             <TextView
@@ -36,8 +35,7 @@
                 android:paddingBottom="30dp"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
-                android:paddingTop="25dp"
-                android:text="@string/lorem_ipsum" />
+                android:paddingTop="25dp" />
 
         </LinearLayout>
 
@@ -54,7 +52,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="Insane"
                 android:textSize="18sp" />
 
             <Space
@@ -68,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:padding="5dp"
-                android:text="1"
                 android:textSize="18sp" />
 
             <TextView
@@ -76,7 +72,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="2"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -98,17 +93,17 @@
                 <TextView
                     android:id="@+id/random_challenge_btn"
                     style="@style/ChallengeLeftOptionsStyle"
-                    android:padding="5dp"
                     android:background="@drawable/game_button_selector"
                     android:drawableTop="@drawable/random_button_icon_selector"
+                    android:padding="5dp"
                     android:text="random" />
 
                 <TextView
                     android:id="@+id/skip_challenge_btn"
                     style="@style/ChallengeLeftOptionsStyle"
+                    android:background="@drawable/game_button_selector"
                     android:drawableTop="@drawable/ic_keyboard_arrow_right_white_24dp"
                     android:padding="5dp"
-                    android:background="@drawable/game_button_selector"
                     android:text="skip" />
             </LinearLayout>
 
@@ -121,86 +116,36 @@
                 <TextView
                     android:id="@+id/all_challenges_button"
                     style="@style/ChallengeRightOptionsStyle"
+                    android:background="@drawable/game_button_selector"
                     android:drawableTop="@drawable/ic_view_list_white_24dp"
                     android:padding="5dp"
-                    android:background="@drawable/game_button_selector"
                     android:text="challenges" />
 
                 <TextView
                     android:id="@+id/challenge_settings_button"
                     style="@style/ChallengeRightOptionsStyle"
+                    android:background="@drawable/game_button_selector"
                     android:drawableTop="@drawable/game_settings_button_icon_selector"
                     android:padding="5dp"
-                    android:background="@drawable/game_button_selector"
                     android:text="settings" />
             </LinearLayout>
         </LinearLayout>
 
-        <RelativeLayout
+        <include
             android:id="@+id/game_settings_popup_menu"
+            layout="@layout/popup_menu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/fab_diameter"
-            android:layout_marginRight="25dp"
-            android:background="@color/tabGrey"
-            android:padding="5dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/difficulty_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:src="@drawable/ic_arrow_drop_down_white_24dp" />
-
-            <ImageView
-                android:id="@+id/difficulty_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/difficulty_down"
-                android:padding="5dp"
-                android:src="@drawable/ic_fitness_center_white_24dp" />
-
-            <ImageView
-                android:id="@+id/difficulty_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/difficulty_icon"
-                android:padding="5dp"
-                android:src="@drawable/ic_arrow_drop_up_white_24dp" />
-
-            <ImageView
-                android:id="@+id/group_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/difficulty_down"
-                android:padding="5dp"
-                android:src="@drawable/ic_arrow_drop_down_white_24dp" />
-
-            <ImageView
-                android:id="@+id/group_size_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/difficulty_icon"
-                android:layout_toRightOf="@id/group_down"
-                android:padding="5dp"
-                android:src="@drawable/ic_group_white_24dp" />
-
-            <ImageView
-                android:id="@+id/group_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/difficulty_up"
-                android:layout_toRightOf="@id/group_size_icon"
-                android:padding="5dp"
-                android:src="@drawable/ic_arrow_drop_up_white_24dp" />
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginRight="23dp"
+            android:layout_marginTop="?android:actionBarSize"
+            android:layout_marginBottom="@dimen/fab_diameter_plus_padding"/>
 
         <View
             android:id="@+id/download_screen_block"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/fab_diameter"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:visibility="gone" />
@@ -235,11 +180,11 @@
 
         </RelativeLayout>
 
-        <!--<com.melnykov.fab.FloatingActionButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|center_horizontal"-->
-        <!--android:layout_marginBottom="28dp"/>-->
+        <com.melnykov.fab.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="28dp"/>
 
     </FrameLayout>
 

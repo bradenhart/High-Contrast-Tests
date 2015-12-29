@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:gravity="center_vertical"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/difficulty_icon_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tab_selector"
+        android:clickable="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_fitness_center_black_24dp" />
+
+    <ImageView
+        android:id="@+id/group_icon_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/difficulty_icon_tab"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/tab_selector"
+        android:clickable="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_group_black_24dp" />
+
+    <LinearLayout
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/difficulty_icon_tab"
+        android:background="@drawable/tab_outline_selected"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/popup_menu_header"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Difficulty"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/colorDivider" />
+
+        <!--<ScrollView-->
+        <!--android:id="@+id/difficulty_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="190dp"-->
+        <!--android:visibility="visible">-->
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<Button-->
+        <!--android:id="@+id/change_to_easy"-->
+        <!--style="?attr/buttonBarButtonStyle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Easy"-->
+        <!--android:textColor="@drawable/filter_button_selector" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/change_to_medium"-->
+        <!--style="?attr/buttonBarButtonStyle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Medium"-->
+        <!--android:textColor="@drawable/filter_button_selector" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/change_to_hard"-->
+        <!--style="?attr/buttonBarButtonStyle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Hard"-->
+        <!--android:textColor="@drawable/filter_button_selector" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/change_to_insane"-->
+        <!--style="?attr/buttonBarButtonStyle"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Insane"-->
+        <!--android:textColor="@drawable/filter_button_selector" />-->
+
+        <!--</LinearLayout>-->
+        <!--</ScrollView>-->
+
+        <LinearLayout
+            android:id="@+id/difficulty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <NumberPicker
+                android:id="@+id/pick_difficulty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/group_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="190dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <NumberPicker
+                android:id="@+id/pick_group_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

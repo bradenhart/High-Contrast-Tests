@@ -11,22 +11,12 @@
         android:background="#EEEEEE" />
 
     <View
-        android:id="@+id/transparent_view"
+        android:id="@+id/ac_transparent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#30aaaeee"
         android:clickable="true"
         android:visibility="gone"/>
-
-    <!--<include-->
-        <!--android:id="@+id/split_card_view"-->
-        <!--layout="@layout/split_card_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:layout_marginBottom="125dp"/>-->
 
     <include
         android:id="@+id/icon_card_view"

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -98,7 +96,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         filterFab = (FloatingActionButton) findViewById(R.id.base_fab);
         filterFab.setOnClickListener(this);
 
-        transparentView = findViewById(R.id.transparent_view);
+        transparentView = findViewById(R.id.ac_transparent_view);
         transparentView.setOnClickListener(this);
 
         updateLayout = (RelativeLayout) findViewById(R.id.list_refresh_layout);
@@ -391,7 +389,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                     openFilterCard();
                 }
                 break;
-            case R.id.transparent_view:
+            case R.id.ac_transparent_view:
                 closeFilterCard();
             case R.id.filter_icon_tab:
                 if (!filterTab.isSelected()) {

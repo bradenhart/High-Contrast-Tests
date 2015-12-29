@@ -54,6 +54,25 @@ public final class Utils {
     public static final String KEY_COMPLETED = "completed";
     public static final String KEY_COMPLETED_AT = "completed_at";
 
+    public static final String COMPLETED_FALSE = "0";
+    public static final String COMPLETED_TRUE = "1";
+    public static final String LIMIT_ONE = "1";
+
+    // QUERY SELECT STATEMENTS
+    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
+    public static final String SELECT_NORMAL = "select * from " + TABLE_CHALLENGE
+            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
+    public static final String SELECT_BY_ID = "select * from " + TABLE_CHALLENGE + " where " + KEY_OBJECT_ID + " =? ";
+    public static final String SELECT_SHUFFLE_SKIP = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? and " + KEY_OBJECT_ID
+            + " !=? order by random() limit ?";
+    public static final String SELECT_NORMAL_SKIP = "select * from " + TABLE_CHALLENGE
+            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? and " + KEY_OBJECT_ID
+            + " !=? order by random() limit ?";
+//    public static final String SELECT_RANDOM
+
+    public static final Integer GROUP_SIZE_MINIMUM = 1;
+    public static final Integer GROUP_SIZE_MAXIMUM = 7;
+
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
