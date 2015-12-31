@@ -3,8 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
     android:gravity="center_vertical"
+    android:paddingTop="10dp"
     android:visibility="gone">
 
     <ImageView
@@ -28,9 +28,11 @@
         android:src="@drawable/ic_group_black_24dp" />
 
     <LinearLayout
+        android:id="@+id/popup_main_layout"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         android:layout_toRightOf="@id/difficulty_icon_tab"
         android:background="@drawable/tab_outline_selected"
         android:gravity="center_horizontal"
@@ -53,59 +55,13 @@
             android:layout_marginRight="2dp"
             android:background="@color/colorDivider" />
 
-        <!--<ScrollView-->
-        <!--android:id="@+id/difficulty_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="190dp"-->
-        <!--android:visibility="visible">-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<Button-->
-        <!--android:id="@+id/change_to_easy"-->
-        <!--style="?attr/buttonBarButtonStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Easy"-->
-        <!--android:textColor="@drawable/filter_button_selector" />-->
-
-        <!--<Button-->
-        <!--android:id="@+id/change_to_medium"-->
-        <!--style="?attr/buttonBarButtonStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Medium"-->
-        <!--android:textColor="@drawable/filter_button_selector" />-->
-
-        <!--<Button-->
-        <!--android:id="@+id/change_to_hard"-->
-        <!--style="?attr/buttonBarButtonStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Hard"-->
-        <!--android:textColor="@drawable/filter_button_selector" />-->
-
-        <!--<Button-->
-        <!--android:id="@+id/change_to_insane"-->
-        <!--style="?attr/buttonBarButtonStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Insane"-->
-        <!--android:textColor="@drawable/filter_button_selector" />-->
-
-        <!--</LinearLayout>-->
-        <!--</ScrollView>-->
-
         <LinearLayout
             android:id="@+id/difficulty_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <NumberPicker
                 android:id="@+id/pick_difficulty"
@@ -117,7 +73,7 @@
         <LinearLayout
             android:id="@+id/group_layout"
             android:layout_width="wrap_content"
-            android:layout_height="190dp"
+            android:layout_height="150dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
@@ -129,7 +85,33 @@
 
         </LinearLayout>
 
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/popup_confirm_change"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignBottom="@id/popup_main_layout"
+        android:layout_toRightOf="@id/popup_main_layout"
+        android:background="@drawable/confirm_change_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Ok"
+        android:textColor="@color/confirmGreen"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/popup_cancel_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/popup_confirm_change"
+        android:layout_marginBottom="1dp"
+        android:layout_toRightOf="@id/popup_main_layout"
+        android:background="@drawable/cancel_change_selector"
+        android:clickable="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_cancel_red_24dp" />
 
 </RelativeLayout>
