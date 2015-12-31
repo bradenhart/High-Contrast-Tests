@@ -137,9 +137,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="23dp"
-            android:layout_marginTop="?android:actionBarSize"
-            android:layout_marginBottom="@dimen/fab_diameter_plus_padding"/>
+            android:layout_marginBottom="@dimen/fab_diameter_plus_padding"
+            android:layout_marginTop="?android:actionBarSize" />
 
         <View
             android:id="@+id/download_screen_block"
@@ -181,10 +180,10 @@
         </RelativeLayout>
 
         <com.melnykov.fab.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="28dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="28dp" />
 
     </FrameLayout>
 
