@@ -40,9 +40,10 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private final String LOGTAG = "ChallengeActivity";
 
     private FrameLayout root;
-    private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn;
+    private FloatingActionButton fab;
+    private TextView randomChallengeBtn, skipChallengeBtn, allChallengeBtn, challengeSettingsBtn, confirmChangeBtn;
     private RelativeLayout popupMenu;
-    private ImageView difficultyTab, groupTab;
+    private ImageView difficultyTab, groupTab, cancelChangeBtn;
     private LinearLayout difficultyLayout;
     private LinearLayout groupLayout;
     private TextView popupMenuHeader;
@@ -52,6 +53,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private SharedPreferences sp;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_HAD_FIRST_USE = "first_use";
+    private final String KEY_GROUP_LAYOUT_VISIBILITY = "group_layout_visibility";
     private DatabaseHelper dbHelper;
     private Animation slideDownAnim, slideUpAnim, spinAnim;
     private RelativeLayout loadingLayout;
@@ -71,6 +73,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         initAnimations();
         //
         initGroupSizePicker();
+//        setDifficultyValueChangeClickListener();
+//        setGroupSizeValueChangeClickListener();
 
         sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -161,8 +165,12 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         challengeMin = (TextView) findViewById(R.id.challenge_min);
         // challenge max
         challengeMax = (TextView) findViewById(R.id.challenge_max);
+        //
+        confirmChangeBtn = (TextView) findViewById(R.id.popup_confirm_change);
+        //
+        cancelChangeBtn = (ImageView) findViewById(R.id.popup_cancel_change);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.base_fab);
+        fab = (FloatingActionButton) findViewById(R.id.base_fab);
         fab.setOnClickListener(this);
     }
 
@@ -174,19 +182,32 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         challengeSettingsBtn.setOnClickListener(this);
         difficultyTab.setOnClickListener(this);
         groupTab.setOnClickListener(this);
+        confirmChangeBtn.setOnClickListener(this);
+        cancelChangeBtn.setOnClickListener(this);
     }
 
     private void initDifficultyPicker() {
-        String[] items = dbHelper.getValidDifficultyOptions();
-        Log.e(LOGTAG, printQueryParams(items));
-        if (items != null) {
-            difficultyPicker.setMinValue(0);
-            difficultyPicker.setMaxValue(items.length - 1);
-            difficultyPicker.setDisplayedValues(items);
-            difficultyPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        } else {
-            Log.e(LOGTAG, "items is null");
-        }
+//        String[] items = dbHelper.getValidDifficultyOptions();
+        String[] items = new String[]{EASY, MEDIUM, HARD, INSANE};
+//        Log.e(LOGTAG, printQueryParams(items));
+        difficultyPicker.setMinValue(1);
+        difficultyPicker.setMaxValue(items.length);
+        difficultyPicker.setDisplayedValues(items);
+        difficultyPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+    }
+
+    private void setDifficultyValueChangeClickListener() {
+        difficultyPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                String[] values = picker.getDisplayedValues();
+                updateDifficultyState(values[newVal]);
+            }
+        });
+    }
+
+    private void setGroupSizeValueChangeClickListener() {
+
     }
 
     private void initGroupSizePicker() {
@@ -257,6 +278,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         initDifficultyPicker();
         difficultyLayout.setVisibility(View.VISIBLE);
         popupMenuHeader.setText("Difficulty");
+        difficultyPicker.setValue(storedDifficultyAsInt());
+        Log.e(LOGTAG, "showing " + storedDifficultyAsString() + " (" + storedDifficultyAsInt() + ")");
     }
 
     private void hideDifficultyLayout() {
@@ -269,6 +292,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         groupTab.setSelected(true);
         groupLayout.setVisibility(View.VISIBLE);
         popupMenuHeader.setText("Group Size");
+        groupSizePicker.setValue(storedGroupMin());
+        Log.e(LOGTAG, "showing " + storedGroupMin());
     }
 
     private void hideGroupLayout() {
@@ -337,6 +362,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             sp.edit().putString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE).apply();
         } else {
             sp.edit().putString(KEY_STATE_DIFFICULTY, newState).apply();
+            Log.e(LOGTAG, "updating difficulty state: " + newState);
         }
     }
 
@@ -345,6 +371,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             sp.edit().putInt(KEY_STATE_GROUP_SIZE, DEFAULT_GROUP_SIZE_STATE).apply();
         } else {
             sp.edit().putInt(KEY_STATE_GROUP_SIZE, newState).apply();
+            Log.e(LOGTAG, "Group Size updated: " + newState);
         }
     }
 
@@ -384,9 +411,16 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             // restores the popup menu to the visible state it had before screen orientation changed
             if (state.getInt(KEY_POPUP_VISIBILITY) == View.VISIBLE) {
                 popupMenu.setVisibility(View.VISIBLE);
+                if (state.getInt(KEY_GROUP_LAYOUT_VISIBILITY) == View.VISIBLE) {
+                    showGroupLayout();
+                } else {
+                    showDifficultyLayout();
+                }
             } else {
                 popupMenu.setVisibility(View.GONE);
             }
+
+
         }
 
         randomChallengeBtn.setSelected(inRandomChallengeMode());
@@ -399,6 +433,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_POPUP_VISIBILITY, popupMenu.getVisibility());
+        outState.putInt(KEY_GROUP_LAYOUT_VISIBILITY, groupLayout.getVisibility());
     }
 
     @Override
@@ -454,6 +489,42 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         } else {
             Log.e(LOGTAG, "Couldn't get a challenge from database");
             return false;
+        }
+    }
+
+    private void undoChangeAction() {
+        if (inRandomChallengeMode()) {
+            getChallenge(SELECT_SHUFFLE,
+                    new String[]{
+                            COMPLETED_FALSE,
+                            LIMIT_ONE
+                    });
+        } else {
+            getChallenge(SELECT_NORMAL,
+                    new String[]{
+                            COMPLETED_FALSE,
+                            String.valueOf(storedDifficultyAsInt()),
+                            String.valueOf(storedGroupMin()),
+                            LIMIT_ONE
+                    });
+        }
+    }
+
+    private void completeChangeAction() {
+        if (inRandomChallengeMode()) {
+            getChallenge(SELECT_SHUFFLE,
+                    new String[]{
+                            COMPLETED_FALSE,
+                            LIMIT_ONE
+                    });
+        } else {
+            getChallenge(SELECT_NORMAL,
+                    new String[]{
+                            COMPLETED_FALSE,
+                            String.valueOf(storedDifficultyAsInt()),
+                            String.valueOf(storedGroupMin()),
+                            LIMIT_ONE
+                    });
         }
     }
 
@@ -573,10 +644,93 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     showGroupLayout();
                 }
                 break;
+            case R.id.popup_confirm_change:
+                if (difficultyLayout.getVisibility() == View.VISIBLE) {
+                    String[] values = difficultyPicker.getDisplayedValues();
+                    int index = difficultyPicker.getValue() - 1;
+                    final String oldState = storedDifficultyAsString();
+                    final String updatedState = values[index];
+
+                    if (!oldState.equalsIgnoreCase(updatedState)) {
+                        showDifficultyChangedSnackbar(oldState, updatedState);
+                    }
+                } else if (groupLayout.getVisibility() == View.VISIBLE) {
+                    final Integer oldState = storedGroupMin();
+                    final Integer updatedState = groupSizePicker.getValue();
+
+                    if (!oldState.equals(updatedState)) {
+                        showGroupSizeChangedSnackbar(oldState, updatedState);
+                    }
+                }
+                closePopupMenu();
+                break;
+            case R.id.popup_cancel_change:
+                closePopupMenu();
+                break;
             default:
                 break;
         }
 
+    }
+
+    private void showDifficultyChangedSnackbar(final String oldState, final String updatedState) {
+        updateDifficultyState(updatedState);
+        completeChangeAction();
+
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.challenge_root), "Changed difficulty", Snackbar.LENGTH_LONG);
+
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateDifficultyState(oldState);
+                // reload a challenge that meets settings, or if in random mode, do nothing.
+                undoChangeAction();
+            }
+        });
+
+        snackbar.setCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                fab.setClickable(true);
+            }
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+                fab.setClickable(false);
+            }
+        });
+
+        snackbar.show();
+    }
+
+    private void showGroupSizeChangedSnackbar(final Integer oldState, final Integer updatedState) {
+        updateGroupSizeState(updatedState);
+        completeChangeAction();
+
+        final Snackbar snackbar = Snackbar.make(findViewById(R.id.challenge_root), "Changed group size", Snackbar.LENGTH_LONG);
+
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateGroupSizeState(oldState);
+                // reload a challenge that meets settings, or if in random mode, do nothing.
+                undoChangeAction();
+            }
+        });
+
+        snackbar.setCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                fab.setClickable(true);
+            }
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+                fab.setClickable(false);
+            }
+        });
+
+        snackbar.show();
     }
 
 }
