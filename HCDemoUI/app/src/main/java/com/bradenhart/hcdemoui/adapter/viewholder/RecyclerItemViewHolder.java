@@ -3,6 +3,7 @@ package com.bradenhart.hcdemoui.adapter.viewholder;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         this.completedTV = (TextView) parent.findViewById(R.id.item_completed_textview);
         this.expandedView = (RelativeLayout) parent.findViewById(R.id.item_expanded_view);
         parent.setOnClickListener(this);
+//        Log.e("ViewHolder", "item constructor called");
     }
 
     public static RecyclerItemViewHolder newInstance(View parent) {
@@ -43,6 +45,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     }
 
     public void setItemText(Challenge item) {
+        collapseCardView();
         challenge = item;
         titleTv.setText(item.getName());
         descriptionTV.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat.");
@@ -62,7 +65,6 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             completedTV.setText("Completed: Nope");
             titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.blank_icon, 0);
         }
-
     }
 
     public void setViewExpandListener(ViewExpandedListener expandListener) {
