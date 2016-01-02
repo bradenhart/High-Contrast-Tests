@@ -186,7 +186,7 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.nav_challenges:
                         if (!menuItem.isChecked()) {
                             activityId = id;
-                            startActivity(AllChallengesActivity.class);
+                            startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_slide_to_top);
                         }
                         break;
                     case R.id.nav_settings:
@@ -381,6 +381,14 @@ public class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(context, theClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    public void startActivity(Class<?> theClass, int enterAnim, int exitAnim) {
+        Context context = getApplicationContext();
+        Intent intent = new Intent(context, theClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        overridePendingTransition(enterAnim, exitAnim);
     }
 
     @Override

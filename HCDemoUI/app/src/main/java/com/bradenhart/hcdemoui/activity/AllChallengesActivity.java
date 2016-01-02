@@ -320,6 +320,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         super.onBackPressed();
         Intent intent = new Intent(this, ChallengeActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.anim_slide_to_bottom, R.anim.anim_slide_from_top);
     }
 
     // recyclerview interface implementation
