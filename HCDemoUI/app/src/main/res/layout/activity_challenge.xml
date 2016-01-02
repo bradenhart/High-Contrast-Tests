@@ -140,44 +140,6 @@
             android:layout_marginBottom="@dimen/fab_diameter_plus_padding"
             android:layout_marginTop="?android:actionBarSize" />
 
-        <View
-            android:id="@+id/download_screen_block"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/fab_diameter"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:visibility="gone" />
-
-        <RelativeLayout
-            android:id="@+id/challenge_download_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="?android:actionBarSize"
-            android:background="@color/loadingBackground"
-            android:gravity="center"
-            android:padding="20dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/download_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_sync_white_48dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/download_icon"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="Initialising app, please wait..."
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
 
         <com.melnykov.fab.FloatingActionButton
             android:layout_width="wrap_content"
