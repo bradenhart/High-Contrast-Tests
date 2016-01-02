@@ -52,13 +52,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private TextView challengeTitle, challengeText, challengeDifficulty, challengeMin, challengeMax;
     private SharedPreferences sp;
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
-    private final String KEY_HAD_FIRST_USE = "first_use";
     private final String KEY_GROUP_LAYOUT_VISIBILITY = "group_layout_visibility";
     private DatabaseHelper dbHelper;
-    private Animation slideDownAnim, slideUpAnim, spinAnim;
-    private RelativeLayout loadingLayout;
-    private View screenBlock;
-    private ImageView loadingIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,47 +64,37 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         initViews();
         // set onClickListener for all views here
         setClickListenerOnViews();
-        // initialise animations from anim folder
-        initAnimations();
         //
         initGroupSizePicker();
-//        setDifficultyValueChangeClickListener();
-//        setGroupSizeValueChangeClickListener();
 
         sp = getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         dbHelper = DatabaseHelper.getInstance(this);
 
-        if (sp.contains(KEY_HAD_FIRST_USE)) {
-            if (storedObjectId() == null) {
-                // nothing saved, show new or random challenge
-                if (inRandomChallengeMode()) {
-                    getChallenge(SELECT_SHUFFLE,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    LIMIT_ONE
-                            });
-                } else {
-                    getChallenge(SELECT_NORMAL,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    String.valueOf(storedDifficultyAsInt()),
-                                    String.valueOf(storedGroupMin()),
-                                    LIMIT_ONE
-                            });
-                }
-            } else {
-                // something saved, display that challenge
-                getChallenge(SELECT_BY_ID,
+
+        if (storedObjectId() == null) {
+            // nothing saved, show new or random challenge
+            if (inRandomChallengeMode()) {
+                getChallenge(SELECT_SHUFFLE,
                         new String[]{
-                                storedObjectId()
+                                COMPLETED_FALSE,
+                                LIMIT_ONE
+                        });
+            } else {
+                getChallenge(SELECT_NORMAL,
+                        new String[]{
+                                COMPLETED_FALSE,
+                                String.valueOf(storedDifficultyAsInt()),
+                                String.valueOf(storedGroupMin()),
+                                LIMIT_ONE
                         });
             }
         } else {
-            initiateFirstDataDownload();
-            sp.edit().putBoolean(KEY_HAD_FIRST_USE, true).apply();
-            Log.e(LOGTAG, "Stored difficulty: " + storedDifficultyAsString());
-            Log.e(LOGTAG, "Stored group min: " + storedGroupMin());
+            // something saved, display that challenge
+            getChallenge(SELECT_BY_ID,
+                    new String[]{
+                            storedObjectId()
+                    });
         }
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
@@ -153,12 +138,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         allChallengeBtn = (TextView) findViewById(R.id.all_challenges_button);
         // button to open the popup menu for altering the current challenge settings
         challengeSettingsBtn = (TextView) findViewById(R.id.challenge_settings_button);
-        // layout that contains a spinning loading icon and a message for the user
-        loadingLayout = (RelativeLayout) findViewById(R.id.challenge_download_layout);
-        // the loading image that will spin while data is being downloaded
-        loadingIcon = (ImageView) findViewById(R.id.download_icon);
-        // a view that will block any buttons that need to be disabled while data is being downloaded
-        screenBlock = findViewById(R.id.download_screen_block);
         // challenge difficulty
         challengeDifficulty = (TextView) findViewById(R.id.challenge_difficulty_textview);
         // challenge min
@@ -216,37 +195,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         groupSizePicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
     }
 
-    private void initAnimations() {
-        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_down);
-        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
-        spinAnim = AnimationUtils.loadAnimation(this, R.anim.anim_spin);
-    }
-
-    /**
-     * loading animations
-     */
-    private void showLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
-            loadingLayout.setAnimation(slideDownAnim);
-            loadingLayout.setVisibility(View.VISIBLE);
-            loadingIcon.setAnimation(spinAnim);
-            screenBlock.setVisibility(View.VISIBLE);
-            setFabEnabled(false);
-        }
-    }
-
-    private void hideLoadingAnimation() {
-        if (loadingLayout != null && loadingIcon != null && screenBlock != null) {
-            if (loadingLayout.getVisibility() == View.VISIBLE && screenBlock.getVisibility() == View.VISIBLE) {
-                spinAnim.cancel();
-                spinAnim.reset();
-                loadingLayout.startAnimation(slideUpAnim);
-                loadingLayout.setVisibility(View.GONE);
-                screenBlock.setVisibility(View.GONE);
-                setFabEnabled(true);
-            }
-        }
-    }
+    /** removed animation methods from here */
 
     /**
      * popup menu methods
@@ -302,33 +251,8 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     }
 
     /**
-     * download methods
+     * removed download methods from here
      */
-    private void initiateFirstDataDownload() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Challenge");
-        showLoadingAnimation();
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    // no error
-                    Log.e(LOGTAG, "calling insertChallenges method");
-                    dbHelper.insertChallengesToDb(objects);
-
-                    hideLoadingAnimation();
-
-                    String queryString = "select * from " + TABLE_CHALLENGE
-                            + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
-                    String[] queryParams = new String[]{"0", String.valueOf(storedDifficultyAsInt()), String.valueOf(storedGroupMin()), "1"};
-                    Log.e(LOGTAG, "query: " + queryString + " " + printQueryParams(queryParams));
-                    displayChallenge(dbHelper.getChallenge(queryString, queryParams));
-                } else {
-                    Log.e(LOGTAG, "error occurred querying for challenges");
-                }
-            }
-        });
-
-    }
 
     private String printQueryParams(String[] params) {
         String string = "";
@@ -419,8 +343,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             } else {
                 popupMenu.setVisibility(View.GONE);
             }
-
-
         }
 
         randomChallengeBtn.setSelected(inRandomChallengeMode());
@@ -623,7 +545,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.all_challenges_button:
-                startActivity(AllChallengesActivity.class);
+                startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_slide_to_top);
                 break;
             case R.id.challenge_settings_button:
                 if (popupMenu.getVisibility() == View.VISIBLE) {
