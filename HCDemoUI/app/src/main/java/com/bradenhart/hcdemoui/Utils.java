@@ -73,6 +73,8 @@ public final class Utils {
     public static final Integer GROUP_SIZE_MINIMUM = 1;
     public static final Integer GROUP_SIZE_MAXIMUM = 7;
 
+    public static final String KEY_HAD_FIRST_USE = "first_use";
+
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
