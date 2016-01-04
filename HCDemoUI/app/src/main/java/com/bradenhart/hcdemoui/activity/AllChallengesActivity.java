@@ -23,6 +23,7 @@ import com.bradenhart.hcdemoui.R;
 import static com.bradenhart.hcdemoui.Utils.*;
 
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
+import com.bradenhart.hcdemoui.adapter.SnappingLinearLayoutManager;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
@@ -215,7 +216,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     /** set up */
     private void setupRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new SnappingLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerAdapter = new RecyclerAdapter(createItemList(filterTerm));
         recyclerAdapter.setExpandListener(this);
         recyclerView.setAdapter(recyclerAdapter);
@@ -325,17 +328,23 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     // recyclerview interface implementation
     @Override
-    public void onExpand(View toExpandView) {
+    public void onExpand(View toExpandView, int position) {
         expandedView = toExpandView;
-        filterFab.startAnimation(fabOutAnim);
-        filterFab.setVisibility(View.GONE);
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+//        layoutManager.scrollToPositionWithOffset(0, 150);
+//        recyclerView.scrollToPosition(position);
+        Log.e(LOGTAG, "onExpand");
+//        recyclerView.smoothScrollToPosition(position);
+//        filterFab.startAnimation(fabOutAnim);
+//        filterFab.setVisibility(View.GONE);
     }
 
     @Override
     public void onCollapse() {
         expandedView = null;
-        filterFab.startAnimation(fabInAnim);
-        filterFab.setVisibility(View.VISIBLE);
+
+//        filterFab.startAnimation(fabInAnim);
+//        filterFab.setVisibility(View.VISIBLE);
     }
 
     // parent methods

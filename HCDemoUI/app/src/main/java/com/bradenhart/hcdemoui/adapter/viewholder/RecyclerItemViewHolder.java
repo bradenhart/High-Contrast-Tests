@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,10 +21,11 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     private Context context;
     private ViewExpandedListener mExpandListener;
     private TextView titleTv, descriptionTV, minTV, maxTV, groupV, difficultyTV, completedTV;
-    private RelativeLayout expandedView;
+    private RelativeLayout expandedView, clickableLayout;
+    private ImageView playBtn;
 
     private Challenge challenge;
-    private Integer min, max;
+    private Integer min, max, position;
 
     public RecyclerItemViewHolder(final View parent) {
         super(parent);
@@ -36,16 +38,19 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         this.difficultyTV = (TextView) parent.findViewById(R.id.item_difficulty_textview);
         this.completedTV = (TextView) parent.findViewById(R.id.item_completed_textview);
         this.expandedView = (RelativeLayout) parent.findViewById(R.id.item_expanded_view);
-        parent.setOnClickListener(this);
-//        Log.e("ViewHolder", "item constructor called");
+        this.clickableLayout = (RelativeLayout) parent.findViewById(R.id.clickable_layout);
+        this.playBtn = (ImageView) parent.findViewById(R.id.challenge_play_button);
+        this.clickableLayout.setOnClickListener(this);
+        this.playBtn.setOnClickListener(this);
     }
 
     public static RecyclerItemViewHolder newInstance(View parent) {
         return new RecyclerItemViewHolder(parent);
     }
 
-    public void setItemText(Challenge item) {
-        collapseCardView();
+    public void setItemText(Challenge item, int position) {
+        this.position = position;
+        collapseExpandedCardView();
         challenge = item;
         titleTv.setText(item.getName());
         descriptionTV.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat.");
@@ -72,24 +77,33 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     }
 
     public interface ViewExpandedListener {
-        void onExpand(View toExpandView);
+        void onExpand(View toExpandView, int position);
+
         void onCollapse();
+
         View getExpandedView();
     }
 
     @Override
     public void onClick(View v) {
-        boolean aViewIsExpanded = mExpandListener.getExpandedView() != null; // true means a view is expanded
-        // EXPANDED -> onCollapse
-        if (expandedView.getVisibility() == View.VISIBLE) {
-            collapseCardView();
-            mExpandListener.onCollapse();
-        } else { // COLLAPSED -> onExpand
-            if (aViewIsExpanded) {
-                collapseExpandedCardView(mExpandListener.getExpandedView());
-            }
-            expandCardView();
-            mExpandListener.onExpand(v);
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.clickable_layout:
+                boolean aViewIsExpanded = mExpandListener.getExpandedView() != null; // true means a view is expanded
+                // EXPANDED -> onCollapse
+                if (expandedView.getVisibility() == View.VISIBLE) {
+                    collapseCardView();
+                } else { // COLLAPSED -> onExpand
+                    if (aViewIsExpanded) {
+                        collapseExpandedCardView();
+                    }
+                    expandCardView();
+                }
+                break;
+            case R.id.challenge_play_button:
+
+                break;
         }
     }
 
@@ -102,6 +116,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         descriptionTV.setEllipsize(null);
         descriptionTV.setSingleLine(false);
         expandedView.setVisibility(View.VISIBLE);
+        mExpandListener.onExpand(clickableLayout, position);
     }
 
     /*
@@ -109,17 +124,22 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         descriptionTV singleLine = true
         expandedView visibility = View.GONE
      */
-    private void collapseCardView() {
+    public void collapseCardView() {
         descriptionTV.setEllipsize(TextUtils.TruncateAt.END);
         descriptionTV.setSingleLine(true);
         expandedView.setVisibility(View.GONE);
+        mExpandListener.onCollapse();
     }
 
-    private void collapseExpandedCardView(View view) {
-        TextView descriptionTextView = (TextView) view.findViewById(R.id.item_description_textview);
-        RelativeLayout expandedView = (RelativeLayout) view.findViewById(R.id.item_expanded_view);
-        descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
-        descriptionTextView.setSingleLine(true);
-        expandedView.setVisibility(View.GONE);
+    public void collapseExpandedCardView() {
+        View view = mExpandListener.getExpandedView();
+        if (view != null) {
+            TextView descriptionTextView = (TextView) view.findViewById(R.id.item_description_textview);
+            RelativeLayout expandedView = (RelativeLayout) view.findViewById(R.id.item_expanded_view);
+            descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
+            descriptionTextView.setSingleLine(true);
+            expandedView.setVisibility(View.GONE);
+            mExpandListener.onCollapse();
+        }
     }
 }

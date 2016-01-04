@@ -2,6 +2,7 @@ package com.bradenhart.hcdemoui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,9 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
+    private final String LOGTAG = "RecyclerAdapter";
     private List<Challenge> mItemList;
+    private RecyclerItemViewHolder holder;
     private RecyclerItemViewHolder.ViewExpandedListener mExpandListener;
 
     // Constructor
@@ -37,10 +40,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        RecyclerItemViewHolder holder = (RecyclerItemViewHolder) viewHolder;
+        holder = (RecyclerItemViewHolder) viewHolder;
         holder.setViewExpandListener(mExpandListener);
         Challenge item = mItemList.get(position);
-        holder.setItemText(item);
+        holder.setItemText(item, position);
+        holder.collapseCardView();
     }
 
     public void setExpandListener(RecyclerItemViewHolder.ViewExpandedListener expandListener) {
@@ -55,6 +59,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updateList(List<Challenge> list) {
         this.mItemList.clear();
         this.mItemList = list;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+//        Log.e(LOGTAG, "onViewDetachedFromWindow");
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+//        Log.e(LOGTAG, "onViewRecycled");
+//        View view = mExpandListener.getExpandedView();
+//        if (view != null) {
+//            this.holder.collapseExpandedCardView(view);
+//        }
     }
 
 }
