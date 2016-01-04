@@ -545,7 +545,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.all_challenges_button:
-                startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_slide_to_top);
+                startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_fade_out); //R.anim.anim_slide_to_bottom exit
                 break;
             case R.id.challenge_settings_button:
                 if (popupMenu.getVisibility() == View.VISIBLE) {

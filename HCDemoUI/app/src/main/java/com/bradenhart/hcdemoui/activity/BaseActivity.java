@@ -186,7 +186,7 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.nav_challenges:
                         if (!menuItem.isChecked()) {
                             activityId = id;
-                            startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_slide_to_top);
+                            startActivity(AllChallengesActivity.class, R.anim.anim_slide_from_bottom, R.anim.anim_fade_out);
                         }
                         break;
                     case R.id.nav_settings:
