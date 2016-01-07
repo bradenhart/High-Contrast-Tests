@@ -38,6 +38,7 @@ public final class Utils {
     public static final Integer DEFAULT_GROUP_SIZE_STATE = 1;
     public static final String KEY_RANDOM_MODE = "random_mode";
     public static final Boolean DEFAULT_RANDOM_MODE_STATE = false;
+    public static final String KEY_EXTRA_PLAY_ID = "to_play_id";
 
     // DATABASE variables
     // Table names

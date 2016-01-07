@@ -37,7 +37,6 @@ public class SnappingLinearLayoutManager extends LinearLayoutManager {
         @Override
         protected int getVerticalSnapPreference() {
             return SNAP_TO_START;
-//            return SNAP_TO_START;
         }
     }
 }

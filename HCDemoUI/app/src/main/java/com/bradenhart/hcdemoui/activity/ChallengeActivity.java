@@ -71,6 +71,16 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
         dbHelper = DatabaseHelper.getInstance(this);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String playId = extras.getString(KEY_EXTRA_PLAY_ID);
+            if (playId != null) {
+                getChallenge(SELECT_BY_ID,
+                        new String[]{
+                                playId
+                        });
+            }
+        }
 
         if (storedObjectId() == null) {
             // nothing saved, show new or random challenge

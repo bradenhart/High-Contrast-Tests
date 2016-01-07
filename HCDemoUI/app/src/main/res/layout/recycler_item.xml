@@ -21,7 +21,9 @@
             android:layout_height="match_parent"
             android:background="@color/confirmGreen"
             android:src="@drawable/ic_play_arrow_white_18dp"
-            android:padding="2dp"/>
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:clickable="true"/>
 
         <RelativeLayout
             android:id="@+id/clickable_layout"

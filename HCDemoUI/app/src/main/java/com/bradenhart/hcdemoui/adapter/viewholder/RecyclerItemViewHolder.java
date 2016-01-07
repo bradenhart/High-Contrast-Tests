@@ -1,6 +1,8 @@
 package com.bradenhart.hcdemoui.adapter.viewholder;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
+import com.bradenhart.hcdemoui.Utils;
+import com.bradenhart.hcdemoui.activity.ChallengeActivity;
 import com.bradenhart.hcdemoui.database.Challenge;
 
 /**
@@ -19,6 +23,7 @@ import com.bradenhart.hcdemoui.database.Challenge;
 public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Context context;
+    private View parent;
     private ViewExpandedListener mExpandListener;
     private TextView titleTv, descriptionTV, minTV, maxTV, groupV, difficultyTV, completedTV;
     private RelativeLayout expandedView, clickableLayout;
@@ -29,6 +34,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     public RecyclerItemViewHolder(final View parent) {
         super(parent);
+        this.parent = parent;
         this.context = parent.getContext();
         this.titleTv = (TextView) parent.findViewById(R.id.item_title_textview);
         this.descriptionTV = (TextView) parent.findViewById(R.id.item_description_textview);
@@ -70,6 +76,11 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             completedTV.setText("Completed: Nope");
             titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.blank_icon, 0);
         }
+
+        if (isCurrentChallengeItem()) {
+            parent.setBackgroundResource(R.color.colorCurrentChallenge);
+        }
+
     }
 
     public void setViewExpandListener(ViewExpandedListener expandListener) {
@@ -102,7 +113,10 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
                 }
                 break;
             case R.id.challenge_play_button:
-
+                Intent playIntent = new Intent(context, ChallengeActivity.class);
+                playIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                playIntent.putExtra(Utils.KEY_EXTRA_PLAY_ID, challenge.getObjectId());
+                context.startActivity(playIntent);
                 break;
         }
     }
@@ -141,5 +155,12 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             expandedView.setVisibility(View.GONE);
             mExpandListener.onCollapse();
         }
+    }
+
+    private boolean isCurrentChallengeItem() {
+        SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        String currentId = sp.getString(Utils.KEY_OBJECT_ID, null);
+
+        return currentId != null && currentId.equals(challenge.getObjectId());
     }
 }

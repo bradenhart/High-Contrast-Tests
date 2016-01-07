@@ -216,9 +216,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     /** set up */
     private void setupRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setLayoutManager(new SnappingLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerAdapter = new RecyclerAdapter(createItemList(filterTerm));
         recyclerAdapter.setExpandListener(this);
         recyclerView.setAdapter(recyclerAdapter);
@@ -330,11 +328,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onExpand(View toExpandView, int position) {
         expandedView = toExpandView;
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-//        layoutManager.scrollToPositionWithOffset(0, 150);
-//        recyclerView.scrollToPosition(position);
-        Log.e(LOGTAG, "onExpand");
-//        recyclerView.smoothScrollToPosition(position);
 //        filterFab.startAnimation(fabOutAnim);
 //        filterFab.setVisibility(View.GONE);
     }
