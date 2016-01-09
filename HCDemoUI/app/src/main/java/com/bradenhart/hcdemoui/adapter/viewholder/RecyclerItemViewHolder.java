@@ -76,11 +76,6 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             completedTV.setText("Completed: Nope");
             titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.blank_icon, 0);
         }
-
-        if (isCurrentChallengeItem()) {
-            parent.setBackgroundResource(R.color.colorCurrentChallenge);
-        }
-
     }
 
     public void setViewExpandListener(ViewExpandedListener expandListener) {
@@ -157,10 +152,4 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         }
     }
 
-    private boolean isCurrentChallengeItem() {
-        SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        String currentId = sp.getString(Utils.KEY_OBJECT_ID, null);
-
-        return currentId != null && currentId.equals(challenge.getObjectId());
-    }
 }
