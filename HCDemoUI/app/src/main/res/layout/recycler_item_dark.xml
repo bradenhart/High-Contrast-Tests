@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="2dp">
+
+    <ImageView
+        android:id="@+id/challenge_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/confirmGreen"
+        android:clickable="true"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:src="@drawable/ic_play_arrow_white_18dp" />
+
+    <RelativeLayout
+        android:id="@+id/clickable_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:background="@color/dark_gray_4"
+        android:gravity="center"
+        android:minHeight="?attr/listPreferredItemHeightSmall"
+        android:paddingBottom="2dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="2dp">
+
+        <TextView
+            android:id="@+id/item_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:drawableRight="@drawable/ic_done_green_24dp"
+            android:gravity="bottom"
+            android:padding="2dp"
+            android:text="Title"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/item_description_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_title_textview"
+            android:layout_marginRight="40dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat."
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/item_group_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:drawableTop="@drawable/ic_person_white_24dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="1 - 2"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <RelativeLayout
+            android:id="@+id/item_expanded_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_description_textview"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/item_min_textview"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="5dp"
+                android:padding="3dp"
+                android:text="min: 1 player(s)"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/item_max_textview"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/item_min_textview"
+                android:layout_marginLeft="0dp"
+                android:padding="3dp"
+                android:text="max: 2 players"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/item_difficulty_textview"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:padding="3dp"
+                android:text="Difficulty: "
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/item_completed_textview"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/item_difficulty_textview"
+                android:layout_marginLeft="10dp"
+                android:padding="3dp"
+                android:text="Completed: Nope"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>
