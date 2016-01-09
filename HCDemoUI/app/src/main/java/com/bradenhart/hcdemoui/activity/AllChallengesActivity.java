@@ -23,7 +23,6 @@ import com.bradenhart.hcdemoui.R;
 import static com.bradenhart.hcdemoui.Utils.*;
 
 import com.bradenhart.hcdemoui.adapter.RecyclerAdapter;
-import com.bradenhart.hcdemoui.adapter.SnappingLinearLayoutManager;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
 import com.bradenhart.hcdemoui.database.DatabaseHelper;
@@ -216,6 +215,8 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     /** set up */
     private void setupRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration
+//        recyclerView.addItemDecoration(new SimpleItemDecoration(getApplicationContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerAdapter = new RecyclerAdapter(createItemList(filterTerm));
         recyclerAdapter.setExpandListener(this);

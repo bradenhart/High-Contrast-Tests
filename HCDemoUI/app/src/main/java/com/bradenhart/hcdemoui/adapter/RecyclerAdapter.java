@@ -2,16 +2,13 @@ package com.bradenhart.hcdemoui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bradenhart.hcdemoui.R;
 import com.bradenhart.hcdemoui.adapter.viewholder.RecyclerItemViewHolder;
 import com.bradenhart.hcdemoui.database.Challenge;
-import com.parse.ParseObject;
 
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item_dark, parent, false);
         return RecyclerItemViewHolder.newInstance(view);
     }
 
@@ -64,17 +61,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-//        Log.e(LOGTAG, "onViewDetachedFromWindow");
     }
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-//        Log.e(LOGTAG, "onViewRecycled");
-//        View view = mExpandListener.getExpandedView();
-//        if (view != null) {
-//            this.holder.collapseExpandedCardView(view);
-//        }
     }
 
 }
