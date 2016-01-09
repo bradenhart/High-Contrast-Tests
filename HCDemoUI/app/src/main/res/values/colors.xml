@@ -33,6 +33,11 @@
     <color name="colorIcons">#212121</color>
     <color name="colorDivider">#B6B6B6</color>
 
-    <color name="colorCurrentChallenge">#ddeffd</color>
+    <color name="dark_gray_1">#2E3236</color>
+    <color name="dark_gray_2">#212121</color>
+    <color name="dark_gray_3">#616161</color>
+    <color name="dark_gray_4">#424242</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 
 </resources>
