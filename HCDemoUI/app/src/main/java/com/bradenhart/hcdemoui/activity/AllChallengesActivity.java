@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,6 +36,12 @@ import com.parse.ParseQuery;
 import java.util.Date;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.FlipInLeftYAnimator;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+
 /**
  * Created by bradenhart on 1/12/15.
  */
@@ -50,7 +57,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private SharedPreferences sp;
     private DatabaseHelper dbHelper;
     private final String KEY_FILTER_VISIBILITY = "filter_visibility";
-//    private final String KEY_FILTER_TAB_SELECTED = "filter_tab_selected";
+    //    private final String KEY_FILTER_TAB_SELECTED = "filter_tab_selected";
     private final String KEY_SORT_TAB_SELECTED = "sort_tab_selected";
     private final String KEY_FILTER_TERM = "filter_term";
     private Animation fabOutAnim, fabInAnim, spinAnim, slideDownAnim, slideUpAnim;
@@ -88,7 +95,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     }
 
-    /** initialisations */
+    /**
+     * initialisations
+     */
     private void initViews() {
         headerBar = (TextView) findViewById(R.id.base_header_bar);
         headerBar.setText(getResources().getString(R.string.filter_card_newest));
@@ -147,7 +156,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
     }
 
-    /** update animations */
+    /**
+     * update animations
+     */
     private void showListUpdateAnimation() {
         if (updateLayout != null && updateIcon != null) {
             if (updateLayout.getVisibility() == View.GONE) {
@@ -169,7 +180,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    /** filter menu methods */
+    /**
+     * filter menu methods
+     */
     private void openFilterCard() {
         filterCard.setVisibility(View.VISIBLE);
         showFilterLayout();
@@ -212,11 +225,22 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         sortLayout.setVisibility(View.GONE);
     }
 
-    /** set up */
+    /**
+     * set up
+     */
     private void setupRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.challenges_recyclerview);
 //        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration
 //        recyclerView.addItemDecoration(new SimpleItemDecoration(getApplicationContext()));
+//        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+
+//        ScaleInLeftAnimator animator = new ScaleInLeftAnimator();
+//        LandingAnimator animator = new LandingAnimator();
+        OvershootInLeftAnimator animator = new OvershootInLeftAnimator();
+        animator.setAddDuration(500);
+        animator.setRemoveDuration(200);
+
+        recyclerView.setItemAnimator(animator);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerAdapter = new RecyclerAdapter(createItemList(filterTerm));
         recyclerAdapter.setExpandListener(this);
@@ -227,7 +251,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         return dbHelper.getChallengesWithFilter(term);
     }
 
-    /** update methods */
+    /**
+     * update methods
+     */
     private void handleUpdateChallengesRequest() {
         String dateStr = sp.getString(KEY_LAST_DATE, null);
 
@@ -272,11 +298,32 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     private void updateRecyclerView() {
         headerBar.setText(filterTerm);
         List<Challenge> list = createItemList(filterTerm);
-        recyclerAdapter.updateList(list);
-        recyclerAdapter.notifyDataSetChanged();
+        int listSize = recyclerAdapter.getItemCount();
+        Log.e(LOGTAG, "size: " + listSize);
+        for (int i = 0; i < listSize; i++) {
+            recyclerAdapter.removeItemAt(0);
+        }
+        listSize = list.size();
+        for (int i = 0; i < listSize; i++) {
+            recyclerAdapter.addItem(list.get(i));
+        }
     }
 
-    /** restore methods */
+    private void testUpdateRecyclerView() {
+//        List<Challenge> newList = createItemList(filterTerm);
+        // (remove each item from the recyclerview)
+        // remove an item
+        // notify the adapter of removed item
+
+        // get a new list of items
+        // (add each item to the recyclerview)
+        // add an item
+        // notify the adapter of the added item
+    }
+
+    /**
+     * restore methods
+     */
     private void restoreFromSavedInstance(Bundle bundle) {
         if (bundle != null) {
 
@@ -298,7 +345,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    /** overridden methods */
+    /**
+     * overridden methods
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -413,7 +462,9 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
 
     }
 
-    /** private classes */
+    /**
+     * private classes
+     */
     private class FilterClickListener implements View.OnClickListener {
 
         public FilterClickListener() {
