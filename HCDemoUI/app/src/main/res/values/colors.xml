@@ -5,7 +5,8 @@
     <color name="tabOrange">#f46632</color>
     <color name="tabGrey">#626a81</color>
     <color name="loadingBackground">#d4adedea</color>
-    <color name="bottomBarBackground">#34495e</color>
+    <color name="bottomBarBackground">@color/black</color>
+    <!--<color name="bottomBarBackground">#34495e</color>-->
     <color name="confirmGreen">#7dc62f</color>
     <color name="cancelRed">#bf2626</color>
 
