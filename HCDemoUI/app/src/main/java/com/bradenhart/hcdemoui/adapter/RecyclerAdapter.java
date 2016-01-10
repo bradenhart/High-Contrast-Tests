@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item_dark, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item_light, parent, false);
         return RecyclerItemViewHolder.newInstance(view);
     }
 
@@ -56,6 +56,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updateList(List<Challenge> list) {
         this.mItemList.clear();
         this.mItemList = list;
+    }
+
+//    public void updateList(Challenge challenge) {
+//        mItemList.set
+//    }
+
+    public int getListSize() {
+        return mItemList.size();
+    }
+
+    public void removeItemAt(int position) {
+        mItemList.remove(position);
+        notifyItemRemoved(0);
+//        notifyItemRangeChanged(0, mItemList.size());
+    }
+
+    public void addItem(Challenge challenge) {
+        mItemList.add(challenge);
+        notifyItemInserted(0);
+
     }
 
     @Override
