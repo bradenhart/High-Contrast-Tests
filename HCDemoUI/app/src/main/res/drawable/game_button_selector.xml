@@ -4,11 +4,11 @@
 
     <item android:state_selected="true">
         <!--<color android:color="#9c9c92"/>-->
-        <color android:color="#2f4254"/>
+        <color android:color="@android:color/transparent"/>
     </item>
     
     <item android:state_selected="false">
-        <color android:color="@color/bottomBarBackground"/>
+        <color android:color="@android:color/transparent"/>
     </item>
     
 </selector>
