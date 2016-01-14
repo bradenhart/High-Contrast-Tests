@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/fab_diameter"
+    android:layout_gravity="bottom"
+    android:background="@color/white"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:padding="0dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="start">
+
+        <TextView
+            android:id="@+id/random_challenge_btn"
+            style="@style/ChallengeTabBarStyleLight"
+            android:background="@drawable/game_button_selector"
+            android:drawableTop="@drawable/random_button_icon_selector_light"
+            android:padding="5dp"
+            android:text="@string/tab_bar_random_label" />
+
+        <TextView
+            android:id="@+id/skip_challenge_btn"
+            style="@style/ChallengeTabBarStyleLight"
+            android:background="@drawable/game_button_selector"
+            android:drawableTop="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:padding="5dp"
+            android:text="@string/tab_bar_skip_label" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/all_challenges_button"
+            style="@style/ChallengeTabBarStyleLight"
+            android:background="@drawable/game_button_selector"
+            android:drawableTop="@drawable/ic_view_list_black_24dp"
+            android:padding="5dp"
+            android:text="@string/tab_bar_list_label" />
+
+        <TextView
+            android:id="@+id/challenge_settings_button"
+            style="@style/ChallengeTabBarStyleLight"
+            android:background="@drawable/game_button_selector"
+            android:drawableTop="@drawable/game_settings_button_icon_selector_light"
+            android:padding="5dp"
+            android:text="@string/tab_bar_settings_label" />
+    </LinearLayout>
+
+</LinearLayout>
