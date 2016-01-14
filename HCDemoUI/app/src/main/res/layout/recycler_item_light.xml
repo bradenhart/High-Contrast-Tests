@@ -3,8 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_margin="2dp">
+    android:layout_margin="2dp"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/challenge_play_button"
@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/confirmGreen"
         android:clickable="true"
+        android:contentDescription="@string/description_play_challenge"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:src="@drawable/ic_play_arrow_white_18dp" />
@@ -21,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:background="@color/white"
         android:gravity="center"
         android:minHeight="?attr/listPreferredItemHeightSmall"
@@ -33,11 +35,15 @@
             android:id="@+id/item_title_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/item_group_icon"
+            android:layout_toStartOf="@id/item_group_icon"
+            android:drawableEnd="@drawable/ic_done_green_24dp"
             android:drawableRight="@drawable/ic_done_green_24dp"
             android:gravity="bottom"
             android:padding="2dp"
-            android:text="Title"
+            android:text="@string/placeholder_title"
             android:textColor="@android:color/holo_blue_light"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -46,13 +52,16 @@
             android:id="@+id/item_description_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@id/item_title_textview"
-            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@id/item_group_icon"
+            android:layout_toStartOf="@id/item_group_icon"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:padding="2dp"
             android:singleLine="true"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat."
+            android:text="@string/lorem_ipsum_short"
             android:textColor="@color/black"
             android:textSize="12sp" />
 
@@ -60,30 +69,33 @@
             android:id="@+id/item_group_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:drawableTop="@drawable/ic_person_black_24dp"
             android:gravity="center"
             android:padding="5dp"
-            android:text="1 - 2"
+            android:text="@string/placeholder_group_size"
             android:textColor="@color/black"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
 
         <RelativeLayout
             android:id="@+id/item_expanded_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_description_textview"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/item_min_textview"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
                 android:padding="3dp"
-                android:text="min: 1 player(s)"
+                android:text="@string/placeholder_group_min"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
@@ -92,10 +104,12 @@
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@id/item_min_textview"
                 android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
                 android:padding="3dp"
-                android:text="max: 2 players"
+                android:text="@string/placeholder_group_max"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
@@ -103,11 +117,13 @@
                 android:id="@+id/item_difficulty_textview"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:padding="3dp"
-                android:text="Difficulty: "
+                android:text="@string/placeholder_difficulty"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
@@ -115,11 +131,13 @@
                 android:id="@+id/item_completed_textview"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/item_difficulty_textview"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:padding="3dp"
-                android:text="Completed: Nope"
+                android:text="@string/placeholder_completed"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
         </RelativeLayout>

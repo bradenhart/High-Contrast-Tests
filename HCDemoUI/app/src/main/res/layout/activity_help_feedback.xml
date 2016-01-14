@@ -7,8 +7,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Help and Feedback page goes here"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="@string/placeholder_help_and_feedback_text"
+        android:textSize="30sp" />
 
 </RelativeLayout>

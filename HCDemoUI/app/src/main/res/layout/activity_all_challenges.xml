@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#EEEEEE"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <View
         android:id="@+id/ac_transparent_view"
@@ -17,31 +17,35 @@
         android:layout_height="match_parent"
         android:background="#30aaaeee"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <include
         android:id="@+id/icon_card_view"
         layout="@layout/icon_card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/icon_card_margin_top"
-        android:layout_marginRight="82dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginBottom="125dp"
-        android:layout_gravity="bottom|end"/>
+        android:layout_marginEnd="82dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="82dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/icon_card_margin_top" />
 
     <RelativeLayout
         android:id="@+id/list_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:gravity="center"
         android:background="@color/loadingBackground"
+        android:gravity="center"
         android:visibility="gone">
+
         <ImageView
             android:id="@+id/refresh_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_sync_white_48dp"/>
+            android:contentDescription="@string/description_update"
+            android:src="@drawable/ic_sync_white_48dp" />
     </RelativeLayout>
-    
+
 </FrameLayout>

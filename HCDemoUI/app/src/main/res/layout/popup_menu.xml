@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:paddingTop="10dp"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/difficulty_icon_tab"
@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/tab_selector"
         android:clickable="true"
+        android:contentDescription="@string/description_difficulty"
         android:padding="10dp"
         android:src="@drawable/ic_fitness_center_black_24dp" />
 
@@ -24,6 +25,7 @@
         android:layout_marginTop="1dp"
         android:background="@drawable/tab_selector"
         android:clickable="true"
+        android:contentDescription="@string/description_group_size"
         android:padding="10dp"
         android:src="@drawable/ic_group_black_24dp" />
 
@@ -33,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
+        android:layout_toEndOf="@id/difficulty_icon_tab"
         android:layout_toRightOf="@id/difficulty_icon_tab"
         android:background="@drawable/tab_outline_selected"
         android:gravity="center_horizontal"
@@ -45,7 +48,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="5dp"
-            android:text="Difficulty"
+            android:text="@string/header_difficulty"
             android:textSize="14sp" />
 
         <View
@@ -92,12 +95,13 @@
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_alignBottom="@id/popup_main_layout"
+        android:layout_toEndOf="@id/popup_main_layout"
         android:layout_toRightOf="@id/popup_main_layout"
         android:background="@drawable/confirm_change_selector"
         android:clickable="true"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Ok"
+        android:text="@string/button_text_ok"
         android:textColor="@color/confirmGreen"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -108,9 +112,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/popup_confirm_change"
         android:layout_marginBottom="1dp"
+        android:layout_toEndOf="@id/popup_main_layout"
         android:layout_toRightOf="@id/popup_main_layout"
         android:background="@drawable/cancel_change_selector"
         android:clickable="true"
+        android:contentDescription="@string/description_cancel_change"
         android:padding="10dp"
         android:src="@drawable/ic_cancel_red_24dp" />
 
