@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:paddingTop="10dp"
-    android:visibility="visible">
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/difficulty_icon_tab"
