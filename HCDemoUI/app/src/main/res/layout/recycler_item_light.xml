@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
+    android:background="@color/white"
     android:orientation="horizontal">
 
     <ImageView
@@ -23,13 +24,25 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:background="@color/white"
         android:gravity="center"
         android:minHeight="?attr/listPreferredItemHeightSmall"
         android:paddingBottom="2dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="2dp">
+
+        <TextView
+            android:id="@+id/item_group_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:drawableTop="@drawable/ic_person_black_24dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/placeholder_group_size"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/item_title_textview"
@@ -65,25 +78,12 @@
             android:textColor="@color/black"
             android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/item_group_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:drawableTop="@drawable/ic_person_black_24dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/placeholder_group_size"
-            android:textColor="@color/black"
-            android:textSize="12sp" />
-
         <RelativeLayout
             android:id="@+id/item_expanded_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_description_textview"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/item_min_textview"
