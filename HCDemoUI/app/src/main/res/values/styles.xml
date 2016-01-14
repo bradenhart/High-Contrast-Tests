@@ -29,7 +29,40 @@
         <item name="android:textColorPrimary">@color/colorAccent</item>
     </style>
 
-    <style name="ChallengeLeftOptionsStyle">
+    <!--<style name="ChallengeLeftOptionsStyle">-->
+        <!--<item name="android:layout_width">wrap_content</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:textSize">10sp</item>-->
+        <!--<item name="android:textColor">#FFFFFF</item>-->
+        <!--<item name="android:drawablePadding">5dp</item>-->
+        <!--<item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>-->
+        <!--<item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>-->
+        <!--<item name="android:layout_gravity">center_vertical</item>-->
+    <!--</style>-->
+
+    <!--<style name="ChallengeRightOptionsStyle">-->
+        <!--<item name="android:layout_width">wrap_content</item>-->
+        <!--<item name="android:layout_height">wrap_content</item>-->
+        <!--<item name="android:textSize">10sp</item>-->
+        <!--<item name="android:textColor">#FFFFFF</item>-->
+        <!--<item name="android:drawablePadding">5dp</item>-->
+        <!--<item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>-->
+        <!--<item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>-->
+        <!--<item name="android:layout_gravity">center_vertical</item>-->
+    <!--</style>-->
+
+    <style name="ChallengeTabBarStyleLight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="ChallengeTabBarStyleDark">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">10sp</item>
@@ -40,16 +73,6 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
-    <style name="ChallengeRightOptionsStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:drawablePadding">5dp</item>
-        <item name="android:layout_marginLeft">@dimen/new_challenge_option_spacing</item>
-        <item name="android:layout_marginRight">@dimen/new_challenge_option_spacing</item>
-        <item name="android:layout_gravity">center_vertical</item>
-    </style>
 
 
 
