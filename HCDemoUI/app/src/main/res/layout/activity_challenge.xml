@@ -78,8 +78,6 @@
 
         </LinearLayout>
 
-        <include layout="@layout/challenge_tab_bar_light" />
-
         <include
             android:id="@+id/game_settings_popup_menu"
             layout="@layout/popup_menu"
@@ -89,6 +87,7 @@
             android:layout_marginBottom="@dimen/fab_diameter_plus_padding"
             android:layout_marginTop="?android:actionBarSize" />
 
+        <include layout="@layout/challenge_tab_bar_light" />
 
         <com.melnykov.fab.FloatingActionButton
             android:layout_width="wrap_content"

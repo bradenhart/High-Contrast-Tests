@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/fab_diameter"
     android:layout_gravity="bottom"
-    android:background="@color/white"
+    android:background="@android:color/transparent"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:padding="0dp">
