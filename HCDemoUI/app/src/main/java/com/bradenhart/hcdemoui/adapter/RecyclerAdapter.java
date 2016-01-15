@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item_light, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item_dark, parent, false);
         return RecyclerItemViewHolder.newInstance(view);
     }
 
