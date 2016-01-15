@@ -469,7 +469,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             if (isRepeatMode()) {
                 getChallenge(SELECT_SHUFFLE_REPEAT,
                         new String[]{
-                           LIMIT_ONE
+                                LIMIT_ONE
                         });
             } else {
                 getChallenge(SELECT_SHUFFLE,
@@ -563,21 +563,51 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     setRandomChallengeMode(false);
                     randomChallengeBtn.setSelected(false);
                     // go back to getting challenges based on game settings
-                    getChallenge(SELECT_NORMAL,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    String.valueOf(storedDifficultyAsInt()),
-                                    String.valueOf(storedGroupMin()),
-                                    LIMIT_ONE
-                            });
+
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_NORMAL_REPEAT,
+                                new String[]{
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_NORMAL,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        LIMIT_ONE
+                                });
+                    }
+
+                    if (!result) {
+                        showAllCompletedAlertDialog();
+                    }
                 } else {
                     setRandomChallengeMode(true);
                     randomChallengeBtn.setSelected(true);
-                    getChallenge(SELECT_SHUFFLE,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    LIMIT_ONE
-                            });
+
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_SHUFFLE_REPEAT,
+                                new String[]{
+                                   LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_SHUFFLE,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        LIMIT_ONE
+                                });
+                    }
+
+                    if (!result) {
+                        showLevelCompletedAlertDialog();
+                    }
                 }
                 break;
             case R.id.skip_challenge_btn:
