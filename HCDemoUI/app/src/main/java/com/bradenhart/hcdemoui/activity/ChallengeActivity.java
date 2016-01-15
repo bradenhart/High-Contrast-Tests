@@ -1,5 +1,6 @@
 package com.bradenhart.hcdemoui.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +56,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
     private final String KEY_POPUP_VISIBILITY = "popup_visibility";
     private final String KEY_GROUP_LAYOUT_VISIBILITY = "group_layout_visibility";
     private DatabaseHelper dbHelper;
+    private Animation slideUpAnim, slideDownAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,13 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         }
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
+
+//        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_pop_up_game_settings);
+        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_from_bottom);
+        slideUpAnim.setDuration(50);
+
+        slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_to_bottom);
+        slideDownAnim.setDuration(100);
 
         // restore activity from savedInstanceState
         restoreState(savedInstanceState);
@@ -212,12 +222,14 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
      */
     private void openPopupMenu() {
         popupMenu.setVisibility(View.VISIBLE);
+        popupMenu.startAnimation(slideUpAnim);
         showDifficultyLayout();
         challengeSettingsBtn.setSelected(true);
         setButtonsEnabled(false);
     }
 
     private void closePopupMenu() {
+        popupMenu.startAnimation(slideDownAnim);
         popupMenu.setVisibility(View.GONE);
         hideDifficultyLayout();
         hideGroupLayout();
