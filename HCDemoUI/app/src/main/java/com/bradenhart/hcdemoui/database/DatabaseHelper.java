@@ -239,11 +239,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{COMPLETED_TRUE, LIMIT_ONE});
 
         // true - we found no challenges, false - we did
-        boolean result = !cursor.moveToFirst();
+        boolean result = cursor.getCount() == 0;
 
         cursor.close();
 
         return result;
+    }
+
+    public boolean allChallengesCompleted() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?",
+                new String[]{COMPLETED_FALSE, LIMIT_ONE});
+
+        // true - we found no uncompleted challenges, false - we did
+        boolean result = cursor.getCount() == 0;
+
+        cursor.close();
+
+        return result;
+    }
+
+    public int getCompletedChallengeCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =?",
+                new String[]{COMPLETED_TRUE});
+
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public int getCompletedChallengeCount(String difficulty) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =?",
+                new String[]{COMPLETED_TRUE, String.valueOf(getDifficultyValue(difficulty))});
+
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     public int setChallengeCompleted(String objectId) {
