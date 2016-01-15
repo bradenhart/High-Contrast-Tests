@@ -39,6 +39,7 @@ public final class Utils {
     public static final String KEY_RANDOM_MODE = "random_mode";
     public static final Boolean DEFAULT_RANDOM_MODE_STATE = false;
     public static final String KEY_EXTRA_PLAY_ID = "to_play_id";
+    public static final String KEY_REPEAT_MODE = "repeat_mode";
 
     // DATABASE variables
     // Table names
@@ -60,7 +61,8 @@ public final class Utils {
     public static final String LIMIT_ONE = "1";
 
     // QUERY SELECT STATEMENTS
-    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
+//    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
+    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? order by random() limit ?";
     public static final String SELECT_NORMAL = "select * from " + TABLE_CHALLENGE
             + " where " + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? limit ?";
     public static final String SELECT_BY_ID = "select * from " + TABLE_CHALLENGE + " where " + KEY_OBJECT_ID + " =? ";
