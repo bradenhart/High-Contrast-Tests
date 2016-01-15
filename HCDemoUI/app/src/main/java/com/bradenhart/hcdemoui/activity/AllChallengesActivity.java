@@ -284,6 +284,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                     if (objects.size() > 0) {
                         dbHelper.insertChallengesToDb(objects);
                         updateRecyclerView();
+                        sp.edit().putBoolean(KEY_REPEAT_MODE, false).apply();
                     } else {
                         Toast.makeText(AllChallengesActivity.this, "No new challenges found.", Toast.LENGTH_SHORT).show();
                     }
