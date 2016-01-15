@@ -112,7 +112,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
 
         updateCheckedDrawerItem(R.id.nav_new_challenge);
 
-//        slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_pop_up_game_settings);
         slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.anim_slide_from_bottom);
         slideUpAnim.setDuration(50);
 
@@ -487,15 +486,28 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 if (inRandomChallengeMode()) {
                     // if challenge is null, we must be out of challenges
                     // TODO repeat mode or something that allows user to get any challenge, completed or not
-                    getChallenge(SELECT_SHUFFLE,
+                    boolean result = getChallenge(SELECT_SHUFFLE,
                             new String[]{
                                     COMPLETED_FALSE,
                                     LIMIT_ONE
                             });
+
+                    if (!result) {
+                        AlertDialog dialog = new AlertDialog.Builder(this).create();
+                        dialog.setTitle("Woohoo!");
+                        dialog.setMessage("You've completed all the challenges! You can now replay any challenge, or pick one from the list to have another go.");
+                        dialog.setIcon(R.drawable.ic_done_green_24dp);
+                        dialog.setCancelable(true);
+                        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sp.edit().putBoolean(KEY_REPEAT_MODE, true).apply();
+                                dialog.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
                 } else {
-                    // TODO
-                    // if challenge is null, we must be out of challenges for set difficulty
-                    // need to increase or decrease difficulty
                     boolean result = getChallenge(SELECT_NORMAL,
                             new String[]{
                                     COMPLETED_FALSE,
