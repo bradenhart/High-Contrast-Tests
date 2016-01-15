@@ -197,7 +197,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     }
 
     private void showFilterLayout() {
-        if (dbHelper.noChallengesCompleted()) {
+        if (dbHelper.getCompletedChallengeCount() == 0) {
             fCompleted.setEnabled(false);
         }
         if (sortTab.isSelected()) {
