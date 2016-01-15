@@ -302,6 +302,10 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         return sp.getString(KEY_OBJECT_ID, null);
     }
 
+    private boolean isRepeatMode() {
+        return sp.getBoolean(KEY_REPEAT_MODE, false);
+    }
+
     private void updateDifficultyState(String newState) {
         if (newState == null) {
             sp.edit().putString(KEY_STATE_DIFFICULTY, DEFAULT_DIFFICULTY_STATE).apply();
@@ -485,50 +489,46 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 // get the next challenge to display
                 if (inRandomChallengeMode()) {
                     // if challenge is null, we must be out of challenges
-                    // TODO repeat mode or something that allows user to get any challenge, completed or not
-                    boolean result = getChallenge(SELECT_SHUFFLE,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    LIMIT_ONE
-                            });
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_SHUFFLE_REPEAT,
+                                new String[]{
+                                        LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_SHUFFLE,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        LIMIT_ONE
+                                });
+                    }
 
                     if (!result) {
-                        AlertDialog dialog = new AlertDialog.Builder(this).create();
-                        dialog.setTitle("Woohoo!");
-                        dialog.setMessage("You've completed all the challenges! You can now replay any challenge, or pick one from the list to have another go.");
-                        dialog.setIcon(R.drawable.ic_done_green_24dp);
-                        dialog.setCancelable(true);
-                        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sp.edit().putBoolean(KEY_REPEAT_MODE, true).apply();
-                                dialog.cancel();
-                            }
-                        });
-                        dialog.show();
+                        showAllCompletedAlertDialog();
                     }
                 } else {
-                    boolean result = getChallenge(SELECT_NORMAL,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    String.valueOf(storedDifficultyAsInt()),
-                                    String.valueOf(storedGroupMin()),
-                                    LIMIT_ONE
-                            });
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_NORMAL_REPEAT,
+                                new String[]{
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_NORMAL,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        LIMIT_ONE
+                                });
+                    }
 
                     if (!result) {
-                        AlertDialog dialog = new AlertDialog.Builder(this).create();
-                        dialog.setTitle("Woohoo!");
-                        dialog.setMessage("You've completed all the " + storedDifficultyAsString().toLowerCase() + " challenges!\nChange the difficulty up, or repeat some challenges.");
-                        dialog.setIcon(R.drawable.ic_done_green_24dp);
-                        dialog.setCancelable(true);
-                        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        dialog.show();
+                        showLevelCompletedAlertDialog();
                     }
                 }
                 /**
@@ -560,22 +560,54 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             case R.id.skip_challenge_btn:
                 if (inRandomChallengeMode()) {
                     Log.e(LOGTAG, "skip to next random challenge");
-                    getChallenge(SELECT_SHUFFLE_SKIP,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    storedObjectId(),
-                                    LIMIT_ONE
-                            });
+
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_SHUFFLE_SKIP_REPEAT,
+                                new String[]{
+                                        storedObjectId(),
+                                        LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_SHUFFLE_SKIP,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        storedObjectId(),
+                                        LIMIT_ONE
+                                });
+                    }
+
+                    if (!result) {
+                        showAllCompletedAlertDialog();
+                    }
                 } else {
                     Log.e(LOGTAG, "skip to next new challenge");
-                    getChallenge(SELECT_NORMAL_SKIP,
-                            new String[]{
-                                    COMPLETED_FALSE,
-                                    String.valueOf(storedDifficultyAsInt()),
-                                    String.valueOf(storedGroupMin()),
-                                    storedObjectId(),
-                                    LIMIT_ONE
-                            });
+
+                    boolean result;
+
+                    if (isRepeatMode()) {
+                        result = getChallenge(SELECT_NORMAL_REPEAT,
+                                new String[]{
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        storedObjectId(),
+                                        LIMIT_ONE
+                                });
+                    } else {
+                        result = getChallenge(SELECT_NORMAL_SKIP,
+                                new String[]{
+                                        COMPLETED_FALSE,
+                                        String.valueOf(storedDifficultyAsInt()),
+                                        String.valueOf(storedGroupMin()),
+                                        storedObjectId(),
+                                        LIMIT_ONE
+                                });
+                    }
+
+                    if (!result) {
+                        showLevelCompletedAlertDialog();
+                    }
                 }
                 break;
             case R.id.all_challenges_button:
@@ -627,6 +659,37 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
 
+    }
+
+    private void showLevelCompletedAlertDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setTitle("Woohoo!");
+        dialog.setMessage("You've completed all the " + storedDifficultyAsString().toLowerCase() + " challenges!\nChange the difficulty up, or repeat some challenges.");
+        dialog.setIcon(R.drawable.ic_done_green_24dp);
+        dialog.setCancelable(true);
+        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
+    }
+
+    private void showAllCompletedAlertDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        dialog.setTitle("Woohoo!");
+        dialog.setMessage("You've completed all the challenges! You can now replay any challenge, or pick one from the list to have another go.");
+        dialog.setIcon(R.drawable.ic_done_green_24dp);
+        dialog.setCancelable(true);
+        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                sp.edit().putBoolean(KEY_REPEAT_MODE, true).apply();
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 
     private void showDifficultyChangedSnackbar(final String oldState, final String updatedState) {
