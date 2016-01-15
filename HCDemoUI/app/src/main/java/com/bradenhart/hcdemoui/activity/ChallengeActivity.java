@@ -439,39 +439,62 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+//    private void undoChangeAction() {
+//        if (inRandomChallengeMode()) {
+//            getChallenge(SELECT_SHUFFLE,
+//                    new String[]{
+//                            COMPLETED_FALSE,
+//                            LIMIT_ONE
+//                    });
+//        } else {
+//            getChallenge(SELECT_NORMAL,
+//                    new String[]{
+//                            COMPLETED_FALSE,
+//                            String.valueOf(storedDifficultyAsInt()),
+//                            String.valueOf(storedGroupMin()),
+//                            LIMIT_ONE
+//                    });
+//        }
+//    }
+
     private void undoChangeAction() {
-        if (inRandomChallengeMode()) {
-            getChallenge(SELECT_SHUFFLE,
-                    new String[]{
-                            COMPLETED_FALSE,
-                            LIMIT_ONE
-                    });
-        } else {
-            getChallenge(SELECT_NORMAL,
-                    new String[]{
-                            COMPLETED_FALSE,
-                            String.valueOf(storedDifficultyAsInt()),
-                            String.valueOf(storedGroupMin()),
-                            LIMIT_ONE
-                    });
-        }
+        getChallenge(SELECT_BY_ID,
+                new String[]{
+                        storedObjectId()
+                });
     }
 
     private void completeChangeAction() {
         if (inRandomChallengeMode()) {
-            getChallenge(SELECT_SHUFFLE,
-                    new String[]{
-                            COMPLETED_FALSE,
-                            LIMIT_ONE
-                    });
+            if (isRepeatMode()) {
+                getChallenge(SELECT_SHUFFLE_REPEAT,
+                        new String[]{
+                           LIMIT_ONE
+                        });
+            } else {
+                getChallenge(SELECT_SHUFFLE,
+                        new String[]{
+                                COMPLETED_FALSE,
+                                LIMIT_ONE
+                        });
+            }
         } else {
-            getChallenge(SELECT_NORMAL,
-                    new String[]{
-                            COMPLETED_FALSE,
-                            String.valueOf(storedDifficultyAsInt()),
-                            String.valueOf(storedGroupMin()),
-                            LIMIT_ONE
-                    });
+            if (isRepeatMode()) {
+                getChallenge(SELECT_NORMAL_REPEAT,
+                        new String[]{
+                                String.valueOf(storedDifficultyAsInt()),
+                                String.valueOf(storedGroupMin()),
+                                LIMIT_ONE
+                        });
+            } else {
+                getChallenge(SELECT_NORMAL,
+                        new String[]{
+                                COMPLETED_FALSE,
+                                String.valueOf(storedDifficultyAsInt()),
+                                String.valueOf(storedGroupMin()),
+                                LIMIT_ONE
+                        });
+            }
         }
     }
 
@@ -587,7 +610,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     boolean result;
 
                     if (isRepeatMode()) {
-                        result = getChallenge(SELECT_NORMAL_REPEAT,
+                        result = getChallenge(SELECT_NORMAL_SKIP_REPEAT,
                                 new String[]{
                                         String.valueOf(storedDifficultyAsInt()),
                                         String.valueOf(storedGroupMin()),
@@ -638,16 +661,18 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
                     int index = difficultyPicker.getValue() - 1;
                     final String oldState = storedDifficultyAsString();
                     final String updatedState = values[index];
+                    final String currentId = storedObjectId();
 
                     if (!oldState.equalsIgnoreCase(updatedState)) {
-                        showDifficultyChangedSnackbar(oldState, updatedState);
+                        showDifficultyChangedSnackbar(oldState, updatedState, currentId);
                     }
                 } else if (groupLayout.getVisibility() == View.VISIBLE) {
                     final Integer oldState = storedGroupMin();
                     final Integer updatedState = groupSizePicker.getValue();
+                    final String currentId = storedObjectId();
 
                     if (!oldState.equals(updatedState)) {
-                        showGroupSizeChangedSnackbar(oldState, updatedState);
+                        showGroupSizeChangedSnackbar(oldState, updatedState, currentId);
                     }
                 }
                 closePopupMenu();
@@ -692,7 +717,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         dialog.show();
     }
 
-    private void showDifficultyChangedSnackbar(final String oldState, final String updatedState) {
+    private void showDifficultyChangedSnackbar(final String oldState, final String updatedState, final String currentId) {
         updateDifficultyState(updatedState);
         completeChangeAction();
 
@@ -702,6 +727,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 updateDifficultyState(oldState);
+                updateCurrentObjectId(currentId);
                 // reload a challenge that meets settings, or if in random mode, do nothing.
                 undoChangeAction();
             }
@@ -722,7 +748,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         snackbar.show();
     }
 
-    private void showGroupSizeChangedSnackbar(final Integer oldState, final Integer updatedState) {
+    private void showGroupSizeChangedSnackbar(final Integer oldState, final Integer updatedState, final String currentId) {
         updateGroupSizeState(updatedState);
         completeChangeAction();
 
@@ -732,6 +758,7 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 updateGroupSizeState(oldState);
+                updateCurrentObjectId(currentId);
                 // reload a challenge that meets settings, or if in random mode, do nothing.
                 undoChangeAction();
             }
