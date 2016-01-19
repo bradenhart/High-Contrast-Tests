@@ -19,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bradenhart.hcdemoui.Difficulty;
 import com.bradenhart.hcdemoui.R;
 
 import static com.bradenhart.hcdemoui.Utils.*;
@@ -463,46 +464,42 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         public void onClick(View v) {
 
             int id = v.getId();
+            if (v instanceof Button) {
+                Button button = (Button) v;
+                String name = button.getText().toString();
+                Difficulty difficulty = Difficulty.lookupByName(name);
 
-            switch (id) {
-                case R.id.filter_by_completed:
-                    filterTerm = COMPLETED;
-                    break;
-                case R.id.filter_by_uncompleted:
-                    filterTerm = UNCOMPLETED;
-                    break;
-                case R.id.filter_by_easy:
-                    filterTerm = EASY;
-                    break;
-                case R.id.filter_by_medium:
-                    filterTerm = MEDIUM;
-                    break;
-                case R.id.filter_by_hard:
-                    filterTerm = HARD;
-                    break;
-                case R.id.filter_by_insane:
-                    filterTerm = INSANE;
-                    break;
-                case R.id.sort_by_newest:
-                    filterTerm = NEWEST;
-                    break;
-                case R.id.sort_by_oldest:
-                    filterTerm = OLDEST;
-                    break;
-                case R.id.sort_by_difficulty_asc:
-                    filterTerm = DIFFICULTY_ASC;
-                    break;
-                case R.id.sort_by_difficulty_desc:
-                    filterTerm = DIFFICULTY_DESC;
-                    break;
-                default:
-                    break;
+                if (difficulty == null) {
+                    switch (id) {
+                        case R.id.filter_by_completed:
+                            filterTerm = COMPLETED;
+                            break;
+                        case R.id.filter_by_uncompleted:
+                            filterTerm = UNCOMPLETED;
+                            break;
+                        case R.id.sort_by_newest:
+                            filterTerm = NEWEST;
+                            break;
+                        case R.id.sort_by_oldest:
+                            filterTerm = OLDEST;
+                            break;
+                        case R.id.sort_by_difficulty_asc:
+                            filterTerm = DIFFICULTY_ASC;
+                            break;
+                        case R.id.sort_by_difficulty_desc:
+                            filterTerm = DIFFICULTY_DESC;
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    filterTerm = name;
+                }
+                updateRecyclerView();
+                closeFilterCard();
             }
 
-            updateRecyclerView();
-            closeFilterCard();
         }
-
     }
 
 }

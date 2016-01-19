@@ -437,7 +437,6 @@ public class ChallengeActivity extends BaseActivity implements View.OnClickListe
         String query;
         String[] params;
 
-
         if (!inRandomMode() && !inRepeatMode()) {
             // NORMAL
             query = SELECT_NORMAL;
