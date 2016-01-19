@@ -98,7 +98,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cv.put(KEY_OBJECT_ID, c.getObjectId());
                 cv.put(KEY_NAME, c.getString("name"));
                 cv.put(KEY_DESCRIPTION, c.getString("description"));
-                cv.put(KEY_DIFFICULTY, getDifficultyValue(c.getString("difficulty")));
+                Difficulty difficulty = Difficulty.lookupByName(c.getString("difficulty"));
+                if (difficulty != null) {
+                    cv.put(KEY_DIFFICULTY, difficulty.getValue());
+                }
                 cv.put(KEY_GROUP_MIN, c.getInt("groupMin"));
                 cv.put(KEY_GROUP_MAX, c.getInt("groupMax"));
                 String dateString = getDateTime(c.getCreatedAt());
@@ -122,47 +125,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] queryParams = null;
         Cursor cursor;
 
-        switch (filter) {
-            case COMPLETED:
-                queryString = " where " + KEY_COMPLETED + " =?";
-                queryParams = new String[]{"1"};
-                break;
-            case UNCOMPLETED:
-                queryString = " where " + KEY_COMPLETED + " =?";
-                queryParams = new String[]{"0"};
-                break;
-            case EASY:
-                queryString = " where " + KEY_DIFFICULTY + " =?";
-                queryParams = new String[]{String.valueOf(getDifficultyValue(EASY))};
-                break;
-            case MEDIUM:
-                queryString = " where " + KEY_DIFFICULTY + " =?";
-                queryParams = new String[]{String.valueOf(getDifficultyValue(MEDIUM))};
-                break;
-            case HARD:
-                queryString = " where " + KEY_DIFFICULTY + " =?";
-                queryParams = new String[]{String.valueOf(getDifficultyValue(HARD))};
-                break;
-            case INSANE:
-                queryString = " where " + KEY_DIFFICULTY + " =?";
-                queryParams = new String[]{String.valueOf(getDifficultyValue(INSANE))};
-                break;
-            case NEWEST:
-                queryString = " order by " + KEY_CREATED_AT + " desc";
-                queryParams = null;
-                break;
-            case OLDEST:
-                queryString = " order by " + KEY_CREATED_AT + " asc";
-                queryParams = null;
-                break;
-            case DIFFICULTY_ASC:
-                queryString = " order by " + KEY_DIFFICULTY + " asc";
-                queryParams = null;
-                break;
-            case DIFFICULTY_DESC:
-                queryString = " order by " + KEY_DIFFICULTY + " desc";
-                queryParams = null;
-                break;
+        Difficulty difficulty = Difficulty.lookupByName(filter);
+        if (difficulty == null) {
+            switch (filter) {
+                case COMPLETED:
+                    queryString = " where " + KEY_COMPLETED + " =?";
+                    queryParams = new String[]{COMPLETED_TRUE};
+                    break;
+                case UNCOMPLETED:
+                    queryString = " where " + KEY_COMPLETED + " =?";
+                    queryParams = new String[]{COMPLETED_FALSE};
+                    break;
+                case NEWEST:
+                    queryString = " order by " + KEY_CREATED_AT + " desc";
+                    queryParams = null;
+                    break;
+                case OLDEST:
+                    queryString = " order by " + KEY_CREATED_AT + " asc";
+                    queryParams = null;
+                    break;
+                case DIFFICULTY_ASC:
+                    queryString = " order by " + KEY_DIFFICULTY + " asc";
+                    queryParams = null;
+                    break;
+                case DIFFICULTY_DESC:
+                    queryString = " order by " + KEY_DIFFICULTY + " desc";
+                    queryParams = null;
+                    break;
+            }
+        } else {
+            queryString = " where " + KEY_DIFFICULTY + " =?";
+            queryParams = new String[]{difficulty.getValue().toString()};
         }
 
         cursor = db.rawQuery(select + queryString, queryParams);
@@ -174,8 +167,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String objectId = cursor.getString(cursor.getColumnIndex(KEY_OBJECT_ID));
                 String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
                 String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
-                Integer diffValue = cursor.getInt(cursor.getColumnIndex(KEY_DIFFICULTY));
-                String difficulty = getDifficultyTerm(diffValue);
+                if (difficulty == null) {
+                    difficulty = Difficulty.lookupByValue(cursor.getColumnIndex(KEY_DIFFICULTY));
+                }
                 Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
                 Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
                 String dateStr = cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT));
@@ -185,7 +179,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 c.setObjectId(objectId);
                 c.setName(name);
                 c.setDescription(description);
-                c.setDifficulty(difficulty);
+                if (difficulty != null) {
+                    c.setDifficulty(difficulty);
+                }
                 c.setGroupMin(groupMin);
                 c.setGroupMax(groupMax);
                 c.setCreatedAt(createdAt);
@@ -212,7 +208,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String objectId = cursor.getString(cursor.getColumnIndex(KEY_OBJECT_ID));
             String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
             String description = cursor.getString(cursor.getColumnIndex(KEY_DESCRIPTION));
-            String difficulty = getDifficultyTerm(cursor.getInt(cursor.getColumnIndex(KEY_DIFFICULTY)));
+            Difficulty difficulty = Difficulty.lookupByValue(cursor.getColumnIndex(KEY_DIFFICULTY));;
             Integer groupMin = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MIN));
             Integer groupMax = cursor.getInt(cursor.getColumnIndex(KEY_GROUP_MAX));
             Date createdAt = convertDateTimeToDate(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
