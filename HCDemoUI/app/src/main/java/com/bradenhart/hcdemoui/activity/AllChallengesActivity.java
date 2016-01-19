@@ -301,7 +301,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         headerBar.setText(filterTerm);
         List<Challenge> list = createItemList(filterTerm);
         int listSize = recyclerAdapter.getItemCount();
-        Log.e(LOGTAG, "size: " + listSize);
         for (int i = 0; i < listSize; i++) {
             recyclerAdapter.removeItemAt(0);
         }
@@ -359,9 +358,14 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(this, ChallengeActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_slide_to_bottom);
+        if (filterTerm.equals(NEWEST)) {
+            Intent intent = new Intent(this, ChallengeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_slide_to_bottom);
+        } else {
+            filterTerm = NEWEST;
+            updateRecyclerView();
+        }
     }
 
     // recyclerview interface implementation
@@ -493,7 +497,7 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
                             break;
                     }
                 } else {
-                    filterTerm = name;
+                    filterTerm = difficulty.getName();
                 }
                 updateRecyclerView();
                 closeFilterCard();

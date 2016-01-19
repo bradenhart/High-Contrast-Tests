@@ -1,5 +1,7 @@
 package com.bradenhart.hcdemoui.database;
 
+import com.bradenhart.hcdemoui.Difficulty;
+
 import java.util.Date;
 
 /**
@@ -10,7 +12,7 @@ public class Challenge {
     private String objectId;
     private String name;
     private String description;
-    private String difficulty;
+    private Difficulty difficulty;
     private Integer groupMin;
     private Integer groupMax;
     private Date createdAt;
@@ -43,11 +45,11 @@ public class Challenge {
         this.description = description;
     }
 
-    public String getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(String difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 
@@ -90,7 +92,7 @@ public class Challenge {
                 ", objectId='" + objectId + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", difficulty='" + difficulty + '\'' +
+                ", difficulty='" + difficulty.getName() + '\'' +
                 ", groupMin=" + groupMin +
                 ", groupMax=" + groupMax +
                 ", createdAt=" + createdAt +
