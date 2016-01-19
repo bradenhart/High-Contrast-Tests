@@ -14,15 +14,15 @@ public enum Difficulty {
     INSANE("Insane", 4);
 
     private String name;
-    private final Integer value;
-    private static Map<Integer, Difficulty> mappedValues;
-
-    static {
-        mappedValues = new HashMap<>();
-        for(Difficulty difficulty : Difficulty.values()) {
-            mappedValues.put(difficulty.value, difficulty);
-        }
-    }
+    private Integer value;
+//    private static Map<Integer, Difficulty> mappedValues;
+//
+//    static {
+//        mappedValues = new HashMap<>();
+//        for(Difficulty difficulty : Difficulty.values()) {
+//            mappedValues.put(difficulty.value, difficulty);
+//        }
+//    }
 
     Difficulty(String name, Integer value) {
         this.name = name;
@@ -48,6 +48,24 @@ public enum Difficulty {
             names[i] = Difficulty.values()[i].getName();
         }
         return names;
+    }
+
+    public static Difficulty lookupByValue(Integer value) {
+        for (Difficulty difficulty : values()) {
+            if (value.equals(difficulty.getValue())) {
+                return difficulty;
+            }
+        }
+        return null;
+    }
+
+    public static Difficulty lookupByName(String name) {
+        for (Difficulty difficulty : values()) {
+            if (name.equals(difficulty.getName())) {
+                return difficulty;
+            }
+        }
+        return null;
     }
 
 }
