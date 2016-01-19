@@ -10,6 +10,7 @@ import android.util.Log;
 
 import static com.bradenhart.hcdemoui.Utils.*;
 
+import com.bradenhart.hcdemoui.Difficulty;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
