@@ -132,7 +132,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:padding="3dp"
-                android:text="@string/placeholder_completed"
+                android:text="@string/placeholder_completed_false"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </RelativeLayout>

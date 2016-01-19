@@ -68,12 +68,13 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         groupV.setText(groupStr);
         minTV.setText(minStr);
         maxTV.setText(maxStr);
-        difficultyTV.setText("Difficulty: " + item.getDifficulty());
+        String difficulty = context.getResources().getString(R.string.placeholder_difficulty) + item.getDifficulty().getName();
+        difficultyTV.setText(difficulty);
         if (item.getCompleted()) {
             titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_green_24dp, 0);
-            completedTV.setText("Completed: Yep");
+            completedTV.setText(context.getResources().getString(R.string.placeholder_completed_true));
         } else {
-            completedTV.setText("Completed: Nope");
+            completedTV.setText(context.getResources().getString(R.string.placeholder_completed_false));
             titleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.blank_icon, 0);
         }
     }

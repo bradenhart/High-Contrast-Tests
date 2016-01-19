@@ -52,6 +52,7 @@
     <string name="description_play_challenge">play challenge</string>
     <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo libero, semper id sem id, lacinia bibendum erat.</string>
     <string name="placeholder_difficulty">Difficulty:</string>
-    <string name="placeholder_completed">Completed: Nope</string>
+    <string name="placeholder_completed_true">Completed: Yeah</string>
+    <string name="placeholder_completed_false">Completed: Nah</string>
 
 </resources>
