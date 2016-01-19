@@ -33,7 +33,7 @@ public enum Difficulty {
         return name;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 
