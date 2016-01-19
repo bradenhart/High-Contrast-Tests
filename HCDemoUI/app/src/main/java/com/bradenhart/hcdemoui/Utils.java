@@ -34,7 +34,7 @@ public final class Utils {
     public static final String KEY_LAST_DATE = "last_date";
     public static final String KEY_STATE_DIFFICULTY = "difficulty_state";
     public static final String KEY_STATE_GROUP_SIZE = "group_size_state";
-    public static final String DEFAULT_DIFFICULTY_STATE = EASY;
+    public static final String DEFAULT_DIFFICULTY_STATE = Difficulty.EASY.getName();
     public static final Integer DEFAULT_GROUP_SIZE_STATE = 1;
     public static final String KEY_RANDOM_MODE = "random_mode";
     public static final Boolean DEFAULT_RANDOM_MODE_STATE = false;
@@ -61,37 +61,72 @@ public final class Utils {
     public static final String LIMIT_ONE = "1";
 
     // QUERY SELECT STATEMENTS
-//    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where " + KEY_COMPLETED + " =? limit ?";
-    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_COMPLETED + " =? order by random() limit ?";
-
     public static final String SELECT_NORMAL = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN
-            + " =? order by random() limit ?";
+            + KEY_COMPLETED + " =?" + " and "
+            + KEY_DIFFICULTY + " =?" + " and "
+            + KEY_GROUP_MIN + " =?" + " and "
+            + KEY_OBJECT_ID + " !=?"
+
+            + " order by random()"
+            + " limit ?";
+
+    public static final String SELECT_SHUFFLE = "select * from " + TABLE_CHALLENGE + " where "
+            + KEY_COMPLETED + " =?" + " and "
+            + KEY_OBJECT_ID + " !=?"
+
+            + " order by random()"
+            + " limit ?";
+
+    public static final String SELECT_NORMAL_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
+            + KEY_DIFFICULTY + " =?" + " and "
+            + KEY_GROUP_MIN + " =?" + " and "
+            + KEY_OBJECT_ID + " !=?"
+
+            + " order by random()"
+            + " limit ?";
+
+    public static final String SELECT_SHUFFLE_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
+            + KEY_OBJECT_ID + " =?"
+
+            + " order by random()"
+            + " limit ?";
 
     public static final String SELECT_BY_ID = "select * from " + TABLE_CHALLENGE + " where "
             + KEY_OBJECT_ID + " =? ";
 
-    public static final String SELECT_SHUFFLE_SKIP = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_COMPLETED + " =? and " + KEY_OBJECT_ID + " !=? order by random() limit ?";
+//    public static final String SELECT_SHUFFLE_SKIP = "select * from " + TABLE_CHALLENGE + " where "
+//            + KEY_COMPLETED + " =?" + " and "
+//            + KEY_OBJECT_ID + " !=?"
+//
+//            + " order by random()"
+//            + " limit ?";
+//
+//    public static final String SELECT_NORMAL_SKIP = "select * from " + TABLE_CHALLENGE + " where "
+//            + KEY_COMPLETED + " =?" + " and "
+//            + KEY_DIFFICULTY + " =?" + " and "
+//            + KEY_GROUP_MIN + " =?" + " and "
+//            + KEY_OBJECT_ID + " !=?"
+//
+//            + " order by random()"
+//            + " limit ?";
+//
+//    public static final String SELECT_SHUFFLE_SKIP_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
+//            + KEY_OBJECT_ID + " !=?"
+//
+//            + " order by random()"
+//            + " limit ?";
+//
+//    public static final String SELECT_NORMAL_SKIP_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
+//            + KEY_DIFFICULTY + " =?" + " and "
+//            + KEY_GROUP_MIN + " =?" + " and "
+//            + KEY_OBJECT_ID + " !=?"
+//
+//            + " order by random()"
+//            + " limit ?";
 
-    public static final String SELECT_NORMAL_SKIP = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_COMPLETED + " =? and " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN
-            + " =? and " + KEY_OBJECT_ID + " !=? order by random() limit ?";
-//    public static final String SELECT_RANDOM
-
-    public static final String SELECT_SHUFFLE_REPEAT = "select * from " + TABLE_CHALLENGE
-        + " order by random() limit ?";
-
-    public static final String SELECT_SHUFFLE_SKIP_REPEAT = "select * from " + TABLE_CHALLENGE
-            + " where " + KEY_OBJECT_ID + " !=? order by random() limit ?";
-
-    public static final String SELECT_NORMAL_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? order by random() limit ?";
-
-    public static final String SELECT_NORMAL_SKIP_REPEAT = "select * from " + TABLE_CHALLENGE
-            + " where " + KEY_DIFFICULTY + " =? and " + KEY_GROUP_MIN + " =? and " + KEY_OBJECT_ID
-            + " !=? order by random() limit ?";
+    public static final String SELECT_FROM_CHALLENGES = "select * from " + TABLE_CHALLENGE + " where ";
+    public static final String ORDER_BY_RANDOM = " order by random()";
+    public static final String LIMIT = " limit ?";
 
     public static final Integer GROUP_SIZE_MINIMUM = 1;
     public static final Integer GROUP_SIZE_MAXIMUM = 7;

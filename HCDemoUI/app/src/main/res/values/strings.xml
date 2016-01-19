@@ -37,6 +37,7 @@
     <string name="description_filter_tab">filter challenges</string>
     <string name="description_sort_tab">sort challenges</string>
     <string name="title_filter">Filter</string>
+    <string name="title_sort">Sort</string>
     <string name="option_completed">Completed</string>
     <string name="option_uncompleted">Uncompleted</string>
     <string name="option_easy">Easy</string>
