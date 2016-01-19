@@ -20,10 +20,10 @@ public final class Utils {
 
     public static final String COMPLETED = "Completed";
     public static final String UNCOMPLETED = "Uncompleted";
-    public static final String EASY = "Easy";
-    public static final String MEDIUM = "Medium";
-    public static final String HARD = "Hard";
-    public static final String INSANE = "Insane";
+//    public static final String EASY = "Easy";
+//    public static final String MEDIUM = "Medium";
+//    public static final String HARD = "Hard";
+//    public static final String INSANE = "Insane";
 
     public static final String NEWEST = "Newest";
     public static final String OLDEST = "Oldest";
@@ -61,6 +61,14 @@ public final class Utils {
     public static final String LIMIT_ONE = "1";
 
     // QUERY SELECT STATEMENTS
+    public static final String SELECT_NORMAL_NEW = "select * from " + TABLE_CHALLENGE + " where "
+            + KEY_COMPLETED + " =?" + " and "
+            + KEY_DIFFICULTY + " =?" + " and "
+            + KEY_GROUP_MIN + " =?"
+
+            + " order by random()"
+            + " limit ?";
+
     public static final String SELECT_NORMAL = "select * from " + TABLE_CHALLENGE + " where "
             + KEY_COMPLETED + " =?" + " and "
             + KEY_DIFFICULTY + " =?" + " and "
@@ -86,13 +94,15 @@ public final class Utils {
             + " limit ?";
 
     public static final String SELECT_SHUFFLE_REPEAT = "select * from " + TABLE_CHALLENGE + " where "
+            + KEY_COMPLETED + " =?" + " or " + " ?" + " and "
             + KEY_OBJECT_ID + " =?"
 
             + " order by random()"
             + " limit ?";
 
     public static final String SELECT_BY_ID = "select * from " + TABLE_CHALLENGE + " where "
-            + KEY_OBJECT_ID + " =? ";
+            + KEY_OBJECT_ID + " =?"
+            + " limit ?";
 
 //    public static final String SELECT_SHUFFLE_SKIP = "select * from " + TABLE_CHALLENGE + " where "
 //            + KEY_COMPLETED + " =?" + " and "
