@@ -205,14 +205,14 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         }
         filterTab.setSelected(true);
         filterLayout.setVisibility(View.VISIBLE);
-        cardHeader.setText("Filter");
+        cardHeader.setText(getResources().getString(R.string.title_filter));
     }
 
     private void showSortLayout() {
         hideFilterLayout();
         sortTab.setSelected(true);
         sortLayout.setVisibility(View.VISIBLE);
-        cardHeader.setText("Sort");
+        cardHeader.setText(getResources().getString(R.string.title_sort));
     }
 
     private void hideFilterLayout() {
@@ -308,18 +308,6 @@ public class AllChallengesActivity extends BaseActivity implements View.OnClickL
         for (int i = 0; i < listSize; i++) {
             recyclerAdapter.addItem(list.get(i));
         }
-    }
-
-    private void testUpdateRecyclerView() {
-//        List<Challenge> newList = createItemList(filterTerm);
-        // (remove each item from the recyclerview)
-        // remove an item
-        // notify the adapter of removed item
-
-        // get a new list of items
-        // (add each item to the recyclerview)
-        // add an item
-        // notify the adapter of the added item
     }
 
     /**
